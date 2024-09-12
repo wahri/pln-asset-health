@@ -42,5 +42,6 @@
             filter: none;
         }
     </style>
+    @stack('css')
     <title>Health Monitoring System</title>
 </head>
