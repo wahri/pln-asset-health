@@ -6,5 +6,20 @@ use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
-    //
+    public function index()
+    {
+        return view('pages.asset.index');
+    }
+    public function store(Request $request)
+    {
+        dd('store');
+    }
+    public function update(Request $request, $id)
+    {
+        dd('update');
+    }
+    public function destroy($id)
+    {
+        dd('destroy');
+    }
 }

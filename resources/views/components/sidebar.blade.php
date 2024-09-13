@@ -34,9 +34,21 @@
               </a>
           </li>
           <li class="menu-label">Master Data</li>
+            <li class="{{ request()->routeIs('system-engine.index') ? 'mm-active' : '' }}">
+              <a href="{{ route('system-engine.index') }}" class="">
+                  <div class="parent-icon"><i class="bx bx-command"></i></div>
+                  <div class="menu-title">System Engine</div>
+              </a>
+          </li>
+           <li class="{{ request()->routeIs('asset.index') ? 'mm-active' : '' }}">
+              <a href="{{ route('asset.index') }}" class="">
+                  <div class="parent-icon"><i class="bx bx-devices"></i></div>
+                  <div class="menu-title">Asset</div>
+              </a>
+          </li>
           <li class="{{ request()->routeIs('unit-engine.index') ? 'mm-active' : '' }}">
               <a href="{{ route('unit-engine.index') }}" class="">
-                  <div class="parent-icon"><i class="bx bx-command"></i></div>
+                  <div class="parent-icon"><i class="bx bx-laptop"></i></div>
                   <div class="menu-title">Unit Engine</div>
               </a>
           </li>
