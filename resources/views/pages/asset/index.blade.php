@@ -24,6 +24,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
+                    @include('components.alert')
                     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addAsset">Add
                         Asset</button>
 
@@ -33,32 +34,32 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <form action="{{ route('asset.store') }}" method="post">
+                                    @csrf
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="addAsset">Add System Engine</h1>
+                                        <h1 class="modal-title fs-5" id="addAsset">Add Asset</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                         <div class="mb-3">
+                                        <div class="mb-3">
                                             <label for="noAsset" class="form-label">No Asset </label>
-                                            <input type="text" class="form-control" id="noAsset"
-                                                name="noAsset">
+                                            <input type="text" class="form-control" id="noAsset" name="noAsset">
                                         </div>
-                                         <div class="mb-3">
+                                        <div class="mb-3">
                                             <label for="nameAsset" class="form-label">Name Asset</label>
-                                            <input type="text" class="form-control" id="nameAsset"
-                                                name="nameAsset">
+                                            <input type="text" class="form-control" id="nameAsset" name="nameAsset">
                                         </div>
                                         <div class="mb-3">
                                             <label for="systemName" class="form-label">System Name</label>
                                             <select name="systemName" id="systemName" class="form-select">
                                                 <option selected>Select</option>
-                                                <option value="1">PLTA</option>
-                                                <option value="2">PLTL</option>
-                                                <option value="3">Duri</option>
+                                                @foreach ($system as $s)
+                                                    <option value="{{ $s->id }}">{{ $s->name }}</option>
+                                                @endforeach
+
                                             </select>
                                         </div>
-                                        
+
 
                                     </div>
                                     <div class="modal-footer">
@@ -87,19 +88,86 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>asdasda</td>
-                                 <td>asdasda</td>
-                                <td>
-                                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                        <button type="button" class="btn btn-info">Edit</button>
-                                        <button type="button" class="btn btn-danger">Delete</button>
-                                    </div>
-                                </td>
+                            @foreach ($asset as $a)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $a->no_asset }}</td>
+                                    <td>{{ $a->name }}</td>
+                                    <td>{{ $a->system->name }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                                data-bs-target="#editAsset_{{ $a->id }}">Edit</button>
 
-                            </tr>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="editAsset_{{ $a->id }}" tabindex="-1"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <form action="{{ route('asset.update', $a->id) }}" method="post">
+                                                            @csrf
+                                                            @method('put')
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="editAsset">Edit Asset </h1>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label for="noAsset" class="form-label">No Asset
+                                                                    </label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="noAsset" name="noAsset"
+                                                                        value="{{ $a->no_asset }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="nameAsset" class="form-label">Name
+                                                                        Asset</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="nameAsset" name="nameAsset"
+                                                                        value="{{ $a->name }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="systemName" class="form-label">System
+                                                                        Name</label>
+                                                                    <select name="systemName" id="systemName"
+                                                                        class="form-select">
+                                                                        @foreach ($system as $s)
+                                                                            <option value="{{ $s->id }}"
+                                                                                {{ $a->system_id == $s->id ? 'selected' : '' }}>
+                                                                                {{ $s->name }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+
+
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                    changes</button>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <form action="{{ route('asset.destroy', $a->id) }}" method="post">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            @endforeach
 
                         </tbody>
 

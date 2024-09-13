@@ -24,34 +24,44 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
+                    @include('components.alert')
                     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addLocationUnit">Add
-                        Location
-                        Unit</button>
+                        Unit Engine</button>
+
 
                     <!-- Modal -->
                     <div class="modal fade" id="addLocationUnit" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action="{{ route('location-unit.store') }}" method="post">
+                                <form action="{{ route('unit-engine.store') }}" method="post">
+                                    @csrf
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="addLocationUnit">Add Location Unit</h1>
+                                        <h1 class="modal-title fs-5" id="addLocationUnit">Add Unit Engine</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="locationUnit" class="form-label">Location Unit</label>
-                                            <input type="text" class="form-control" id="locationUnit"
-                                                name="locationUnit">
+                                            <label for="nameUnit" class="form-label">Name Unit</label>
+                                            <input type="text" class="form-control" id="nameUnit" name="nameUnit">
 
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="locaiton" class="form-label">Location</label>
+                                            <select name="location" id="location" class="form-select">
+                                                <option value="">Select Location</option>
+                                                @foreach ($location as $loc)
+                                                    <option value="{{ $loc->id }}">{{ $loc->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
 
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
                                     </div>
                                 </form>
 
@@ -66,25 +76,86 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
+                                <th>Name Unit</th>
                                 <th>Location</th>
                                 <th>Action</th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>asdasdas</td>
-                                <td>
-                                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                        <button type="button" class="btn btn-info">Edit</button>
-                                        <button type="button" class="btn btn-danger">Delete</button>
-                                    </div>
-                                </td>
+                            @foreach ($unit as $u)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $u->name }}</td>
+                                    <td>{{ $u->location->name }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                                data-bs-target="#editUnit_{{ $u->id }}">Edit</button>
 
-                            </tr>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="editUnit_{{ $u->id }}" tabindex="-1"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <form action="{{ route('unit-engine.update', $u->id) }}"
+                                                            method="post">
+                                                            @csrf
+                                                            @method('put')
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="addLocationUnit">Edit
+                                                                    Unit Engine</h1>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label for="nameUnit" class="form-label">Name
+                                                                        Unit</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="nameUnit" name="nameUnit"
+                                                                        value="{{ $u->name }}">
+
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="location"
+                                                                        class="form-label">Location</label>
+                                                                    <select name="location" id="location"
+                                                                        class="form-select">
+                                                                        @foreach ($location as $loc)
+                                                                            <option value="{{ $loc->id }}"
+                                                                                {{ $u->location_id == $loc->id ? 'selected' : '' }}>
+                                                                                {{ $loc->name }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                    changes</button>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <form action="{{ route('unit-engine.destroy', $u->id) }}" method="post">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            @endforeach
 
                         </tbody>
 
