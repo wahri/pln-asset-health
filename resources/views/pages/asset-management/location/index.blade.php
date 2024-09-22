@@ -81,9 +81,10 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $loc->name }}</td>
                                     <td>
-                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                                data-bs-target="#editLocation-{{ $loc->id }}">Edit</button>
+                                        <div class="btn-group "  role="group" aria-label="Basic mixed styles example">
+                                           
+                                            <button type="button" class="btn btn-info " data-bs-toggle="modal"
+                                                data-bs-target="#editLocation-{{ $loc->id }}"><i class='bx bxs-edit text-white'></i></button>
 
                                             <!-- Modal -->
                                             <div class="modal fade" id="editLocation-{{ $loc->id }}" tabindex="-1"
@@ -130,9 +131,10 @@
                                                 @csrf
                                                 @method('delete')
                                                 <button type="submit" class="btn btn-danger"
-                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                                    onclick="return confirm('Are you sure?')"><i class='bx bxs-trash'></i></button>
 
                                             </form>
+                                              <button type="button" class="btn btn-primary" ><i class='bx bx-file text-white'></i></button>
                                         </div>
                                     </td>
 
