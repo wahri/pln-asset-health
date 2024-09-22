@@ -8,7 +8,10 @@
     <link href="{{ asset('assets/plugins/simplebar/css/simplebar.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/plugins/metismenu/css/metisMenu.min.css') }}" rel="stylesheet" />
+
     <link href="{{ asset('assets/plugins/highcharts/css/highcharts.css') }}" rel="stylesheet" />
+    @stack('css')
+    
     <!-- loader-->
     <link href="{{ asset('assets/css/pace.min.css') }}" rel="stylesheet" />
     <script src="{{ asset('assets/js/pace.min.js') }}"></script>
@@ -22,6 +25,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/dark-theme.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/header-colors.css') }}" />
+    <title>Health Monitoring System</title>
+    
     <style>
         .highcharts-color-0 {
             fill: #00ce29;
@@ -42,6 +47,4 @@
             filter: none;
         }
     </style>
-    @stack('css')
-    <title>Health Monitoring System</title>
 </head>

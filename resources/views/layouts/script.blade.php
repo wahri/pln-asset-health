@@ -7,10 +7,9 @@
     <script src="{{ asset('assets/plugins/metismenu/js/metisMenu.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js') }}"></script>
 
-
-    <!--app JS-->
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    @stack('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    @stack('script')
+    <!--app JS-->
+    <script src="{{ asset('assets/js/app.js') }}"></script>
