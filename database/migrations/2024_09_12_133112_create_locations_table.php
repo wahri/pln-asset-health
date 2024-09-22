@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asset', function (Blueprint $table) {
+        Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->string('no_asset');
-            $table->foreignId('system_id')->references('id')->on('system')->onDelete('cascade')->onUpdate('cascade');
-            $table->timestamps();
             $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asset');
+        Schema::dropIfExists('location');
     }
 };

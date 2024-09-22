@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('report_asset', function (Blueprint $table) {
+        Schema::create('report_assets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('report_id')->references('id')->on('report')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('asset_id')->references('id')->on('asset')->onDelete('cascade')->onUpdate('cascade');
-            $table->enum('status', ['normal', 'abnormal', 'fault']);
+            $table->foreignId('asset_id')->references('id')->on('assets')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('report_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('status', ['normal', 'abnormal', 'fault'])->default('normal');
             $table->timestamps();
         });
     }
