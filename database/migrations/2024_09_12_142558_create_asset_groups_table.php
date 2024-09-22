@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('asset_groups', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('unit_id')->references('id')->on('units')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->timestamps();
         });
