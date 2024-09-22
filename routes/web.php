@@ -24,22 +24,18 @@ use Illuminate\Support\Facades\Route;
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-
-
 Route::get('/', function () {
     return redirect('/login');
 });
-
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
- Route::prefix('/dashboard')->name('dashboard.')->middleware(['auth', 'verified'])->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('index');
-        // Route::get('/', [DashboardController::class, 'index'])->name('index');
-    });
-
+Route::prefix('/dashboard')->name('dashboard.')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('index');
+    // Route::get('/', [DashboardController::class, 'index'])->name('index');
+});
 
 Route::middleware(['auth'])->group(function () {
 
@@ -56,10 +52,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('/asset-management')->name('assetManagement.')->group(function () {
-        Route::get('/', [AssetManagementController::class, 'index'])->name('index');
-        // Route::post('/', [UnitController::class, 'store'])->name('store');
-        // Route::put('/update/{id}', [UnitController::class, 'update'])->name('update');
-        // Route::delete('/delete/{id}', [UnitController::class, 'destroy'])->name('destroy');
+        Route::get('/', [LocationController::class, 'index'])->name('location.index');
+        Route::post('/store', [LocationController::class, 'store'])->name('location.store');
+        Route::put('/update/{id}', [LocationController::class, 'update'])->name('location.update');
+        Route::delete('/delete/{id}', [LocationController::class, 'destroy'])->name('location.destroy');
     });
     // Route::prefix('/system-engine')->name('system-engine.')->group(function () {
     //     Route::get('/', [SystemController::class, 'index'])->name('index');
@@ -75,4 +71,4 @@ Route::middleware(['auth'])->group(function () {
     // });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

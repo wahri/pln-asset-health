@@ -34,7 +34,7 @@
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action="{{ route('location-unit.store') }}" method="post">
+                                <form action="{{ route('assetManagement.location.store') }}" method="post">
                                     @csrf
                                     <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="addLocationUnit">Add Location Unit</h1>
@@ -90,7 +90,9 @@
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <form action="{{ route('location-unit.update', $loc->id) }}" method="post">
+                                                        <form
+                                                            action="{{ route('assetManagement.location.update', $loc->id) }}"
+                                                            method="post">
                                                             @csrf
                                                             @method('put')
                                                             <div class="modal-header">
@@ -104,7 +106,8 @@
                                                                     <label for="locationUnit" class="form-label">Location
                                                                         Unit</label>
                                                                     <input type="text" class="form-control"
-                                                                        id="locationUnit" name="locationUnit" value="{{ $loc->name }}">
+                                                                        id="locationUnit" name="locationUnit"
+                                                                        value="{{ $loc->name }}">
 
                                                                 </div>
 
@@ -122,7 +125,8 @@
                                             </div>
 
 
-                                            <form action="{{ route('location-unit.destroy', $loc->id) }}" method="post">
+                                            <form action="{{ route('assetManagement.location.destroy', $loc->id) }}"
+                                                method="post">
                                                 @csrf
                                                 @method('delete')
                                                 <button type="submit" class="btn btn-danger"
@@ -151,6 +155,7 @@
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
+
         });
     </script>
 
