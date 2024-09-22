@@ -11,13 +11,13 @@ class Asset extends Model
 
     protected $fillable = [
         'no_asset',
-        'system_id',
+        'asset_group_id',
         'name',
     ];
 
     public function system()
     {
-        return $this->belongsTo(System::class, 'system_id');
+        return $this->belongsTo(AssetGroup::class);
     }
     public function createData($data)
     {

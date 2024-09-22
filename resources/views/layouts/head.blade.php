@@ -11,7 +11,7 @@
 
     <link href="{{ asset('assets/plugins/highcharts/css/highcharts.css') }}" rel="stylesheet" />
     @stack('css')
-    
+
     <!-- loader-->
     <link href="{{ asset('assets/css/pace.min.css') }}" rel="stylesheet" />
     <script src="{{ asset('assets/js/pace.min.js') }}"></script>
@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/header-colors.css') }}" />
     <title>Health Monitoring System</title>
-    
+
     <style>
         .highcharts-color-0 {
             fill: #00ce29;
@@ -45,6 +45,14 @@
 
         html.color-sidebar .logo-icon {
             filter: none;
+        }
+    </style>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        [x-cloak] {
+            display: none;
         }
     </style>
 </head>
