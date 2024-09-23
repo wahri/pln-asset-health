@@ -10,38 +10,20 @@ class Asset extends Model
     use HasFactory;
 
     protected $fillable = [
-        'no_asset',
+        'unit_id',
         'asset_group_id',
+        'no_asset',
         'name',
+        'status',
     ];
 
-    public function system()
+    public function unit()
     {
-        return $this->belongsTo(AssetGroup::class);
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
 
-    public function createData($data)
+    public function assetGroup()
     {
-        return $this->create($data);
-    }
-
-    public function updateData($data, $id)
-    {
-        return $this->where('id', $id)->update($data);
-    }
-
-    public function deleteData($id)
-    {
-        return $this->where('id', $id)->delete();
-    }
-
-    public function getData($id)
-    {
-        return $this->where('id', $id)->first();
-    }
-
-    public function getAllData()
-    {
-        return $this->get();
+        return $this->belongsTo(AssetGroup::class, 'asset_group_id', 'id');
     }
 }

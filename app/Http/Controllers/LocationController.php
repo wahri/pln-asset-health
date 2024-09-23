@@ -7,17 +7,10 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    protected $location;
-
-    public function __construct(Location $location)
-    {
-        $this->location = $location;
-    }
-
     public function index()
     {
-       
-        $location = $this->location->getAllData();
+
+        $location = Location::all();
 
         return view('pages.asset-management.location.index', compact('location'));
     }
@@ -25,7 +18,8 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->location->createData([
+
+            Location::create([
                 'name' => $request->locationUnit,
             ]);
 
@@ -37,10 +31,12 @@ class LocationController extends Controller
 
     public function update(Request $request, $id)
     {
+
         try {
-            $this->location->updateData([
+
+            Location::where('id', $id)->update([
                 'name' => $request->locationUnit,
-            ], $id);
+            ]);
 
             return back()->with('success', 'Location updated successfully');
         } catch (\Throwable $th) {
@@ -52,7 +48,8 @@ class LocationController extends Controller
     {
 
         try {
-            $this->location->deleteData($id);
+
+            Location::find($id)->delete();
 
             return back()->with('success', 'Location deleted successfully');
         } catch (\Throwable $th) {

@@ -6,14 +6,13 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Unit Pembangkit {{ $location->name }}</div>
+            <div class="breadcrumb-title pe-3">Lokasi Unit Pembangkit</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+                        <li class="breadcrumb-item"><a href=" route('assetManagement.location.index') }}">Asset Management</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('assetManagement.location.index') }}">Location Unit</a></li>
-                         <li class="breadcrumb-item active" aria-current="page">Data Table Unit Pembangkit</li>
+                        <li class="breadcrumb-item active" aria-current="page">Lokasi Unit Pembangkit</li>
                     </ol>
                 </nav>
             </div>
@@ -26,34 +25,27 @@
             <div class="card-body">
                 <div class="card-title">
                     @include('components.alert')
-                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addLocationUnit">Add
-                        Unit Pembangkit</button>
-
+                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addAsset">Tambah lokasi
+                    </button>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="addLocationUnit" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    <div class="modal fade" id="addAsset" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action="{{ route('assetManagement.unitPembangkit.store') }}" method="post">
-                                    @csrf
+                                <form action="  {{ route('assetManagement.location.store') }}" method="post">
+                                    csrf
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="addLocationUnit">Add Unit Engine</h1>
+                                        <h1 class="modal-title fs-5" id="addAsset">Add Asset</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="nameUnit" class="form-label">Name Unit</label>
-                                            <input type="text" class="form-control" id="nameUnit" name="nameUnit">
+                                            <label for="noAsset" class="form-label">No Asset </label>
+                                            <input type="text" class="form-control" id="noAsset" name="noAsset">
+                                        </div>
 
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="locaiton" class="form-label">Location</label>
-                                            <select name="location" id="location" class="form-select">
-                                                <option value="{{ $location->id }}">{{ $location->name }}</option>
-                                            </select>
-                                        </div>
 
                                     </div>
                                     <div class="modal-footer">
@@ -74,54 +66,64 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name Unit</th>
+                                <th>Nama Lokasi</th>
                                 <th>Action</th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($unit as $u)
+                            @foreach ($location as $l)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $u->name }}</td>
+                                    <td> {{ $loop->iteration }}</td>
+                                    <td>  {{ $l->name }}</td>
+
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                                data-bs-target="#editUnit_{{ $u->id }}"><i
-                                                    class='bx bxs-edit text-white'></i></button>
+                                                data-bs-target="#editLocation_ $l->id }}">Edit</button>
 
                                             <!-- Modal -->
-                                            <div class="modal fade" id="editUnit_{{ $u->id }}" tabindex="-1"
+                                            <div class="modal fade" id="editLocation_ $l->id }}" tabindex="-1"
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <form action="{{ route('assetManagement.unitPembangkit.update', $u->id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('put')
+                                                        <form action="  route('assetManagement.location.update', $l->id) }}" method="post">
+                                                            csrf
+                                                            method('put')
                                                             <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="addLocationUnit">Edit
-                                                                    Unit Engine</h1>
+                                                                <h1 class="modal-title fs-5" id="editAsset">Edit Asset </h1>
                                                                 <button type="button" class="btn-close"
                                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="mb-3">
-                                                                    <label for="nameUnit" class="form-label">Name
-                                                                        Unit</label>
+                                                                    <label for="noAsset" class="form-label">No Asset
+                                                                    </label>
                                                                     <input type="text" class="form-control"
-                                                                        id="nameUnit" name="nameUnit"
-                                                                        value="{{ $u->name }}">
-
+                                                                        id="noAsset" name="noAsset"
+                                                                        value=" $a->no_asset }}">
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label for="location"
-                                                                        class="form-label">Location</label>
-                                                                    <select name="location" id="location"
+                                                                    <label for="nameAsset" class="form-label">Name
+                                                                        Asset</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="nameAsset" name="nameAsset"
+                                                                        value=" $a->name }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="systemName" class="form-label">System
+                                                                        Name</label>
+                                                                    <select name="systemName" id="systemName"
                                                                         class="form-select">
-                                                                         <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                                                        foreach ($system as $s)
+                                                                        <option value=" $s->id }}" $a->system_id == $s->id ?
+                                                                            'selected' : '' }}>
+                                                                            $s->name }}
+                                                                        </option>
+                                                                        endforeach
                                                                     </select>
                                                                 </div>
+
 
 
                                                             </div>
@@ -136,15 +138,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <form action="{{ route('assetManagement.unitPembangkit.destroy', $u->id) }}" method="post" id="delete-form_{{ $u->id }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-danger" id="btn-delete"
-                                                    onclick="deleteConfirm(event,{{ $u->id }})"><i
-                                                        class='bx bxs-trash'></i></button>
+                                            <form action=" route('asset.destroy', $a->id) }}" method="post">
+                                                csrf
+                                                method('delete')
+                                                <button type="submit" class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure?')">Delete</button>
                                             </form>
 
-                                              <a href="{{ route('assetManagement.assets.index', $u->name) }}"  class="btn btn-primary"><i class='bx bx-folder-open'></i></a>
 
                                         </div>
                                     </td>
@@ -178,30 +178,5 @@
             table.buttons().container()
                 .appendTo('#example2_wrapper .col-md-6:eq(0)');
         });
-    </script>
-  <script>
-        function deleteConfirm(event,id) {
-            event.preventDefault(); // Mencegah submit form secara default
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#delete-form_'+id).submit(); // Kirim form setelah konfirmasi
-                } else {
-                    Swal.fire(
-                        'Cancelled',
-                        'Your data is safe :)',
-                        'error'
-                    );
-                }
-            });
-        }
     </script>
 @endpush

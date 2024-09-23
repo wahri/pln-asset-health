@@ -81,10 +81,11 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $loc->name }}</td>
                                     <td>
-                                        <div class="btn-group "  role="group" aria-label="Basic mixed styles example">
-                                           
+                                        <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+
                                             <button type="button" class="btn btn-info " data-bs-toggle="modal"
-                                                data-bs-target="#editLocation-{{ $loc->id }}"><i class='bx bxs-edit text-white'></i></button>
+                                                data-bs-target="#editLocation-{{ $loc->id }}"><i
+                                                    class='bx bxs-edit text-white'></i></button>
 
                                             <!-- Modal -->
                                             <div class="modal fade" id="editLocation-{{ $loc->id }}" tabindex="-1"
@@ -127,14 +128,16 @@
 
 
                                             <form action="{{ route('assetManagement.location.destroy', $loc->id) }}"
-                                                method="post">
+                                                method="post" id="delete-form_{{ $loc->id }}">
                                                 @csrf
                                                 @method('delete')
                                                 <button type="submit" class="btn btn-danger"
-                                                    onclick="return confirm('Are you sure?')"><i class='bx bxs-trash'></i></button>
+                                                    onclick="deleteConfirm(event, {{ $loc->id }})"><i class='bx bxs-trash'></i>
+                                                </button>
 
                                             </form>
-                                              <button type="button" class="btn btn-primary" ><i class='bx bx-file text-white'></i></button>
+                                            <a href="{{ route('assetManagement.unitPembangkit.index', $loc->name) }}"
+                                                class="btn btn-primary"><i class='bx bx-log-in-circle'></i></a>
                                         </div>
                                     </td>
 
@@ -152,21 +155,47 @@
 
 
 @push('script')
+    <!-- Load jQuery and DataTables -->
     <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
+
+    <!-- Initialize DataTables -->
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
-
         });
-    </script>
 
-    <script>
         $(document).ready(function() {
             var table = $('#example2').DataTable();
 
             table.buttons().container()
                 .appendTo('#example2_wrapper .col-md-6:eq(0)');
         });
+    </script>
+
+    <script>
+        function deleteConfirm(event,id) {
+            event.preventDefault(); // Mencegah submit form secara default
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#delete-form_'+id).submit(); // Kirim form setelah konfirmasi
+                } else {
+                    Swal.fire(
+                        'Cancelled',
+                        'Your data is safe :)',
+                        'error'
+                    );
+                }
+            });
+        }
     </script>
 @endpush

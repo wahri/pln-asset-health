@@ -8,28 +8,26 @@ use Illuminate\Http\Request;
 
 class UnitController extends Controller
 {
-    protected $unit;
-
-    protected $location;
-
-    public function __construct(Unit $unit, Location $location)
+    public function index($name)
     {
-        $this->unit = $unit;
-        $this->location = $location;
-    }
+        $location = Location::firstOrCreate(['name' => $name]);
 
-    public function index()
-    {
-        $unit = $this->unit->getAllData();
-        $location = $this->location->getAllData();
+        // $unit = $this->unit->getDataALLWhere('location_id', $location->id);
+        $unit = Unit::where('location_id', $location->id)->get();
 
-        return view('pages.unit.index', compact('unit', 'location'));
+        // Dapatkan semua data lokasi
+        $locations = Location::all();
+
+        // Kembalikan view dengan data unit dan lokasi
+        return view('pages.unit.index', compact('unit', 'locations', 'location'));
     }
 
     public function store(Request $request)
     {
+
         try {
-            $this->unit->createData([
+
+            Unit::create([
                 'name' => $request->nameUnit,
                 'location_id' => $request->location,
             ]);
@@ -43,10 +41,11 @@ class UnitController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $this->unit->updateData([
+
+            Unit::where('id', $id)->update([
                 'name' => $request->nameUnit,
                 'location_id' => $request->location,
-            ], $id);
+            ]);
 
             return back()->with('success', 'Unit updated successfully');
         } catch (\Throwable $th) {
@@ -57,7 +56,8 @@ class UnitController extends Controller
     public function destroy($id)
     {
         try {
-            $this->unit->deleteData($id);
+
+            Unit::find($id)->delete();
 
             return back()->with('success', 'Unit deleted successfully');
         } catch (\Throwable $th) {

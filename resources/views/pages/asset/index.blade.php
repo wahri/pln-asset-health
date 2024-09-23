@@ -1,18 +1,26 @@
 @extends('layouts.main')
+@push('css')
+    <link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+@endpush
 @section('content')
-    @push('css')
-        <link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
-    @endpush
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Asset</div>
+            <div class="breadcrumb-title pe-3">Asset {{ $unit->name }}</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Data Table Asset</li>
+                        <li class="breadcrumb-item active" aria-current="page"><a
+                                href="{{ route('assetManagement.location.index') }}">Location Unit</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a
+                                href="{{ route('assetManagement.unitPembangkit.index', $unit->location->name) }}">Unit
+                                Pembangkit</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data Table Asset </li>
                     </ol>
                 </nav>
             </div>
@@ -33,29 +41,48 @@
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action="{{ route('asset.store') }}" method="post">
+                                <form action="{{ route('assetManagement.assets.store') }}" method="post">
                                     @csrf
+                                    <input type="hidden" name="unit_id" value="{{ $unit->id }}">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="addAsset">Add Asset</h1>
+                                        <h1 class="modal-title fs-5" id="addAsset">Tambah Asset</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="noAsset" class="form-label">No Asset </label>
-                                            <input type="text" class="form-control" id="noAsset" name="noAsset">
+                                            <label for="nameAsset" class="form-label">Unit</label>
+                                            <select name="unit_id" id="unit_id" class="form-select">
+                                                <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="noAsset" class="form-label">Asset Group </label>
+                                            <select name="assetGroup" id="assetGroup" class="select2">
+                                                <option selected>Pilih Asset Group</option>
+                                                @foreach ($assetGroup as $ag)
+                                                    <option value="{{ $ag->name }}">{{ $ag->name }}</option>
+                                                @endforeach
+
+                                            </select>
+
                                         </div>
                                         <div class="mb-3">
                                             <label for="nameAsset" class="form-label">Name Asset</label>
                                             <input type="text" class="form-control" id="nameAsset" name="nameAsset">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="systemName" class="form-label">System Name</label>
-                                            <select name="systemName" id="systemName" class="form-select">
-                                                <option selected>Select</option>
-                                                @foreach ($system as $s)
-                                                    <option value="{{ $s->id }}">{{ $s->name }}</option>
-                                                @endforeach
+                                            <label for="noAsset" class="form-label">No Asset </label>
+                                            <input type="text" class="form-control" id="noAsset" name="noAsset">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="systemName" class="form-label">Situasi Saat ini</label>
+                                            <select name="status" id="status" class="form-select">
+
+                                                <option value="normal">Normal</option>
+                                                <option value="abnormal">Abnormal</option>
+                                                <option value="fault">fault</option>
 
                                             </select>
                                         </div>
@@ -82,7 +109,8 @@
                                 <th>#</th>
                                 <th>No Asset</th>
                                 <th>Name Asset</th>
-                                <th>System Name</th>
+                                <th>Asset Group</th>
+                                <th>Situasi Saat ini</th>
                                 <th>Action</th>
 
                             </tr>
@@ -93,33 +121,62 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $a->no_asset }}</td>
                                     <td>{{ $a->name }}</td>
-                                    <td>{{ $a->system->name }}</td>
+
+                                    <td>{{ $a->assetGroup->name }}</td>
+                                    <td>{{ $a->status }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                                data-bs-target="#editAsset_{{ $a->id }}">Edit</button>
+                                                data-bs-target="#editAsset_{{ $a->id }}"><i
+                                                    class='bx bxs-edit text-white'></i></button>
 
                                             <!-- Modal -->
                                             <div class="modal fade" id="editAsset_{{ $a->id }}" tabindex="-1"
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <form action="{{ route('asset.update', $a->id) }}" method="post">
+
+
+                                                        <form
+                                                            action="{{ route('assetManagement.assets.update', $a->id) }}"
+                                                            method="post">
                                                             @csrf
                                                             @method('put')
+                                                            <input type="hidden" name="unit_id"
+                                                                value="{{ $unit->id }}">
                                                             <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="editAsset">Edit Asset </h1>
+                                                                <h1 class="modal-title fs-5" id="addAsset">Tambah Asset
+                                                                </h1>
                                                                 <button type="button" class="btn-close"
                                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="mb-3">
-                                                                    <label for="noAsset" class="form-label">No Asset
+                                                                    <label for="unit" class="form-label">Unit
                                                                     </label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="noAsset" name="noAsset"
-                                                                        value="{{ $a->no_asset }}">
+                                                                    <select name="unit_id" id="unit_id"
+                                                                        class="form-select">
+                                                                        <option value="{{ $a->unit_id }}">
+                                                                            {{ $a->unit->name }}</option>
+                                                                    </select>
                                                                 </div>
+                                                                <div class="mb-3">
+                                                                    <label for="assetGroup" class="form-label">Asset
+                                                                        Group</label>
+                                                                    <select name="assetGroup" id="assetGroup"
+                                                                        class="form-select select2-edit">
+                                                                        <option selected value="" disabled
+                                                                            {{ !$a->assetGroup ? 'selected' : '' }}>Select
+                                                                            an Asset Group</option>
+                                                                        @foreach ($assetGroup as $ag)
+                                                                            <option value="{{ $ag->name }}"
+                                                                                {{ $a->assetGroup && $a->assetGroup->id == $ag->id ? 'selected' : '' }}>
+                                                                                {{ $ag->name }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+
                                                                 <div class="mb-3">
                                                                     <label for="nameAsset" class="form-label">Name
                                                                         Asset</label>
@@ -128,19 +185,29 @@
                                                                         value="{{ $a->name }}">
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label for="systemName" class="form-label">System
-                                                                        Name</label>
-                                                                    <select name="systemName" id="systemName"
-                                                                        class="form-select">
-                                                                        @foreach ($system as $s)
-                                                                            <option value="{{ $s->id }}"
-                                                                                {{ $a->system_id == $s->id ? 'selected' : '' }}>
-                                                                                {{ $s->name }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
+                                                                    <label for="noAsset" class="form-label">No Asset
+                                                                    </label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="noAsset" name="noAsset"
+                                                                        value="{{ $a->no_asset }}">
                                                                 </div>
 
+                                                                <div class="mb-3">
+                                                                    <label for="status" class="form-label">Situasi Saat
+                                                                        ini</label>
+                                                                    <select name="status" id="status"
+                                                                        class="form-select">
+                                                                        <option value="normal"
+                                                                            {{ $a->status == 'normal' ? 'selected' : '' }}>
+                                                                            Normal</option>
+                                                                        <option value="abnormal"
+                                                                            {{ $a->status == 'abnormal' ? 'selected' : '' }}>
+                                                                            Abnormal</option>
+                                                                        <option value="fault"
+                                                                            {{ $a->status == 'fault' ? 'selected' : '' }}>
+                                                                            Fault</option>
+                                                                    </select>
+                                                                </div>
 
 
                                                             </div>
@@ -151,16 +218,19 @@
                                                                     changes</button>
                                                             </div>
                                                         </form>
-
                                                     </div>
                                                 </div>
                                             </div>
-                                            <form action="{{ route('asset.destroy', $a->id) }}" method="post">
+                                            <form action="{{ route('assetManagement.assets.destroy', $a->id) }}"
+                                                method="post" id="delete-form_{{ $a->id }}">
                                                 @csrf
                                                 @method('delete')
                                                 <button type="submit" class="btn btn-danger"
-                                                    onclick="return confirm('Are you sure?')">Delete</button>
+                                                    onclick="deleteConfirm(event,{{ $a->id }})"><i
+                                                        class='bx bxs-trash'></i></button>
                                             </form>
+
+
 
 
                                         </div>
@@ -182,6 +252,9 @@
 @push('script')
     <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
@@ -194,6 +267,69 @@
 
             table.buttons().container()
                 .appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+            $('#addAsset').on('shown.bs.modal', function() {
+                $(this).find('.select2').select2({
+                    theme: "bootstrap-5",
+                    width: function() {
+                        return $(this).data('width') ? $(this).data('width') : $(this).hasClass(
+                            'w-100') ? '100%' : 'style';
+                    },
+                    placeholder: function() {
+                        return $(this).data('placeholder');
+                    },
+                    closeOnSelect: false,
+                    tags: true,
+                    dropdownParent: $(this).find('.modal-body')
+                });
+            });
+
+            // Inisialisasi Select2 pada modal edit dengan ID dinamis
+            $(document).on('shown.bs.modal', '[id^="editAsset_"]', function() {
+                $(this).find('.select2-edit').select2({
+                    theme: "bootstrap-5",
+                    width: function() {
+                        return $(this).data('width') ? $(this).data('width') : $(this).hasClass(
+                            'w-100') ? '100%' : 'style';
+                    },
+                    placeholder: function() {
+                        return $(this).data('placeholder');
+                    },
+                    closeOnSelect: false,
+                    tags: true,
+                    dropdownParent: $(this).find('.modal-body')
+                });
+            });
+
+            // Reset Select2 ketika modal edit ditutup
+            $(document).on('hidden.bs.modal', '[id^="editAsset_"]', function() {
+                $(this).find('.select2-edit').select2('destroy'); // Hapus Select2 dari elemen dalam modal
+            });
         });
+    </script>
+    <script>
+        function deleteConfirm(event, id) {
+            event.preventDefault(); // Mencegah submit form secara default
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#delete-form_' + id).submit(); // Kirim form setelah konfirmasi
+                } else {
+                    Swal.fire(
+                        'Cancelled',
+                        'Your data is safe :)',
+                        'error'
+                    );
+                }
+            });
+        }
     </script>
 @endpush

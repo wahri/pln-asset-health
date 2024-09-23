@@ -16,31 +16,6 @@ class Unit extends Model
 
     public function location()
     {
-        return $this->belongsTo(Location::class, 'location_id', 'id');
-    }
-
-    public function createData($data)
-    {
-        return $this->create($data);
-    }
-
-    public function updateData($data, $id)
-    {
-        return $this->where('id', $id)->update($data);
-    }
-
-    public function deleteData($id)
-    {
-        return $this->where('id', $id)->delete();
-    }
-
-    public function getData($id)
-    {
-        return $this->where('id', $id)->first();
-    }
-
-    public function getAllData()
-    {
-        return $this->get();
+        return $this->belongsTo(Location::class);
     }
 }
