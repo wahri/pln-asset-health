@@ -27,7 +27,7 @@
                   <div class="menu-title">Asset Health Report</div>
               </a>
           </li>
-            <li class="{{ request()->routeIs('assetManagement.location.index') ? 'mm-active' : '' }}">
+            <li class="{{ request()->routeIs('assetManagement.*') ? 'mm-active' : '' }}">
               <a href="{{ route('assetManagement.location.index') }}" class="">
                   <div class="parent-icon"><i class="bx bx-command"></i></div>
                   <div class="menu-title">Asset Management</div>
