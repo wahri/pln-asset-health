@@ -19,7 +19,7 @@ class UnitController extends Controller
         $locations = Location::all();
 
         // Kembalikan view dengan data unit dan lokasi
-        return view('pages.unit.index', compact('unit', 'locations', 'location'));
+        return view('pages.asset-management.unit.index', compact('unit', 'locations', 'location'));
     }
 
     public function store(Request $request)

@@ -12,14 +12,14 @@
       </div>
       <!--navigation-->
       <ul class="metismenu" id="menu">
-          <li class="{{ request()->routeIs('dashboard.index') ? 'mm-active' : '' }}">
+          <li class="{{ request()->routeIs('dashboard.*') ? 'mm-active' : '' }}">
               <a href="{{ route('dashboard.index') }}" class="">
                   <div class="parent-icon"><i class="bx bx-home"></i></div>
                   <div class="menu-title">Dashboard</div>
               </a>
           </li>
          
-          <li class="{{ request()->routeIs('assetHealthReport.index') ? 'mm-active' : '' }}">
+          <li class="{{ request()->routeIs('assetHealthReport.*') ? 'mm-active' : '' }}">
               <a href="{{ route('assetHealthReport.index') }}" class="">
                   <div class="parent-icon">
                       <i class="bx bx-briefcase-alt-2"></i>

@@ -18,7 +18,7 @@ class AssetController extends Controller
 
         $assetGroup = AssetGroup::all();
 
-        return view('pages.asset.index', compact('asset', 'assetGroup', 'unit'));
+        return view('pages.asset-management.asset.index', compact('asset', 'assetGroup', 'unit'));
     }
 
     public function store(Request $request)

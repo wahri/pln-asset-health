@@ -75,7 +75,7 @@
                             @foreach ($location as $l)
                                 <tr>
                                     <td> {{ $loop->iteration }}</td>
-                                    <td>  {{ $l->name }}</td>
+                                    <td> {{ $l->name }}</td>
 
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
@@ -87,7 +87,8 @@
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <form action="  route('assetManagement.location.update', $l->id) }}" method="post">
+                                                        <form action="  route('assetManagement.location.update', $l->id) }}"
+                                                            method="post">
                                                             csrf
                                                             method('put')
                                                             <div class="modal-header">
