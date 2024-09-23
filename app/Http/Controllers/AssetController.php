@@ -16,7 +16,6 @@ class AssetController extends Controller
 
         $asset = Asset::where('unit_id', $unit->id)->get();
 
-
         $assetGroup = AssetGroup::all();
 
         return view('pages.asset.index', compact('asset', 'assetGroup', 'unit'));
@@ -24,7 +23,6 @@ class AssetController extends Controller
 
     public function store(Request $request)
     {
-     
 
         try {
 
@@ -32,7 +30,6 @@ class AssetController extends Controller
                 'unit_id' => $request->unit_id,
                 'name' => $request->assetGroup]
             );
-
 
             asset::create([
                 'unit_id' => $request->unit_id,
@@ -57,7 +54,7 @@ class AssetController extends Controller
             $assetGroup = AssetGroup::firstOrCreate(
                 [
                     'unit_id' => $request->unit_id,
-                    'name' => $request->assetGroup
+                    'name' => $request->assetGroup,
                 ]
             );
 
