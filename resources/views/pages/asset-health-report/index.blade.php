@@ -10,7 +10,8 @@
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i class="bx bx-home-alt"></i></a>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
+                                    class="bx bx-home-alt"></i></a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">Data Table Location Unit</li>
                     </ol>
@@ -37,73 +38,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                          
+                            @foreach ($locations as $l)
                                 <tr>
-                                   <td></td>
-                                   <td></td>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $l->name }}</td>
                                     <td>
                                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-
-                                            <button type="button" class="btn btn-info " data-bs-toggle="modal"
-                                                data-bs-target="#editLocation-"><i
-                                                    class='bx bxs-edit text-white'></i></button>
-
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="editLocation-" tabindex="-1"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <form
-                                                            action=""
-                                                            method="post">
-                                                            @csrf
-                                                            @method('put')
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="addLocationUnit">Add
-                                                                    Location Unit</h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="mb-3">
-                                                                    <label for="locationUnit" class="form-label">Location
-                                                                        Unit</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="locationUnit" name="locationUnit"
-                                                                        value="">
-
-                                                                </div>
-
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">Save
-                                                                    changes</button>
-                                                            </div>
-                                                        </form>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                            <form action=""
-                                                method="post" id="delete-form_">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-danger"
-                                                    onclick="deleteConfirm(event)"><i class='bx bxs-trash'></i>
-                                                </button>
-
-                                            </form>
-                                            <a href=""
-                                                class="btn btn-primary"><i class='bx bx-log-in-circle'></i></a>
+                                            <a href="{{ route('assetHealthReport.reportAssets.show', $l->name) }}" class="btn btn-primary"><i
+                                                    class='bx bx-log-in-circle'></i></a>
                                         </div>
                                     </td>
 
                                 </tr>
-                         
+                            @endforeach
+
 
                         </tbody>
 
@@ -135,7 +83,7 @@
     </script>
 
     <script>
-        function deleteConfirm(event,id) {
+        function deleteConfirm(event, id) {
             event.preventDefault(); // Mencegah submit form secara default
 
             Swal.fire({
@@ -148,7 +96,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $('#delete-form_'+id).submit(); // Kirim form setelah konfirmasi
+                    $('#delete-form_' + id).submit(); // Kirim form setelah konfirmasi
                 } else {
                     Swal.fire(
                         'Cancelled',
