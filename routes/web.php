@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('/asset-health-report')->name('assetHealthReport.')->group(function () {
         Route::get('/', [AssetHealthReportController::class, 'index'])->name('index');
+        Route::get('/{location}', [AssetHealthReportController::class, 'locationDetail'])->name('locationDetail');
         // Route::post('/', [LocationController::class, 'store'])->name('store');
         // Route::put('/update/{id}', [LocationController::class, 'update'])->name('update');
         // Route::delete('/delete/{id}', [LocationController::class, 'destroy'])->name('destroy');

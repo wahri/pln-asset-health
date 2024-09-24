@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('location_id')->references('id')->on('locations')->onDelete('cascade')->onUpdate('cascade');
             $table->date('date');
             $table->timestamps();
         });

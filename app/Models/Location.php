@@ -27,4 +27,9 @@ class Location extends Model
     public function getAllData(){
         return $this->get();
     }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
 }

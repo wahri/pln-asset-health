@@ -12,7 +12,9 @@
                     <ol class="p-0 mb-0 breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('assetManagement.index') }}">Asset Management</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Lokasi Unit Pembangkit</li>
+                        <li class="breadcrumb-item"><a href="{{ route('assetManagement.index') }}">Lokasi Unit Pembangkit</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $location->name }}</li>
                     </ol>
                 </nav>
             </div>
@@ -85,14 +87,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($locations as $a)
+                            @foreach ($locations->reports as $a)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $a->name }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                            <a href="{{ route('assetHealthReport.locationDetail', $a->id) }}" class="btn btn-primary">
-                                                Report
+                                            <a href="" class="btn btn-primary">
+                                                Edit
                                             </a>
                                         </div>
                                     </td>
