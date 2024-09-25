@@ -14,29 +14,8 @@ class AssetGroup extends Model
         'name',
     ];
 
-    public function unit()
+    public function assets()
     {
-        return $this->belongsTo(Unit::class, 'unit_id');
-    }
-
-    public function createData($data)
-    {
-        return $this->create($data);
-    }
-    public function updateData($data, $id)
-    {
-        return $this->where('id', $id)->update($data);
-    }
-    public function deleteData($id)
-    {
-        return $this->where('id', $id)->delete();
-    }
-    public function getData($id)
-    {
-        return $this->where('id', $id)->first();
-    }
-    public function getAllData()
-    {
-        return $this->get();
+        return $this->hasMany(Asset::class, 'asset_group_id', 'id');
     }
 }

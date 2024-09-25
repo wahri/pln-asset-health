@@ -10,7 +10,7 @@
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="{{ route('assetManagement.index') }}">Asset Management</a>
+                        <li class="breadcrumb-item"><a href=" route('assetManagement.location.index') }}">Asset Management</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">Lokasi Unit Pembangkit</li>
                     </ol>
@@ -26,14 +26,14 @@
                 <div class="card-title">
                     @include('components.alert')
                     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addAsset">Tambah lokasi
-                        </button>
+                    </button>
 
                     <!-- Modal -->
                     <div class="modal fade" id="addAsset" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form action=" route('asset.store') }}" method="post">
+                                <form action="  {{ route('assetManagement.location.store') }}" method="post">
                                     csrf
                                     <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="addAsset">Add Asset</h1>
@@ -44,20 +44,6 @@
                                         <div class="mb-3">
                                             <label for="noAsset" class="form-label">No Asset </label>
                                             <input type="text" class="form-control" id="noAsset" name="noAsset">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="nameAsset" class="form-label">Name Asset</label>
-                                            <input type="text" class="form-control" id="nameAsset" name="nameAsset">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="systemName" class="form-label">System Name</label>
-                                            <select name="systemName" id="systemName" class="form-select">
-                                                <option selected>Select</option>
-                                                foreach ($system as $s)
-                                                    <option value=" $s->id }}"> $s->name }}</option>
-                                                endforeach
-
-                                            </select>
                                         </div>
 
 
@@ -79,32 +65,29 @@
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>No Asset</th>
-                                <th>Name Asset</th>
-                                <th>System Name</th>
-                                <th>Action</th>
+                                <th width="5%">#</th>
+                                <th>Nama Lokasi</th>
+                                <th width="20%">Action</th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            foreach ($asset as $a)
+                            @foreach ($location as $l)
                                 <tr>
-                                    <td> $loop->iteration }}</td>
-                                    <td> $a->no_asset }}</td>
-                                    <td> $a->name }}</td>
-                                    <td> $a->system->name }}</td>
-                                    <td>
-                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <td> {{ $loop->iteration }}</td>
+                                    <td> {{ $l->name }}</td>
+
+                                    <td class="d-flex gap-2">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                                data-bs-target="#editAsset_ $a->id }}">Edit</button>
+                                                data-bs-target="#editLocation_ $l->id }}">Edit</button>
 
                                             <!-- Modal -->
-                                            <div class="modal fade" id="editAsset_ $a->id }}" tabindex="-1"
+                                            <div class="modal fade" id="editLocation_ $l->id }}" tabindex="-1"
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <form action=" route('asset.update', $a->id) }}" method="post">
+                                                        <form action="  route('assetManagement.location.update', $l->id) }}"
+                                                            method="post">
                                                             csrf
                                                             method('put')
                                                             <div class="modal-header">
@@ -133,10 +116,10 @@
                                                                     <select name="systemName" id="systemName"
                                                                         class="form-select">
                                                                         foreach ($system as $s)
-                                                                            <option value=" $s->id }}"
-                                                                                 $a->system_id == $s->id ? 'selected' : '' }}>
-                                                                                 $s->name }}
-                                                                            </option>
+                                                                        <option value=" $s->id }}" $a->system_id == $s->id ?
+                                                                            'selected' : '' }}>
+                                                                            $s->name }}
+                                                                        </option>
                                                                         endforeach
                                                                     </select>
                                                                 </div>
@@ -162,12 +145,10 @@
                                                     onclick="return confirm('Are you sure?')">Delete</button>
                                             </form>
 
-
-                                        </div>
                                     </td>
 
                                 </tr>
-                            endforeach
+                            @endforeach
 
                         </tbody>
 

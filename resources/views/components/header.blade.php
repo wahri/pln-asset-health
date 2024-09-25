@@ -233,7 +233,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-1.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-1.png') }}" class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -247,7 +247,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-2.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-2.png') }}" class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -260,7 +260,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-3.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-3.png') }}" class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -273,7 +273,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-4.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-4.png')}} "class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -287,7 +287,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-5.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-5.png')}} "class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -300,7 +300,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-6.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-6.png')}} "class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -314,7 +314,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-7.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-7.png')}} "class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -328,7 +328,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-8.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-8.png')}} "class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -342,7 +342,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-9.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-9.png')}} "class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -356,7 +356,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-10.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-10.pn')}}" class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -370,7 +370,7 @@
                                   <a class="dropdown-item" href="javascript:;">
                                       <div class="d-flex align-items-center">
                                           <div class="user-online">
-                                              <img src="assets/images/avatars/avatar-11.png" class="msg-avatar"
+                                              <img src="{{ asset('assets/images/avatars/avatar-11.pn')}}" class="msg-avatar"
                                                   alt="user avatar">
                                           </div>
                                           <div class="flex-grow-1">
@@ -392,7 +392,7 @@
               <div class="user-box dropdown px-3">
                   <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <img src="assets/images/avatars/avatar-2.png" class="user-img" alt="user avatar" />
+                      <img src="{{ asset('assets/images/avatars/avatar-2.png')}} "class="user-img" alt="user avatar" />
                       <div class="user-info ps-3">
                           <p class="user-name mb-0">Wahyu Bahri</p>
                           <p class="designattion mb-0">IT Support</p>

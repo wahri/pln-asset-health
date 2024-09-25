@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class AssetManagementController extends Controller
 {
-    public function index(){
-        return view('pages.asset-management.index');
+    public function index()
+    {
+        return redirect('/asset-management/location');
+
     }
 }

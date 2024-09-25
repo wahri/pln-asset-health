@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Location;
-use Illuminate\Http\Request;
 
-class AssetHealthReportController extends Controller
+class   AssetHealthReportController extends Controller
 {
     public function index()
     {

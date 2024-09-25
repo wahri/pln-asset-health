@@ -20,40 +20,39 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'superadmin',
+            'email' => 'superadmin@gmail.com',
             'password' => bcrypt('password'),
         ]);
 
-
         $location = Location::create([
-            'name' => 'Duri'
+            'name' => 'Duri',
         ]);
 
         Unit::insert([
             [
                 'location_id' => $location->id,
-                'name' => 'PLTMG 1'
+                'name' => 'PLTMG 1',
             ],
             [
                 'location_id' => $location->id,
-                'name' => 'PLTMG 2'
+                'name' => 'PLTMG 2',
             ],
             [
                 'location_id' => $location->id,
-                'name' => 'PLTMG 3'
-            ]
+                'name' => 'PLTMG 3',
+            ],
         ]);
 
         AssetGroup::insert([
             [
                 'unit_id' => 1,
-                'name' => 'SWITCHGEAR 15 KV'
+                'name' => 'SWITCHGEAR 15 KV',
             ],
             [
                 'unit_id' => 1,
-                'name' => 'GENERATOR FRAME, INCL. STATOR, ROTOR'
-            ]
+                'name' => 'GENERATOR FRAME, INCL. STATOR, ROTOR',
+            ],
         ]);
 
         Asset::insert([
@@ -61,19 +60,19 @@ class DatabaseSeeder extends Seeder
                 'unit_id' => 1,
                 'asset_group_id' => 1,
                 'no_asset' => 'PLBP-MG-01-AKA10GS001',
-                'name' => 'SWITCHGEAR 15 KV'
+                'name' => 'SWITCHGEAR 15 KV',
             ],
             [
                 'unit_id' => 1,
                 'asset_group_id' => 2,
                 'no_asset' => 'PLBP-MG-01-MKA10AG001',
-                'name' => 'ROTOR ASSY GENERATOR'
+                'name' => 'ROTOR ASSY GENERATOR',
             ],
             [
                 'unit_id' => 1,
                 'asset_group_id' => 2,
                 'no_asset' => 'PLBP-MG-01-MKA10AG002',
-                'name' => 'STATOR ASSY GENERATOR'
+                'name' => 'STATOR ASSY GENERATOR',
             ],
         ]);
     }

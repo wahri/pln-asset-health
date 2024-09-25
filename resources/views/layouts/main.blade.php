@@ -3,7 +3,7 @@
 
 @include('layouts.head')
 
-<body>
+<body >
     <!--wrapper-->
     <div class="wrapper">
         <!--sidebar wrapper -->

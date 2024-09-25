@@ -3,55 +3,81 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
-use App\Models\System;
+use App\Models\AssetGroup;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
-    protected $system;
-    protected $asset;
-    public function __construct(System $system, Asset $asset)
+    public function index($name_unit)
     {
-        $this->system = $system;
-        $this->asset = $asset;
+
+        $unit = Unit::firstOrCreate(['name' => $name_unit]);
+
+        $dataAssetGroup = AssetGroup::with('assets')->where('unit_id', $unit->id)->get();
+
+        $assetGroup = AssetGroup::all();
+
+        return view('pages.asset-management.asset.index', compact('dataAssetGroup', 'assetGroup', 'unit'));
     }
-    public function index()
-    {
-        $system = $this->system->getAllData();
-        $asset = $this->asset->getAllData();
-        return view('pages.asset.index', compact('system', 'asset'));
-    }
+
     public function store(Request $request)
     {
+
         try {
-            $this->asset->createData([
+
+            $assetGroup = AssetGroup::firstOrCreate([
+                'unit_id' => $request->unit_id,
+                'name' => $request->assetGroup]
+            );
+
+            asset::create([
+                'unit_id' => $request->unit_id,
+                'asset_group_id' => $assetGroup->id,
                 'no_asset' => $request->noAsset,
-                'system_id' => $request->systemName,
                 'name' => $request->nameAsset,
+                'status' => $request->status,
 
             ]);
+
             return redirect()->back()->with('success', 'Data created successfully!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
+
     public function update(Request $request, $id)
     {
+
         try {
-            $this->asset->updateData([
+
+            $assetGroup = AssetGroup::firstOrCreate(
+                [
+                    'unit_id' => $request->unit_id,
+                    'name' => $request->assetGroup,
+                ]
+            );
+
+            Asset::where('id', $id)->update([
                 'no_asset' => $request->noAsset,
-                'system_id' => $request->systemName,
+                'asset_group_id' => $assetGroup->id,
                 'name' => $request->nameAsset,
-            ], $id);
+                'status' => $request->status,
+            ]);
+
             return redirect()->back()->with('success', 'Data updated successfully!');
         } catch (\Throwable $th) {
+
             return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
+
     public function destroy($id)
     {
+
         try {
-            $this->asset->deleteData($id);
+            Asset::destroy($id);
+
             return redirect()->back()->with('success', 'Data deleted successfully!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something went wrong!');

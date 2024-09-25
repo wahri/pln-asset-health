@@ -6,11 +6,11 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="mb-3 page-breadcrumb d-none d-sm-flex align-items-center">
-            <div class="breadcrumb-title pe-3">Lokasi Unit Pembangkit</div>
+            <div class="breadcrumb-title pe-3">Asset Health Report</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="p-0 mb-0 breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('assetManagement.index') }}">Asset Management</a>
+                        <li class="breadcrumb-item"><a href="{{ route('assetHealthReport.index') }}">Asset Health Report</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">Lokasi Unit Pembangkit</li>
                     </ol>
@@ -22,58 +22,10 @@
 
         <hr />
         <div class="card">
+            <div class="card-header">
+                Pilih Lokasi Pembangkit
+            </div>
             <div class="card-body">
-                <div class="card-title">
-                    @include('components.alert')
-                    <button class="mb-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAsset">Tambah lokasi
-                        </button>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="addAsset" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form action=" route('asset.store') }}" method="post">
-                                    csrf
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="addAsset">Add Asset</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="noAsset" class="form-label">No Asset </label>
-                                            <input type="text" class="form-control" id="noAsset" name="noAsset">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="nameAsset" class="form-label">Name Asset</label>
-                                            <input type="text" class="form-control" id="nameAsset" name="nameAsset">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="systemName" class="form-label">System Name</label>
-                                            <select name="systemName" id="systemName" class="form-select">
-                                                <option selected>Select</option>
-                                                foreach ($system as $s)
-                                                    <option value=" $s->id }}"> $s->name }}</option>
-                                                endforeach
-
-                                            </select>
-                                        </div>
-
-
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </form>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
 
                 <div class="table-responsive">
                     <table id="example2" class="table table-striped table-bordered">
@@ -81,8 +33,6 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Lokasi</th>
-                                <th>Action</th>
-                            </tr>
                         </thead>
                         <tbody>
                             @foreach ($locations as $a)
