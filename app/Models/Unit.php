@@ -18,4 +18,10 @@ class Unit extends Model
     {
         return $this->belongsTo(Location::class);
     }
+   
+    public function assets()
+    {
+        return $this->hasMany(Asset::class);
+    }
+
 }

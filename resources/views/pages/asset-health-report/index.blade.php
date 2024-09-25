@@ -9,8 +9,9 @@
             <div class="breadcrumb-title pe-3">Asset Health Report</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
-                    <ol class="p-0 mb-0 breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('assetHealthReport.index') }}">Asset Health Report</a>
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
+                                    class="bx bx-home-alt"></i></a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">Lokasi Unit Pembangkit</li>
                     </ol>
@@ -35,15 +36,14 @@
                                 <th>Nama Lokasi</th>
                         </thead>
                         <tbody>
-                            @foreach ($locations as $a)
+                            @foreach ($locations as $l)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $a->name }}</td>
+                                    <td>{{ $l->name }}</td>
                                     <td>
-                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                            <a href="{{ route('assetHealthReport.locationDetail', $a->id) }}" class="btn btn-primary">
-                                                Report
-                                            </a>
+                                        <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+                                            <a href="{{ route('assetHealthReport.reportAssets.show', $l->name) }}" class="btn btn-primary"><i
+                                                    class='bx bx-log-in-circle'></i></a>
                                         </div>
                                     </td>
 
@@ -76,5 +76,31 @@
             table.buttons().container()
                 .appendTo('#example2_wrapper .col-md-6:eq(0)');
         });
+    </script>
+
+    <script>
+        function deleteConfirm(event, id) {
+            event.preventDefault(); // Mencegah submit form secara default
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#delete-form_' + id).submit(); // Kirim form setelah konfirmasi
+                } else {
+                    Swal.fire(
+                        'Cancelled',
+                        'Your data is safe :)',
+                        'error'
+                    );
+                }
+            });
+        }
     </script>
 @endpush
