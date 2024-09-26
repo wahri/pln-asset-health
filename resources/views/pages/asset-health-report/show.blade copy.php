@@ -13,7 +13,7 @@
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $locationName }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">Data Table {{ $locationName }}</li>
                     </ol>
                 </nav>
             </div>
@@ -67,21 +67,26 @@
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th width="5%">#</th>
-                                <th>Tanggal Report</th>
-                                <th width="20%">Action</th>
+                                <th>#</th>
+                                <th>Unit</th>
+                                <th>group</th>
+                                <th>No Asset</th>
+                                <th>Asset Name</th>
+                                <th>Action</th>
+
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($reports as $report)
+                            @foreach($reportAssets as $ra)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d F Y', strtotime($report->date)) }}</td>
+                                <td>{{ $ra->asset->unit->name }}</td>
+                                 <td>{{ $ra->asset->assetGroup->name }}</td>
+                                <td>{{ $ra->asset->no_asset }}</td>
+                                <td>{{ $ra->asset->name }}</td>
                                 <td>
                                     <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                        <a href="{{ route('assetHealthReport.showReport', [$location->id,$report->id]) }}" class="btn btn-primary">
-                                            Unit <i class='bx bx-log-in-circle'></i>
-                                        </a>
+                                        <a href="{{ route('assetHealthReport.reportAssets.detail', $ra->id) }}" class="btn btn-primary"><i class='bx bx-log-in-circle'></i></a>
                                     </div>
                                 </td>
 

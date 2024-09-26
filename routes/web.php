@@ -19,7 +19,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('/asset-health-report')->name('assetHealthReport.')->group(function () {
         Route::get('/', [AssetHealthReportController::class, 'index'])->name('index');
-        Route::get('/{location}', [AssetHealthReportController::class, 'show'])->name('reportAssets.show');
+        Route::get('/showReportDate/{location}', [AssetHealthReportController::class, 'show'])->name('reportAssets.show');
+        Route::get('/showReport/{location}/{report}', [AssetHealthReportController::class, 'showReport'])->name('showReport');
+        Route::get('/showReportUnit/{location}/{report}/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
+
+        Route::get('/editReportAsset/{reportAsset}', [AssetHealthReportController::class, 'editReportAsset'])->name('editReportAsset');
+
         Route::get('/detail/{id_report_assets}', [AssetHealthReportController::class, 'detail'])->name('reportAssets.detail');
 
         Route::post('/add-report-date', [AssetHealthReportController::class, 'addReportDate'])->name('addReportDate');

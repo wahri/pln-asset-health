@@ -5,16 +5,16 @@
     @endpush
     <div class="page-content">
         <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="mb-3 page-breadcrumb d-none d-sm-flex align-items-center">
             <div class="breadcrumb-title pe-3">Asset Health Report</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
+                    <ol class="p-0 mb-0 breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Data Table
-                            {{ $detailReports->reportAsset->asset->name }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Update Asset {{ $reportAsset->asset->name }}</li>
                     </ol>
                 </nav>
             </div>
@@ -23,8 +23,8 @@
         <!--end breadcrumb-->
 
         <hr />
-        <div class="card border-top border-0 border-4 border-primary">
-            <div class="card-body p-5">
+        <div class="border-0 border-4 card border-top border-primary">
+            <div class="p-5 card-body">
                 <div class="card-title">
                     @include('components.alert')
                 </div>
@@ -126,7 +126,7 @@
                         value="{{ $detailReports->tanggal_identifikasi }}">
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary px-5">Submit</button>
+                        <button type="submit" class="px-5 btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>

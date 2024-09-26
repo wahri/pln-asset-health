@@ -16,18 +16,13 @@ return new class extends Migration
             $table->foreignId('report_asset_id')->references('id')->on('report_assets')->onDelete('cascade')->onUpdate('cascade');
             $table->string('no_sr')->nullable();
             $table->string('no_wo')->nullable();
-            $table->string('status')->nullable();
-            $table->string('issue')->nullable();
-            $table->string('information')->nullable();
-            $table->string('proses')->nullable();
-            $table->string('keterangan')->nullable();
-            $table->string('deskripsi_asset')->nullable();
-            $table->string('kondisi_asset')->nullable();
-            $table->string('action_plan')->nullable();
-            $table->date('target_selesai')->nullable();
-            $table->integer('persentase_progress')->nullable();
-            $table->string('realisasi_selesai')->nullable();
-            $table->string('tanggal_identifikasi')->nullable();
+            $table->date('tanggal_identifikasi')->nullable();
+            $table->string('status_sr')->nullable();
+            $table->text('kondisi_asset')->nullable();
+            $table->text('action_plan')->nullable();
+            $table->string('progress_saat_ini')->nullable();
+            $table->year('target_selesai')->nullable();
+            $table->integer('realisasi_selesai')->nullable();
             $table->timestamps();
         });
     }

@@ -5,15 +5,20 @@
     @endpush
     <div class="page-content">
         <!--breadcrumb-->
-        <div class="mb-3 page-breadcrumb d-none d-sm-flex align-items-center">
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div class="breadcrumb-title pe-3">Asset Health Report</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
-                    <ol class="p-0 mb-0 breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Lokasi Unit Pembangkit</li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('dashboard.index') }}">
+                                {{ $location->name }}
+                        </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $report->date }}</li>
                     </ol>
                 </nav>
             </div>
@@ -22,30 +27,29 @@
         <!--end breadcrumb-->
 
         <hr />
-        <div class="border-0 border-4 card border-top border-primary">
+        <div class="card">
             <div class="card-body">
-                <div class="card-title d-flex align-items-center">
-                    <div><i class="bx bxs-file me-1 font-22 text-primary"></i>
-                    </div>
-                    <h5 class="mb-0 text-primary">Pilih Lokasi Pembangkit</h5>
+                <div class="card-title">
+                    @include('components.alert')
                 </div>
 
                 <div class="table-responsive">
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th width="5%">No</th>
-                                <th>Nama Lokasi</th>
+                                <th width="5%">#</th>
+                                <th>Unit</th>
                                 <th width="20%">Action</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            @foreach ($locations as $l)
+                            @foreach ($units as $unit)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $l->name }}</td>
+                                    <td>{{ $unit->name }}</td>
                                     <td>
                                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                            <a href="{{ route('assetHealthReport.reportAssets.show', $l->name) }}"
+                                            <a href="{{ route('assetHealthReport.showReportUnit', [$location->id,$report->id,$unit->id]) }}"
                                                 class="btn btn-primary">
                                                 Report <i class='bx bx-log-in-circle'></i>
                                             </a>
@@ -54,6 +58,8 @@
 
                                 </tr>
                             @endforeach
+
+
 
                         </tbody>
 
@@ -66,15 +72,16 @@
 
 
 @push('script')
+    <!-- Load jQuery and DataTables -->
     <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
+
+    <!-- Initialize DataTables -->
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
         });
-    </script>
 
-    <script>
         $(document).ready(function() {
             var table = $('#example2').DataTable();
 

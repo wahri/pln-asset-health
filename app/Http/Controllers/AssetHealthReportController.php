@@ -14,9 +14,7 @@ class AssetHealthReportController extends Controller
 {
   public function index()
   {
-
     $locations = Location::all();
-
     return view('pages.asset-health-report.index', compact('locations'));
   }
 
@@ -32,9 +30,34 @@ class AssetHealthReportController extends Controller
     })->with('asset.unit.location') // Eager load relasi asset, unit, dan location
       ->get();
 
+    $reports = Report::where('location_id', $location->id)->get();
+
 
     // Kirim data ke view dengan location dan reportAssets
-    return view('pages.asset-health-report.show', compact('location', 'reportAssets', 'locationName'));
+    return view('pages.asset-health-report.show', compact('location', 'reportAssets', 'locationName', 'reports'));
+  }
+
+  public function showReport(Location $location, Report $report)
+  {
+    $units = Unit::where('location_id', $location->id)->get();
+    return view('pages.asset-health-report.showReport', compact('location', 'report', 'units'));
+  }
+  public function showReportUnit(Location $location, Report $report, Unit $unit)
+  {
+    $reportAssets = ReportAssets::whereHas('asset', function ($query) use ($unit) {
+      $query->where('unit_id', $unit->id);
+    })->where('report_id', $report->id)
+      ->with(['asset', 'asset.assetGroup'])
+      ->get()
+      ->groupBy('asset.assetGroup.name');
+
+    return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'reportAssets'));
+  }
+
+  public function editReportAsset(ReportAssets $reportAsset)
+  {
+    $reportAsset->load('asset');
+    return view('pages.asset-health-report.edit', compact('reportAsset'));
   }
 
 
@@ -46,11 +69,13 @@ class AssetHealthReportController extends Controller
     ]);
 
     try {
+      $location = Location::where('name', $validatedData['location'])->firstOrFail();
+
       $report = Report::firstOrCreate([
-        'date' => $validatedData['date']
+        'date' => $validatedData['date'],
+        'location_id' => $location->id
       ]);
 
-      $location = Location::where('name', $validatedData['location'])->firstOrFail();
 
       $units = Unit::where('location_id', $location->id)->get();
 
@@ -59,8 +84,6 @@ class AssetHealthReportController extends Controller
 
 
         foreach ($assets as $asset) {
-          echo $asset->id . '<br>';
-          echo $asset->status . '<br>';
           ReportAssets::updateOrCreate(
             [
               'report_id' => $report->id,
@@ -96,17 +119,17 @@ class AssetHealthReportController extends Controller
       DetailReport::where('id', $id)->update([
         'no_sr' => $request->no_sr,
         'no_wo' => $request->no_wo,
-        'status'=>$request->status,
+        'status' => $request->status,
         'issue' => $request->issue,
-        'information'=>$request->information,
+        'information' => $request->information,
         'proses' => $request->proses,
         'keterangan' => $request->keterangan,
         'deskripsi_asset' => $request->deskripsi_asset,
-        'kondisi_asset' =>$request->kondisi_asset,
-        'target_selesai' => $request-> target_selesai,
-        'persentase_progress'=> $request->persentase_progress,
+        'kondisi_asset' => $request->kondisi_asset,
+        'target_selesai' => $request->target_selesai,
+        'persentase_progress' => $request->persentase_progress,
         'realisasi_selesai' => $request->realisasi_selesai,
-        'tanggal_identifikasi'=> $request->tanggal_identifikasi
+        'tanggal_identifikasi' => $request->tanggal_identifikasi
       ]);
 
       return back();

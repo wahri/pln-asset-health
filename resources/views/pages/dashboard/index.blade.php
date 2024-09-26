@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
     <div class="page-content">
-        <div class="row row-cols-1 row-cols-lg-3">
+        {{-- <div class="row row-cols-1 row-cols-lg-3">
             <div class="col">
                 <div class="card radius-10">
                     <div class="card-body">
@@ -9,9 +9,9 @@
                             <div class="flex-grow-1">
                                 <p class="mb-0">Goal Completions</p>
                                 <h4 class="font-weight-bold">1,94,2335</h4>
-                                <p class="text-secondary mb-0 font-13">Analytics for last month</p>
+                                <p class="mb-0 text-secondary font-13">Analytics for last month</p>
                             </div>
-                            <div class="widgets-icons bg-gradient-kyoto text-white"><i class='bx bxs-cube'></i>
+                            <div class="text-white widgets-icons bg-gradient-kyoto"><i class='bx bxs-cube'></i>
                             </div>
                         </div>
                     </div>
@@ -24,9 +24,9 @@
                             <div class="flex-grow-1">
                                 <p class="mb-0">Bounce Rate</p>
                                 <h4 class="font-weight-bold">58% <small class="text-danger font-13">(-16%)</small></h4>
-                                <p class="text-secondary mb-0 font-13">Analytics for last week</p>
+                                <p class="mb-0 text-secondary font-13">Analytics for last week</p>
                             </div>
-                            <div class="widgets-icons bg-gradient-blues text-white"><i class='bx bx-line-chart'></i>
+                            <div class="text-white widgets-icons bg-gradient-blues"><i class='bx bx-line-chart'></i>
                             </div>
                         </div>
                     </div>
@@ -39,20 +39,20 @@
                             <div class="flex-grow-1">
                                 <p class="mb-0">New Sessions</p>
                                 <h4 class="font-weight-bold">96% <small class="text-danger font-13">(+54%)</small></h4>
-                                <p class="text-secondary mb-0 font-13">Analytics for last week</p>
+                                <p class="mb-0 text-secondary font-13">Analytics for last week</p>
                             </div>
-                            <div class="widgets-icons bg-gradient-moonlit text-white"><i class='bx bx-bar-chart'></i>
+                            <div class="text-white widgets-icons bg-gradient-moonlit"><i class='bx bx-bar-chart'></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="row">
             <div class="col-12">
                 <div class="card radius-10">
-                    <div class="card-body p-4">
+                    <div class="p-4 card-body">
                         <div class="form-group">
                             <label class="form-label" for="exampleFormControlSelect1">Select Location</label>
                             <select class="form-select" id="exampleFormControlSelect1">
@@ -61,7 +61,7 @@
                                 <option>PLTL</option>
                             </select>
                         </div>
-                        <button class="btn btn-primary mt-3">Submit</button>
+                        <button class="mt-3 btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
@@ -92,10 +92,10 @@
         <div class="row">
             <div class="col-12 col-lg-4 d-lg-flex align-items-lg-stretch">
                 <div class="card radius-10 w-100">
-                    <div class="card-header bg-transparent font-weight-bold mb-2 mb-lg-0">Common PLTMG</div>
+                    <div class="mb-2 bg-transparent card-header font-weight-bold mb-lg-0">Common PLTMG</div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped mb-0">
+                            <table class="table mb-0 table-striped">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
@@ -161,10 +161,10 @@
             </div>
             <div class="col-12 col-lg-8">
                 <div class="card radius-10">
-                    <div class="card-header border-bottom-0 bg-transparent">
+                    <div class="bg-transparent card-header border-bottom-0">
                         <div class="d-lg-flex align-items-center">
                             <div>
-                                <h6 class="font-weight-bold mb-2 mb-lg-0">Historical Analytics</h6>
+                                <h6 class="mb-2 font-weight-bold mb-lg-0">Historical Analytics</h6>
                             </div>
                             <div class="dropdown ms-auto">
                                 <div class="cursor-pointer text-dark font-24 dropdown-toggle dropdown-toggle-nocaret"
@@ -180,12 +180,12 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex align-items-center ms-auto font-13 gap-2">
-                            <span class="border px-1 rounded cursor-pointer"><i
+                        <div class="gap-2 d-flex align-items-center ms-auto font-13">
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-success me-1"></i>Normal</span>
-                            <span class="border px-1 rounded cursor-pointer"><i
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-warning me-1"></i>Abnormal</span>
-                            <span class="border px-1 rounded cursor-pointer"><i
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-danger me-1"></i>Fault</span>
                         </div>
                         <div id="chart4"></div>
@@ -196,10 +196,10 @@
         <div class="row">
             <div class="col-12 col-lg-4 d-lg-flex align-items-lg-stretch">
                 <div class="card radius-10 w-100">
-                    <div class="card-header bg-transparent font-weight-bold mb-2 mb-lg-0">PLTMG #1</div>
+                    <div class="mb-2 bg-transparent card-header font-weight-bold mb-lg-0">PLTMG #1</div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped mb-0">
+                            <table class="table mb-0 table-striped">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
@@ -265,10 +265,10 @@
             </div>
             <div class="col-12 col-lg-8">
                 <div class="card radius-10">
-                    <div class="card-header border-bottom-0 bg-transparent">
+                    <div class="bg-transparent card-header border-bottom-0">
                         <div class="d-lg-flex align-items-center">
                             <div>
-                                <h6 class="font-weight-bold mb-2 mb-lg-0">Historical Analytics</h6>
+                                <h6 class="mb-2 font-weight-bold mb-lg-0">Historical Analytics</h6>
                             </div>
                             <div class="dropdown ms-auto">
                                 <div class="cursor-pointer text-dark font-24 dropdown-toggle dropdown-toggle-nocaret"
@@ -284,12 +284,12 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex align-items-center ms-auto font-13 gap-2">
-                            <span class="border px-1 rounded cursor-pointer"><i
+                        <div class="gap-2 d-flex align-items-center ms-auto font-13">
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-success me-1"></i>Normal</span>
-                            <span class="border px-1 rounded cursor-pointer"><i
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-warning me-1"></i>Abnormal</span>
-                            <span class="border px-1 rounded cursor-pointer"><i
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-danger me-1"></i>Fault</span>
                         </div>
                         <div id="chart5"></div>
@@ -300,10 +300,10 @@
         <div class="row">
             <div class="col-12 col-lg-4 d-lg-flex align-items-lg-stretch">
                 <div class="card radius-10 w-100">
-                    <div class="card-header bg-transparent font-weight-bold mb-2 mb-lg-0">PLTMG #2</div>
+                    <div class="mb-2 bg-transparent card-header font-weight-bold mb-lg-0">PLTMG #2</div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-striped mb-0">
+                            <table class="table mb-0 table-striped">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
@@ -369,10 +369,10 @@
             </div>
             <div class="col-12 col-lg-8">
                 <div class="card radius-10">
-                    <div class="card-header border-bottom-0 bg-transparent">
+                    <div class="bg-transparent card-header border-bottom-0">
                         <div class="d-lg-flex align-items-center">
                             <div>
-                                <h6 class="font-weight-bold mb-2 mb-lg-0">Historical Analytics</h6>
+                                <h6 class="mb-2 font-weight-bold mb-lg-0">Historical Analytics</h6>
                             </div>
                             <div class="dropdown ms-auto">
                                 <div class="cursor-pointer text-dark font-24 dropdown-toggle dropdown-toggle-nocaret"
@@ -388,12 +388,12 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex align-items-center ms-auto font-13 gap-2">
-                            <span class="border px-1 rounded cursor-pointer"><i
+                        <div class="gap-2 d-flex align-items-center ms-auto font-13">
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-success me-1"></i>Normal</span>
-                            <span class="border px-1 rounded cursor-pointer"><i
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-warning me-1"></i>Abnormal</span>
-                            <span class="border px-1 rounded cursor-pointer"><i
+                            <span class="px-1 border rounded cursor-pointer"><i
                                     class="bx bxs-circle text-danger me-1"></i>Fault</span>
                         </div>
                         <div id="chart6"></div>

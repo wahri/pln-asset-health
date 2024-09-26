@@ -8,11 +8,11 @@
 @section('content')
     <div class="page-content">
         <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="mb-3 page-breadcrumb d-none d-sm-flex align-items-center">
             <div class="breadcrumb-title pe-3">Asset {{ $unit->name }}</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
+                    <ol class="p-0 mb-0 breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
@@ -34,7 +34,7 @@
             <div class="card-body">
                 <div class="card-title">
                     @include('components.alert')
-                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addAsset">Add
+                    <button class="mb-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAsset">Add
                         Asset</button>
 
                     <!-- Modal -->
@@ -59,7 +59,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="noAsset" class="form-label">Asset Group </label>
-                                            <select name="assetGroup" id="assetGroup" class="select2">
+                                            <select name="assetGroup" id="assetGroup" class="form-select">
                                                 <option selected>Pilih Asset Group</option>
                                                 @foreach ($assetGroup as $ag)
                                                     <option value="{{ $ag->name }}">{{ $ag->name }}</option>
@@ -124,11 +124,15 @@
                                     <td>{{ $a->assets->first()->no_asset }}</td>
                                     <td>{{ $a->assets->first()->name }}</td>
 
-                                    <td>{{ $a->assets->first()->status }}</td>
-                                    <td class="d-flex gap-2">
+                                    <td>                                        
+                                        <span class="badge bg-{{ $a->assets->first()->status_class }}">
+                                            {{ ucfirst($a->assets->first()->status) }}
+                                        </span>
+                                    </td>
+                                    <td class="gap-2 d-flex">
                                         <button type="button" class="btn btn-info" data-bs-toggle="modal"
                                             data-bs-target="#editAsset_{{ $a->assets->first()->id }}"><i
-                                                class='bx bxs-edit text-white'></i></button>
+                                                class='text-white bx bxs-edit'></i></button>
 
                                         <!-- Modal -->
                                         <div class="modal fade" id="editAsset_{{ $a->assets->first()->id }}"
@@ -243,11 +247,15 @@
                                         <td>{{ $secondItem->no_asset }}</td>
                                         <td>{{ $secondItem->name }}</td>
 
-                                        <td>{{ $secondItem->status }}</td>
-                                        <td class="d-flex gap-2">
+                                        <td>
+                                            <span class="badge bg-{{ $secondItem->status_class }}">
+                                                {{ ucfirst($secondItem->status) }}
+                                            </span>
+                                        </td>
+                                        <td class="gap-2 d-flex">
                                             <button type="button" class="btn btn-info" data-bs-toggle="modal"
                                                 data-bs-target="#editAsset_{{ $secondItem->id }}"><i
-                                                    class='bx bxs-edit text-white'></i></button>
+                                                    class='text-white bx bxs-edit'></i></button>
 
                                             <!-- Modal -->
                                             <div class="modal fade" id="editAsset_{{ $secondItem->id }}"

@@ -20,4 +20,20 @@ class ReportAssets extends Model
     {
         return $this->belongsTo(Report::class);
     }
+
+
+    // Aksesori untuk mendapatkan kelas CSS berdasarkan status
+    public function getStatusClassAttribute()
+    {
+        switch ($this->status) {
+            case 'normal':
+                return 'success'; // warna hijau (success)
+            case 'abnormal':
+                return 'warning'; // warna kuning (warning)
+            case 'fault':
+                return 'danger'; // warna merah (danger)
+            default:
+                return 'secondary'; // default warna jika status lain
+        }
+    }
 }

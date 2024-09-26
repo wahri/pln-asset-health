@@ -10,6 +10,7 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = [
-        'date'
+        'date',
+        'location_id'
     ];
 }
