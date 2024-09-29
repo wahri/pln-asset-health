@@ -63,7 +63,7 @@
                             aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <form
-                                    action="{{ route('assetHealthReport.reportAssets.StoreDetailReports', $reportDetail->report_asset_id) }}"
+                                    action="{{ route('assetHealthReport.storeDetailReport', $reportDetail->report_asset_id) }}"
                                     method="post">
                                     @csrf
 
@@ -203,7 +203,7 @@
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
                                                     <form
-                                                        action="{{ route('assetHealthReport.reportAssets.UpdatedetailReports', $reportDetail->id) }}"
+                                                        action="{{ route('assetHealthReport.updateDetailReport', $reportDetail->id) }}"
                                                         method="post">
                                                         @csrf
                                                         @method('put')
@@ -327,7 +327,7 @@
                                                 </div>
                                             </div>
                                             <form
-                                                action="{{ route('assetHealthReport.reportAssets.detail.destroy', $dr->id) }}"
+                                                action="{{ route('assetHealthReport.deleteDetailReportAsset', $dr->id) }}"
                                                 method="post" id="delete-form_{{ $dr->id }}">
                                                 @csrf
                                                 @method('delete')

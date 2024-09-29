@@ -17,23 +17,43 @@ Route::prefix('/dashboard')->name('dashboard.')->middleware(['auth', 'verified']
 
 Route::middleware(['auth'])->group(function () {
 
+   
+
     Route::prefix('/asset-health-report')->name('assetHealthReport.')->group(function () {
+        // Menampilkan daftar report asset health
         Route::get('/', [AssetHealthReportController::class, 'index'])->name('index');
-        Route::get('/show/{location}', [AssetHealthReportController::class, 'show'])->name('reportAssets.show');
-        Route::get('/show/report/{location}/{report}', [AssetHealthReportController::class, 'showReport'])->name('showReport');
-        Route::get('/show/report/unit/{location}/{report}/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
-        Route::put('/show/report/unit/update/{id_reportAssets}', [AssetHealthReportController::class, 'updateReportAssets'])->name('updateReportAssets');
 
-        Route::get('/editReportAsset/{reportAsset}', [AssetHealthReportController::class, 'editReportAsset'])->name('editReportAsset');
+        // Menampilkan asset berdasarkan lokasi
+        Route::get('/location/{location}', [AssetHealthReportController::class, 'show'])->name('showLocation');
 
-        Route::get('/detail/{id_report_assets}', [AssetHealthReportController::class, 'detail'])->name('reportAssets.detail');
-        Route::delete('/detail/delete/{id_detail_report}', [AssetHealthReportController::class, 'deleteDetailReportAsset'])->name('reportAssets.detail.destroy');
+        // Menampilkan laporan berdasarkan lokasi dan report ID
+        Route::get('/location/{location}/report/{report}', [AssetHealthReportController::class, 'showReport'])->name('showReport');
 
-        Route::post('/add-report-date', [AssetHealthReportController::class, 'addReportDate'])->name('addReportDate');
-        Route::put('/update-detail-Reports/{id_report_detail}', [AssetHealthReportController::class, 'UpdatedetailReports'])->name('reportAssets.UpdatedetailReports');
-        Route::post('/detail/store/{id_reportAssets}', [AssetHealthReportController::class, 'StoreDetailReports'])->name('reportAssets.StoreDetailReports');
+        // Menampilkan unit dalam laporan berdasarkan lokasi, report ID, dan unit ID
+        Route::get('/location/{location}/report/{report}/unit/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
 
+        // Mengupdate asset dalam laporan berdasarkan ID
+        Route::put('/report/unit/update/{id_reportAssets}', [AssetHealthReportController::class, 'updateReportAssets'])->name('updateReportAssets');
+
+        // Mengedit asset dalam laporan berdasarkan reportAsset ID
+        Route::get('/report/edit/{reportAsset}', [AssetHealthReportController::class, 'editReportAsset'])->name('editReportAsset');
+
+        // Menampilkan detail asset berdasarkan report assets ID
+        Route::get('/report/detail/{id_report_assets}', [AssetHealthReportController::class, 'detail'])->name('detailReportAsset');
+
+        // Menghapus detail asset berdasarkan detail report ID
+        Route::delete('/report/detail/delete/{id_detail_report}', [AssetHealthReportController::class, 'deleteDetailReportAsset'])->name('deleteDetailReportAsset');
+
+        // Menambahkan tanggal report baru
+        Route::post('/report/add-date', [AssetHealthReportController::class, 'addReportDate'])->name('addReportDate');
+
+        // Mengupdate detail report berdasarkan report detail ID
+        Route::put('/report/detail/update/{id_report_detail}', [AssetHealthReportController::class, 'UpdatedetailReports'])->name('updateDetailReport');
+
+        // Menyimpan detail report baru berdasarkan reportAssets ID
+        Route::post('/report/detail/store/{id_reportAssets}', [AssetHealthReportController::class, 'StoreDetailReports'])->name('storeDetailReport');
     });
+
 
     Route::prefix('/asset-management')->name('assetManagement.')->group(function () {
 

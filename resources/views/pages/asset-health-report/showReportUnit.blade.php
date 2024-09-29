@@ -19,7 +19,7 @@
                                     class="bx bx-home-alt"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('assetHealthReport.reportAssets.show', $location->name) }}">
+                            <a href="{{ route('assetHealthReport.showLocation', $location->name) }}">
                                 {{ $location->name }}
                             </a>
                         </li>
@@ -131,7 +131,7 @@
                                                 </div>
                                             </div>
                                             {{-- end --}}
-                                            <a href="{{ route('assetHealthReport.reportAssets.detail', $report->id) }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ route('assetHealthReport.detailReportAsset', $report->id) }}" class="btn btn-primary btn-sm">
                                                 <i class="bx bx-laptop"></i>
                                             </a>
                                         </td>

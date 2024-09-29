@@ -45,7 +45,7 @@
                                     <td>{{ $l->name }}</td>
                                     <td>
                                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                            <a href="{{ route('assetHealthReport.reportAssets.show', $l->name) }}"
+                                            <a href="{{ route('assetHealthReport.showLocation', $l->name) }}"
                                                 class="btn btn-primary">
                                                 Report <i class='bx bx-log-in-circle'></i>
                                             </a>
