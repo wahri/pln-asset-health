@@ -42,7 +42,7 @@
                     <div class="col-md-12">
                         <label for="inputStatus" class="form-label">Status Asset</label>
                         <input type="text" class="form-control" id="inputStatus" 
-                        name="status"
+                        name="status_asset"
                         placeholder="Enter Status"
                         value="{{ $reportAsset->status }}">
                     </div>
@@ -62,7 +62,7 @@
                     <div class="col-md-6">
                         <label for="inputStatus" class="form-label">Status Saat Ini</label>
                         <input type="text" class="form-control" id="inputStatus" 
-                        name="status"
+                        name="status_saatini"
                         placeholder="Enter Status"
                         value="">
                     </div>

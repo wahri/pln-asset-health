@@ -19,16 +19,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('/asset-health-report')->name('assetHealthReport.')->group(function () {
         Route::get('/', [AssetHealthReportController::class, 'index'])->name('index');
-        Route::get('/showReportDate/{location}', [AssetHealthReportController::class, 'show'])->name('reportAssets.show');
-        Route::get('/showReport/{location}/{report}', [AssetHealthReportController::class, 'showReport'])->name('showReport');
-        Route::get('/showReportUnit/{location}/{report}/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
+        Route::get('/show/{location}', [AssetHealthReportController::class, 'show'])->name('reportAssets.show');
+        Route::get('/show/report/{location}/{report}', [AssetHealthReportController::class, 'showReport'])->name('showReport');
+        Route::get('/show/report/unit/{location}/{report}/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
+        Route::put('/show/report/unit/update/{id_reportAssets}', [AssetHealthReportController::class, 'updateReportAssets'])->name('updateReportAssets');
 
         Route::get('/editReportAsset/{reportAsset}', [AssetHealthReportController::class, 'editReportAsset'])->name('editReportAsset');
 
         Route::get('/detail/{id_report_assets}', [AssetHealthReportController::class, 'detail'])->name('reportAssets.detail');
+        Route::delete('/detail/delete/{id_detail_report}', [AssetHealthReportController::class, 'deleteDetailReportAsset'])->name('reportAssets.detail.destroy');
 
         Route::post('/add-report-date', [AssetHealthReportController::class, 'addReportDate'])->name('addReportDate');
         Route::put('/update-detail-Reports/{id_report_detail}', [AssetHealthReportController::class, 'UpdatedetailReports'])->name('reportAssets.UpdatedetailReports');
+        Route::post('/detail/store/{id_reportAssets}', [AssetHealthReportController::class, 'StoreDetailReports'])->name('reportAssets.StoreDetailReports');
 
     });
 
@@ -50,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('/assets')->name('assets.')->group(function () {
             Route::get('/show/{unit_id}', [AssetController::class, 'index'])->name('index');
-            Route::post('/', [AssetController::class, 'store'])->name('store');
+            Route::post('/store', [AssetController::class, 'store'])->name('store');
             Route::put('/update/{id}', [AssetController::class, 'update'])->name('update');
             Route::delete('/delete/{id}', [AssetController::class, 'destroy'])->name('destroy');
         });

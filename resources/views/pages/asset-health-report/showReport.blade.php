@@ -1,4 +1,5 @@
 @extends('layouts.main')
+
 @section('content')
     @push('css')
         <link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
@@ -14,11 +15,12 @@
                                     class="bx bx-home-alt"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('dashboard.index') }}">
+                            <a href="{{ route('assetHealthReport.reportAssets.show', $location->name) }}">
                                 {{ $location->name }}
-                        </a>
+                            </a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $report->date }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ date('F Y', strtotime($report->date)) }}
+                        </li>
                     </ol>
                 </nav>
             </div>
@@ -49,7 +51,7 @@
                                     <td>{{ $unit->name }}</td>
                                     <td>
                                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                            <a href="{{ route('assetHealthReport.showReportUnit', [$location->id,$report->id,$unit->id]) }}"
+                                            <a href="{{ route('assetHealthReport.showReportUnit', [$location->id, $report->id, $unit->id]) }}"
                                                 class="btn btn-primary">
                                                 Report <i class='bx bx-log-in-circle'></i>
                                             </a>

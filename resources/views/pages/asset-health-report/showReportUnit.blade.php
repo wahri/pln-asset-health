@@ -2,7 +2,12 @@
 @section('content')
     @push('css')
         <link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     @endpush
+
+
     <div class="page-content">
         <!--breadcrumb-->
         <div class="mb-3 page-breadcrumb d-none d-sm-flex align-items-center">
@@ -14,13 +19,15 @@
                                     class="bx bx-home-alt"></i></a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="">
+                            <a href="{{ route('assetHealthReport.reportAssets.show', $location->name) }}">
                                 {{ $location->name }}
                             </a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="">
-                                {{ $report->date }}
+                            <a href="javascript:history.back()">
+                                {{date('F Y', strtotime($report->date))}}
+
+
                             </a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">{{ $unit->name }}</li>
@@ -68,12 +75,65 @@
                                             </span>
                                         </td>
                                         <td class="gap-2 d-flex">
-                                            <a href="{{ route('assetHealthReport.editReportAsset', $report->id) }}" class="btn btn-info btn-sm">
+                                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#editReport_{{ $report->id }}">
                                                 <i class="bx bx-edit-alt"></i>
-                                            </a>
-                                            <button class="btn btn-primary btn-sm">
-                                                <i class="bx bx-laptop"></i>
                                             </button>
+
+                                            {{-- modal edit --}}
+                                            <div class="modal fade" id="editReport_{{ $report->id }}" tabindex="-1"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <form action="{{ route('assetHealthReport.updateReportAssets', $report->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit
+                                                                    Data
+                                                                </h1>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+
+                                                               
+                                                    
+
+                                                                <div class="mb-3">
+                                                                    <label for="status" class="form-label">Status</label>
+                                                                    <select name="status" id="status"
+                                                                        class="form-select">
+                                                                        <option value="normal"
+                                                                            {{ $report->asset->status == 'normal' ? 'selected' : '' }}>
+                                                                            Normal</option>
+                                                                        <option value="abnormal"
+                                                                            {{ $report->asset->status == 'abnormal' ? 'selected' : '' }}>
+                                                                            Abnormal</option>
+                                                                        <option value="fault"
+                                                                            {{ $report->asset->status == 'fault' ? 'selected' : '' }}>
+                                                                            Fault</option>
+                                                                    </select>
+                                                                </div>
+
+
+
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                    changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{-- end --}}
+                                            <a href="{{ route('assetHealthReport.reportAssets.detail', $report->id) }}" class="btn btn-primary btn-sm">
+                                                <i class="bx bx-laptop"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -95,6 +155,8 @@
     <!-- Load jQuery and DataTables -->
     <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
     <!-- Initialize DataTables -->
     <script>
@@ -102,11 +164,33 @@
             $('#example').DataTable();
         });
 
-        $(document).ready(function() {
-            var table = $('#example2').DataTable();
+        // $(document).ready(function() {
+        //     var table = $('#example2').DataTable();
 
-            table.buttons().container()
-                .appendTo('#example2_wrapper .col-md-6:eq(0)');
+        //     table.buttons().container()
+        //         .appendTo('#example2_wrapper .col-md-6:eq(0)');
+        // });
+
+        // Inisialisasi Select2 pada modal edit dengan ID dinamis
+        $(document).on('shown.bs.modal', '[id^="editReport_"]', function() {
+            $(this).find('.select2-edit').select2({
+                theme: "bootstrap-5",
+                width: function() {
+                    return $(this).data('width') ? $(this).data('width') : $(this).hasClass(
+                        'w-100') ? '100%' : 'style';
+                },
+                placeholder: function() {
+                    return $(this).data('placeholder');
+                },
+                closeOnSelect: false,
+                tags: true,
+                dropdownParent: $(this).find('.modal-body')
+            });
+        });
+
+        // Reset Select2 ketika modal edit ditutup
+        $(document).on('hidden.bs.modal', '[id^="editReport_"]', function() {
+            $(this).find('.select2-edit').select2('destroy'); // Hapus Select2 dari elemen dalam modal
         });
     </script>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\AssetGroup;
 use App\Models\DetailReport;
 use App\Models\Location;
 use App\Models\Report;
@@ -39,6 +40,8 @@ class AssetHealthReportController extends Controller
 
   public function showReport(Location $location, Report $report)
   {
+
+
     $units = Unit::where('location_id', $location->id)->get();
     return view('pages.asset-health-report.showReport', compact('location', 'report', 'units'));
   }
@@ -51,18 +54,27 @@ class AssetHealthReportController extends Controller
       ->get()
       ->groupBy('asset.assetGroup.name');
 
-    return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'reportAssets'));
+    $assetsGrup = AssetGroup::all();
+
+    return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'reportAssets', 'assetsGrup'));
   }
 
   public function editReportAsset(ReportAssets $reportAsset)
   {
     $reportAsset->load('asset');
+
+
+
     return view('pages.asset-health-report.edit', compact('reportAsset'));
   }
 
 
   public function addReportDate(Request $request)
   {
+
+
+
+
     $validatedData = $request->validate([
       'date' => 'required|date',
       'location' => 'required|string|exists:locations,name'
@@ -72,7 +84,7 @@ class AssetHealthReportController extends Controller
       $location = Location::where('name', $validatedData['location'])->firstOrFail();
 
       $report = Report::firstOrCreate([
-        'date' => $validatedData['date'],
+        'date' => $request->date . '-01',
         'location_id' => $location->id
       ]);
 
@@ -104,37 +116,134 @@ class AssetHealthReportController extends Controller
   public function detail($id_report_asset)
   {
 
+
     $reportDetail = DetailReport::firstOrCreate([
       'report_asset_id' => $id_report_asset,
 
     ]);
 
-    $detailReports = DetailReport::where('id', $reportDetail->id)->first();
-    return view('pages.asset-health-report.detail', compact('detailReports'));
+
+
+
+
+    $locationName = $reportDetail->reportAsset->asset->unit->location->name;
+    $month = date('F Y', strtotime($reportDetail->reportAsset->report->date));
+    $unit = $reportDetail->reportAsset->asset->unit->name;
+
+    $statusSR = [
+      "0",
+      "-",
+      "APPR",
+      "INPROG",
+      "INPROGINPROG",
+      "MENUNGGU WO FEEDBACK",
+      "WAMTL",
+      "WFEEDBACK",
+      "WJOBCARD",
+      "WMATL",
+      "WOUTAGE",
+      "WPROC",
+      "WUNSHUT"
+    ];
+
+    $detailReportsAll = DetailReport::where('report_asset_id', $reportDetail->report_asset_id)->get();
+
+
+
+    return view('pages.asset-health-report.detail', compact('reportDetail', 'locationName', 'month', 'unit', 'statusSR', 'detailReportsAll'));
   }
 
   public function UpdatedetailReports(Request $request, $id)
   {
+   
+
     try {
-      DetailReport::where('id', $id)->update([
+  $oke =     DetailReport::where('id', $id)->update([
         'no_sr' => $request->no_sr,
         'no_wo' => $request->no_wo,
-        'status' => $request->status,
-        'issue' => $request->issue,
-        'information' => $request->information,
-        'proses' => $request->proses,
-        'keterangan' => $request->keterangan,
-        'deskripsi_asset' => $request->deskripsi_asset,
-        'kondisi_asset' => $request->kondisi_asset,
-        'target_selesai' => $request->target_selesai,
-        'persentase_progress' => $request->persentase_progress,
-        'realisasi_selesai' => $request->realisasi_selesai,
-        'tanggal_identifikasi' => $request->tanggal_identifikasi
+        'tanggal_identifikasi' => $request->tanggal_identifikasi,
+        'status_sr' => $request->status_sr,
+        'kondisi_asset' => $request->kondisiAsset,
+        'action_plan' => $request->actionPlan,
+        'progress_saat_ini' => $request->progresSaatIni,
+        'target_selesai' => $request->targetSelesai,
+        'realisasi_selesai' => $request->realisasiSelesai
       ]);
 
-      return back();
+    
+
+
+
+
+      return back()->with(
+        'success',
+        'Detail report asset updated successfully'
+      );
     } catch (\Throwable $th) {
-      return back();
+     
+      return back()->with(
+        'error',
+        'Something went wrong'
+      );
     }
+  }
+  public function updateReportAssets(Request $request, $id_report_asset)
+  {
+
+    try {
+      ReportAssets::where('id', $id_report_asset)->update([
+        'status' => $request->status
+      ]);
+      return back()->with('success', 'Report asset updated successfully');
+    } catch (\Throwable $th) {
+      return back()->with('error', 'Something went wrong');
+    }
+  }
+
+  public function deleteDetailReportAsset($id_detail_report)
+  {
+    try {
+      DetailReport::where('id', $id_detail_report)->delete();
+      return back()->with('success', 'Detail report asset deleted successfully');
+    } catch (\Throwable $th) {
+      return back()->with('error', 'Something went wrong');
+    }
+  }
+
+  public function StoreDetailReports(Request $request, $id_report_asset){
+
+    try {
+      // $request->validate([
+      //   'no_sr' => 'required|string',
+      //   'no_wo' => 'required|string',
+      //   'tanggal_identifikasi' => 'required|date',
+      //   'status_sr' => 'required|string',
+      //   'kondisiAsset' => 'required|string',
+      //   'actionPlan' => 'required|string',
+      //   'progresSaatIni' => 'required|string',
+      //   'targetSelesai' => 'required|string',
+      //   'realisasiSelesai' => 'required|string',
+      // ]);
+
+      DetailReport::create([
+        'report_asset_id' => $id_report_asset,
+        'no_sr' => $request->no_sr,
+        'no_wo' => $request->no_wo,
+        'tanggal_identifikasi' => $request->tanggal_identifikasi,
+        'status_sr' => $request->status_sr,
+        'kondisi_asset' => $request->kondisiAsset,
+        'action_plan' => $request->actionPlan,
+        'progress_saat_ini' => $request->progresSaatIni,
+        'target_selesai' => $request->targetSelesai,
+        'realisasi_selesai' => $request->realisasiSelesai
+      ]);
+
+      return back()->with('success', 'Detail report asset created successfully');
+    } catch (\Throwable $th) {
+      dd($th->getMessage());
+     return back()->with('error', 'Something went wrong');
+    }
+
+  
   }
 }

@@ -13,7 +13,8 @@
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $locationName }}</li>
+                        <li class="breadcrumb-item active" aria-current="page"> <a href="{{ route('assetHealthReport.index') }}">Lokasi Unit Pembangkit</a></li>
+                          <li class="breadcrumb-item active" aria-current="page">{{ $locationName }}</li>
                     </ol>
                 </nav>
             </div>
@@ -45,7 +46,7 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="locationUnit" class="form-label">Date</label>
-                                            <input type="date" class="form-control" id="date" name="date"
+                                            <input type="month" class="form-control" id="date" name="date"
                                                 value="{{ date('Y-m-d') }}">
 
                                         </div>
@@ -76,7 +77,7 @@
                             @foreach($reports as $report)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('d F Y', strtotime($report->date)) }}</td>
+                                <td>{{ date('F Y', strtotime($report->date)) }}</td>
                                 <td>
                                     <div class="btn-group " role="group" aria-label="Basic mixed styles example">
                                         <a href="{{ route('assetHealthReport.showReport', [$location->id,$report->id]) }}" class="btn btn-primary">

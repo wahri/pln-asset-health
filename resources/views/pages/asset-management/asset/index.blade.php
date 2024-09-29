@@ -59,7 +59,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="noAsset" class="form-label">Asset Group </label>
-                                            <select name="assetGroup" id="assetGroup" class="form-select">
+                                            <select name="assetGroup" id="assetGroup" class="form-select select2">
                                                 <option selected>Pilih Asset Group</option>
                                                 @foreach ($assetGroup as $ag)
                                                     <option value="{{ $ag->name }}">{{ $ag->name }}</option>
@@ -121,7 +121,7 @@
                                 <tr>
                                     <td class="align-middle" rowspan="{{ $a->assets->count() }}">{{ $loop->iteration }}</td>
                                     <td class="align-middle" rowspan="{{ $a->assets->count() }}">{{ $a->name }}</td>
-                                    <td>{{ $a->assets->first()->no_asset }}</td>
+                                    <td>{{ $a->assets->first()->no_asset ?? '' }}</td>
                                     <td>{{ $a->assets->first()->name }}</td>
 
                                     <td>                                        
@@ -149,7 +149,7 @@
                                                         <input type="hidden" name="unit_id"
                                                             value="{{ $unit->id }}">
                                                         <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="addAsset">Tambah Asset
+                                                            <h1 class="modal-title fs-5" id="addAsset">Ubah Asset
                                                             </h1>
                                                             <button type="button" class="btn-close"
                                                                 data-bs-dismiss="modal" aria-label="Close"></button>
@@ -392,10 +392,10 @@
 
     <script>
         $(document).ready(function() {
-            var table = $('#example2').DataTable();
+            // var table = $('#example2').DataTable();
 
-            table.buttons().container()
-                .appendTo('#example2_wrapper .col-md-6:eq(0)');
+            // table.buttons().container()
+            //     .appendTo('#example2_wrapper .col-md-6:eq(0)');
 
             $('#addAsset').on('shown.bs.modal', function() {
                 $(this).find('.select2').select2({

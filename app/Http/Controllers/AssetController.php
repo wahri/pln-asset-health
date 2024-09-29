@@ -24,7 +24,17 @@ class AssetController extends Controller
     public function store(Request $request)
     {
 
+       
+
         try {
+
+            $request->validate([
+                'unit_id' => 'required',
+                'assetGroup' => 'required',
+                'noAsset' => 'required',
+                'nameAsset' => 'required',
+                'status' => 'required',
+            ]);
 
             $assetGroup = AssetGroup::firstOrCreate([
                 'unit_id' => $request->unit_id,

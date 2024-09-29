@@ -15,18 +15,15 @@ class DetailReport extends Model
         'report_asset_id',
         'no_sr',
         'no_wo',
-        'status',
-        'issue',
-        'information',
-        'proses',
-        'keterangan',
-        'deskripsi_asset',
-        'kondisi_asset',
-        'target_selesai',
-        'persentase_progress',
-        'realisasi_selesai',
         'tanggal_identifikasi',
+        'status_sr',
+        'kondisi_asset',
+        'action_plan',
+        'progress_saat_ini',
+        'target_selesai',
+        'realisasi_selesai',
     ];
+
 
     public function reportAsset()
     {
