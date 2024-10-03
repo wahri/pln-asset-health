@@ -18,6 +18,8 @@
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
+                        <li class="breadcrumb-item active" aria-current="page"> <a
+                                href="{{ route('assetHealthReport.index') }}">Lokasi Unit Pembangkit</a></li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('assetHealthReport.showLocation', $location->name) }}">
                                 {{ $location->name }}
@@ -25,7 +27,7 @@
                         </li>
                         <li class="breadcrumb-item">
                             <a href="javascript:history.back()">
-                                {{date('F Y', strtotime($report->date))}}
+                                {{ date('F Y', strtotime($report->date)) }}
 
 
                             </a>
@@ -85,7 +87,9 @@
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <form action="{{ route('assetHealthReport.updateReportAssets', $report->id) }}" method="POST">
+                                                        <form
+                                                            action="{{ route('assetHealthReport.updateReportAssets', $report->id) }}"
+                                                            method="POST">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-header">
@@ -97,8 +101,8 @@
                                                             </div>
                                                             <div class="modal-body">
 
-                                                               
-                                                    
+
+
 
                                                                 <div class="mb-3">
                                                                     <label for="status" class="form-label">Status</label>
@@ -131,7 +135,8 @@
                                                 </div>
                                             </div>
                                             {{-- end --}}
-                                            <a href="{{ route('assetHealthReport.detailReportAsset', $report->id) }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ route('assetHealthReport.detailReportAsset', $report->id) }}"
+                                                class="btn btn-primary btn-sm">
                                                 <i class="bx bx-laptop"></i>
                                             </a>
                                         </td>

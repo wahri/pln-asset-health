@@ -14,6 +14,8 @@
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
+                          <li class="breadcrumb-item active" aria-current="page"> <a
+                                href="{{ route('assetHealthReport.index') }}">Lokasi Unit Pembangkit</a></li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('assetHealthReport.showLocation', $location->name) }}">
                                 {{ $location->name }}

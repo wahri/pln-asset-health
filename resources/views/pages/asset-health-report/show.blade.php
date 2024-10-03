@@ -13,8 +13,9 @@
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page"> <a href="{{ route('assetHealthReport.index') }}">Lokasi Unit Pembangkit</a></li>
-                          <li class="breadcrumb-item active" aria-current="page">{{ $locationName }}</li>
+                        <li class="breadcrumb-item active" aria-current="page"> <a
+                                href="{{ route('assetHealthReport.index') }}">Lokasi Unit Pembangkit</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $locationName }}</li>
                     </ol>
                 </nav>
             </div>
@@ -69,24 +70,29 @@
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th>Tanggal Report</th>
+                                <th>Report</th>
+                                <th>Created Report</th>
                                 <th width="20%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($reports as $report)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ date('F Y', strtotime($report->date)) }}</td>
-                                <td>
-                                    <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                        <a href="{{ route('assetHealthReport.showReport', [$location->id,$report->id]) }}" class="btn btn-primary">
-                                            Unit <i class='bx bx-log-in-circle'></i>
-                                        </a>
-                                    </div>
-                                </td>
+                            @foreach ($reports as $report)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($report->date)->locale('id')->translatedFormat('F Y') }}
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($report->created_at)->locale('id')->translatedFormat('d F Y, H:i') }}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+                                            <a href="{{ route('assetHealthReport.showReport', [$location->id, $report->id]) }}"
+                                                class="btn btn-primary">
+                                                Unit <i class='bx bx-log-in-circle'></i>
+                                            </a>
+                                        </div>
+                                    </td>
 
-                            </tr>
+                                </tr>
                             @endforeach
 
 

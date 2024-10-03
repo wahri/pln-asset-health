@@ -117,18 +117,18 @@ class AssetHealthReportController extends Controller
   {
 
 
-    $reportDetail = DetailReport::firstOrCreate([
-      'report_asset_id' => $id_report_asset,
+  
 
-    ]);
-
+$reportAsset = ReportAssets::findOrFail($id_report_asset);
 
 
 
 
-    $locationName = $reportDetail->reportAsset->asset->unit->location->name;
-    $month = date('F Y', strtotime($reportDetail->reportAsset->report->date));
-    $unit = $reportDetail->reportAsset->asset->unit->name;
+
+
+    $locationName = $reportAsset->asset->unit->location->name;
+    $month = date('F Y', strtotime($reportAsset->report->date));
+    $unit = $reportAsset->asset->unit->name;
 
     $statusSR = [
       "0",
@@ -146,19 +146,19 @@ class AssetHealthReportController extends Controller
       "WUNSHUT"
     ];
 
-    $detailReportsAll = DetailReport::where('report_asset_id', $reportDetail->report_asset_id)->get();
+    $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();
 
 
 
-    return view('pages.asset-health-report.detail', compact('reportDetail', 'locationName', 'month', 'unit', 'statusSR', 'detailReportsAll'));
+    return view('pages.asset-health-report.detail', compact('locationName', 'month', 'unit', 'statusSR', 'detailReportsAll', 'reportAsset'));
   }
 
   public function UpdatedetailReports(Request $request, $id)
   {
-   
+
 
     try {
-  $oke =     DetailReport::where('id', $id)->update([
+       DetailReport::where('id', $id)->update([
         'no_sr' => $request->no_sr,
         'no_wo' => $request->no_wo,
         'tanggal_identifikasi' => $request->tanggal_identifikasi,
@@ -167,10 +167,12 @@ class AssetHealthReportController extends Controller
         'action_plan' => $request->actionPlan,
         'progress_saat_ini' => $request->progresSaatIni,
         'target_selesai' => $request->targetSelesai,
-        'realisasi_selesai' => $request->realisasiSelesai
+        'realisasi_selesai' => $request->realisasiSelesai,
+        'issue' => $request->issue,
+        'keterangan' => $request->keterangan
       ]);
 
-    
+
 
 
 
@@ -180,7 +182,7 @@ class AssetHealthReportController extends Controller
         'Detail report asset updated successfully'
       );
     } catch (\Throwable $th) {
-     
+
       return back()->with(
         'error',
         'Something went wrong'
@@ -210,7 +212,8 @@ class AssetHealthReportController extends Controller
     }
   }
 
-  public function StoreDetailReports(Request $request, $id_report_asset){
+  public function StoreDetailReports(Request $request, $id_report_asset)
+  {
 
     try {
       // $request->validate([
@@ -235,15 +238,15 @@ class AssetHealthReportController extends Controller
         'action_plan' => $request->actionPlan,
         'progress_saat_ini' => $request->progresSaatIni,
         'target_selesai' => $request->targetSelesai,
-        'realisasi_selesai' => $request->realisasiSelesai
+        'realisasi_selesai' => $request->realisasiSelesai,
+        'issue' => $request->issue,
+        'keterangan' => $request->keterangan
       ]);
 
       return back()->with('success', 'Detail report asset created successfully');
     } catch (\Throwable $th) {
-      dd($th->getMessage());
-     return back()->with('error', 'Something went wrong');
+   
+      return back()->with('error', 'Something went wrong');
     }
-
-  
   }
 }

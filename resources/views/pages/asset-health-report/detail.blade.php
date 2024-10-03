@@ -18,9 +18,21 @@
                         </li>
                         <li class="breadcrumb-item active" aria-current="page"> <a
                                 href="{{ route('assetHealthReport.index') }}">Lokasi Unit Pembangkit</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $locationName }}</li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $month }}</li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ $unit }}</li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('assetHealthReport.showLocation', $locationName) }}">
+                                {{ $locationName }}
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <a href="javascript:history.back()">
+                                {{ $month }}
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <a href="javascript:history.back()">
+                                {{ $unit }}
+                            </a>
+                        </li>
                         <li class="breadcrumb-item active" aria-current="page">Detail Report</li>
                     </ol>
                 </nav>
@@ -31,18 +43,71 @@
 
         <hr />
 
-        <div class="card">
+
+
+        <div class="card radius-10">
             <div class="card-body">
-                <h5 class="card-title">Detail Report</h5>
+                <h6 class="mb-0 font-weight-bold">Detail Report</h6>
                 <hr>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">System : {{ $reportDetail->reportAsset->asset->assetGroup->name }}</li>
-                    <li class="list-group-item">No Asset : {{ $reportDetail->reportAsset->asset->no_asset }}</li>
-                    <li class="list-group-item">Nama : {{ $reportDetail->reportAsset->asset->name }}</li>
-                    <li class="list-group-item">Status Asset : {{ $reportDetail->reportAsset->status }}</li>
-                </ul>
+                <div class="table-responsive mt-4">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td style="width: 10px">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bx bxs-checkbox me-2 font-24" style="color: #9b59b6;"></i>
+                                        <div><strong>System</strong></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    : {{ $reportAsset->asset->assetGroup->name }}
+                                </td>
+
+                            </tr>
+                            
+                            <tr>
+                                <td class="px-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bx bxs-checkbox me-2 font-24" style="color: #e74c3c;"></i>
+                                        <div><strong>No Asset</strong></div>
+                                    </div>
+                                </td>
+                                 <td>
+                                    : {{ $reportAsset->asset->no_asset }}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="px-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bx bxs-checkbox me-2 font-24" style="color: #2ecc71;"></i>
+                                        <div><strong>Nama</strong> </div>
+                                    </div>
+                                </td>
+                                 <td>
+                                    : {{ $reportAsset->asset->name }}
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td class="px-0">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bx bxs-checkbox me-2 font-24" style="color: #f39c12;"></i>
+                                        <div><strong>Status Asset</strong></div>
+                                    </div>
+                                </td>
+                                 <td>
+                                    : {{ $reportAsset->status }}
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
+
         <div class="card">
             <div class="card-body">
 
@@ -62,8 +127,7 @@
                         <div class="modal fade" id="addSR" tabindex="-1" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
                             <div class="modal-dialog modal-lg">
-                                <form
-                                    action="{{ route('assetHealthReport.storeDetailReport', $reportDetail->report_asset_id) }}"
+                                <form action="{{ route('assetHealthReport.storeDetailReport', $reportAsset->id) }}"
                                     method="post">
                                     @csrf
 
@@ -112,12 +176,12 @@
                                                     <textarea class="form-control" id="kondisiAsset" name="kondisiAsset" placeholder="Enter Kondisi Asset..."
                                                         rows="3"></textarea>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <label for="actionPlan" class="form-label">Action Plan</label>
-                                                    <input type="text" class="form-control" id="actionPlan"
-                                                        name="actionPlan" placeholder="Enter Action Plan">
+                                                    <textarea class="form-control" name="actionPlan" id="actionPlan" rows="3" placeholder="Enter Action Plan..."></textarea>
+
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <label for="progresSaatIni" class="form-label">Progres Saat
                                                         Ini</label>
                                                     <select name="progresSaatIni" id="progresSaatIni"
@@ -125,6 +189,7 @@
                                                         <option selected value="">
                                                             Pilih Progres Saat Ini
                                                         </option>
+
 
                                                         @foreach ($statusSR as $status)
                                                             <option value="{{ $status }}">{{ $status }}
@@ -136,15 +201,27 @@
 
                                                 <div class="col-md-6">
                                                     <label for="targetSelesai" class="form-label">Target Selesai</label>
-                                                    <input type="number" class="form-control" id="targetSelesai"
-                                                        name="targetSelesai" placeholder="Enter Target Selesai"
-                                                        min="1900" max="2100" step="1" placeholder="YYYY">
+                                                    <input type="text" class="form-control" id="targetSelesai"
+                                                        name="targetSelesai" placeholder="Enter Target Selesai">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="realisasiSelesai" class="form-label">Realisasi
                                                         Selesai</label>
-                                                    <input type="number" class="form-control" name="realisasiSelesai"
-                                                        id="realisasiSelesai" placeholder="Enter Realisasi Selesai">
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control"
+                                                            name="realisasiSelesai" id="realisasiSelesai"
+                                                            placeholder="Enter Realisasi Selesai" min="0"
+                                                            max="100">
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="issue" class="form-label">issue</label>
+                                                    <textarea class="form-control" id="issue" name="issue" placeholder="Enter issue..." rows="3"></textarea>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="keterangan" class="form-label">Keterangan</label>
+                                                    <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Enter keterangan..." rows="3"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,173 +249,205 @@
                                 <th>Progres Saat ini</th>
                                 <th>Target Selesai</th>
                                 <th>Realisasi Selesai</th>
+                                <th>Issue</th>
+                                <th>Keterangan</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($detailReportsAll as $dr)
-                                <tr>
-                                    <td>
-                                        {{ $dr->no_sr }}
-                                    </td>
-                                    <td>{{ $dr->no_wo }}</td>
+                            @if ($detailReportsAll->count() > 0)
+                                @foreach ($detailReportsAll as $dr)
+                                    <tr>
+                                        <td>
+                                            {{ $dr->no_sr }}
+                                        </td>
+                                        <td>{{ $dr->no_wo }}</td>
 
-                                    <td>{{ $dr->tanggal_identifikasi }}</td>
-                                    <td>{{ $dr->status_sr }}</td>
-                                    <td>{{ $dr->kondisi_asset }}</td>
+                                        <td>{{ $dr->tanggal_identifikasi }}</td>
+                                        <td>{{ $dr->status_sr }}</td>
+                                        <td>{{ $dr->kondisi_asset }}</td>
 
-                                    <td>{{ $dr->action_plan }}</td>
-                                    <td>{{ $dr->progress_saat_ini }}</td>
-                                    <td>{{ $dr->target_selesai }}</td>
-                                    <td>
-                                        {{ $dr->realisasi_selesai }}
-                                    </td>
-                                    <td>
-                                        <div class="d-flex order-actions">
-                                            <button class="btn btn-info" data-bs-toggle="modal"
-                                                data-bs-target="#editSR_{{ $dr->id }}"><i
-                                                    class='bx bxs-edit'></i></button>
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="editSR_{{ $dr->id }}" tabindex="-1"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <form
-                                                        action="{{ route('assetHealthReport.updateDetailReport', $reportDetail->id) }}"
-                                                        method="post">
-                                                        @csrf
-                                                        @method('put')
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add SR
-                                                                </h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="row g-3">
+                                        <td>{{ $dr->action_plan }}</td>
+                                        <td>{{ $dr->progress_saat_ini }}</td>
+                                        <td>{{ $dr->target_selesai }}</td>
+                                        <td>
+                                            {{ $dr->realisasi_selesai }}
+                                        </td>
+                                        <td>{{ $dr->issue }}</td>
+                                        <td>{{ $dr->keterangan }}</td>
+                                        <td>
+                                            <div class="d-flex order-actions">
+                                                <button class="btn btn-info" data-bs-toggle="modal"
+                                                    data-bs-target="#editSR_{{ $dr->id }}"><i
+                                                        class='bx bxs-edit'></i></button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="editSR_{{ $dr->id }}" tabindex="-1"
+                                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <form
+                                                            action="{{ route('assetHealthReport.updateDetailReport', $dr->id) }}"
+                                                            method="post">
+                                                            @csrf
+                                                            @method('put')
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                                        Add SR
+                                                                    </h1>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="row g-3">
 
-                                                                    <div class="col-md-6">
-                                                                        <label for="inputNoSR" class="form-label">No
-                                                                            SR</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="inputNoSR" name="no_sr"
-                                                                            placeholder="Enter No SR"
-                                                                            value="{{ $reportDetail->no_sr }}">
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <label for="inputNoWO" class="form-label">No
-                                                                            WO</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="inputNoWO" name="no_wo"
-                                                                            placeholder="Enter No WO"
-                                                                            value="{{ $reportDetail->no_wo }}">
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <label for="inputTanggalIdentifikasi"
-                                                                            class="form-label">Tanggal
-                                                                            Identifikasi</label>
-                                                                        <input type="date" class="form-control"
-                                                                            id="inputTanggalIdentifikasi"
-                                                                            name="tanggal_identifikasi"
-                                                                            value="{{ $reportDetail->tanggal_identifikasi }}">
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <label for="status_sr" class="form-label">Status
-                                                                            SR</label>
-                                                                        <select name="status_sr" id="status_sr"
-                                                                            class="form-select select2-edit">
-                                                                            <option
-                                                                                value="{{ $reportDetail->status_sr ? $reportDetail->status_sr : '' }}">
-                                                                                {{ $reportDetail->status_sr ? $reportDetail->status_sr : 'Pilih Status SR' }}
-                                                                            </option>
-
-                                                                            @foreach ($statusSR as $status)
-                                                                                <option value="{{ $status }}">
-                                                                                    {{ $status }}
+                                                                        <div class="col-md-6">
+                                                                            <label for="inputNoSR" class="form-label">No
+                                                                                SR</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="inputNoSR" name="no_sr"
+                                                                                placeholder="Enter No SR"
+                                                                                value="{{ $dr->no_sr }}">
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label for="inputNoWO" class="form-label">No
+                                                                                WO</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="inputNoWO" name="no_wo"
+                                                                                placeholder="Enter No WO"
+                                                                                value="{{ $dr->no_wo }}">
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label for="inputTanggalIdentifikasi"
+                                                                                class="form-label">Tanggal
+                                                                                Identifikasi</label>
+                                                                            <input type="date" class="form-control"
+                                                                                id="inputTanggalIdentifikasi"
+                                                                                name="tanggal_identifikasi"
+                                                                                value="{{ $dr->tanggal_identifikasi }}">
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label for="status_sr"
+                                                                                class="form-label">Status
+                                                                                SR</label>
+                                                                            <select name="status_sr" id="status_sr"
+                                                                                class="form-select select2-edit">
+                                                                                <option
+                                                                                    value="{{ $dr->status_sr ? $dr->status_sr : '' }}">
+                                                                                    {{ $dr->status_sr ? $dr->status_sr : 'Pilih Status SR' }}
                                                                                 </option>
-                                                                            @endforeach
 
-                                                                        </select>
+                                                                                @foreach ($statusSR as $status)
+                                                                                    <option value="{{ $status }}">
+                                                                                        {{ $status }}
+                                                                                    </option>
+                                                                                @endforeach
 
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label for="kondisiAsset"
-                                                                            class="form-label">Kondisi Asset</label>
-                                                                        <textarea class="form-control" id="kondisiAsset" name="kondisiAsset" placeholder="Enter Kondisi Asset..."
-                                                                            rows="3">{{ $reportDetail->kondisi_asset }}</textarea>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <label for="actionPlan" class="form-label">Action
-                                                                            Plan</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="actionPlan" name="actionPlan"
-                                                                            placeholder="Enter Action Plan"
-                                                                            value="{{ $reportDetail->action_plan }}">
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <label for="progresSaatIni"
-                                                                            class="form-label">Progres Saat
-                                                                            Ini</label>
-                                                                        <select name="progresSaatIni" id="progresSaatIni"
-                                                                            class="form-select  select2-edit-ProgresSaatini">
-                                                                            <option
-                                                                                value="{{ $reportDetail->progres_saat_ini ? $reportDetail->progres_saat_ini : '' }}">
-                                                                                {{ $reportDetail->progres_saat_ini ? $reportDetail->progres_saat_ini : 'Pilih Progres Saat Ini' }}
-                                                                            </option>
+                                                                            </select>
 
-                                                                            @foreach ($statusSR as $status)
-                                                                                <option value="{{ $status }}">
-                                                                                    {{ $status }}
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <label for="kondisiAsset"
+                                                                                class="form-label">Kondisi Asset</label>
+                                                                            <textarea class="form-control" id="kondisiAsset" name="kondisiAsset" placeholder="Enter Kondisi Asset..."
+                                                                                rows="3">{{ $dr->kondisi_asset }}</textarea>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            <label for="actionPlan"
+                                                                                class="form-label">Action
+                                                                                Plan</label>
+
+                                                                            <textarea class="form-control" name="actionPlan" id="actionPlan" rows="3" placeholder="Enter Action Plan...">{{ $dr->action_plan }}</textarea>
+
+                                                                        </div>
+
+
+                                                                        <div class="col-md-12">
+                                                                            <label for="progresSaatIni"
+                                                                                class="form-label">Progres Saat
+                                                                                Ini</label>
+                                                                            <select name="progresSaatIni"
+                                                                                id="progresSaatIni"
+                                                                                class="form-select  select2-edit-ProgresSaatini">
+                                                                                <option
+                                                                                    value="{{ $dr->progress_saat_ini ? $dr->progress_saat_ini : '' }}">
+                                                                                    {{ $dr->progress_saat_ini ? $dr->progress_saat_ini : 'Pilih Progres Saat Ini' }}
                                                                                 </option>
-                                                                            @endforeach
 
-                                                                        </select>
-                                                                    </div>
+                                                                                @foreach ($statusSR as $status)
+                                                                                    <option value="{{ $status }}">
+                                                                                        {{ $status }}
+                                                                                    </option>
+                                                                                @endforeach
 
-                                                                    <div class="col-md-6">
-                                                                        <label for="targetSelesai"
-                                                                            class="form-label">Target Selesai</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="targetSelesai" name="targetSelesai"
-                                                                            min="1900" max="2100" step="1"
-                                                                            placeholder="YYYY"
-                                                                            placeholder="Enter Target Selesai"
-                                                                            value="{{ $reportDetail->target_selesai }}">
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <label for="realisasiSelesai"
-                                                                            class="form-label">Realisasi
-                                                                            Selesai</label>
-                                                                        <input type="number" class="form-control"
-                                                                            name="realisasiSelesai" id="realisasiSelesai"
-                                                                            value="{{ $reportDetail->realisasi_selesai }}"
-                                                                            placeholder="Enter Realisasi Selesai">
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <div class="col-md-6">
+                                                                            <label for="targetSelesai"
+                                                                                class="form-label">Target Selesai</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="targetSelesai" name="targetSelesai"
+                                                                                min="1900" max="2100"
+                                                                                step="1" placeholder="YYYY"
+                                                                                placeholder="Enter Target Selesai"
+                                                                                value="{{ $dr->target_selesai }}">
+                                                                        </div>
+
+                                                                        <div class="col-md-6">
+                                                                            <label for="realisasiSelesai"
+                                                                                class="form-label">Realisasi
+                                                                                Selesai</label>
+                                                                            <div class="input-group">
+                                                                                <input type="number" class="form-control"
+                                                                                    name="realisasiSelesai"
+                                                                                    id="realisasiSelesai"
+                                                                                    placeholder="Enter Realisasi Selesai"
+                                                                                    min="0" max="100"
+                                                                                    value="{{ $dr->realisasi_selesai }}">
+                                                                                <span class="input-group-text">%</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <label for="issue"
+                                                                                class="form-label">issue</label>
+                                                                            <textarea class="form-control" id="issue" name="issue" placeholder="Enter issue..." rows="3">{{ $dr->issue }}</textarea>
+                                                                        </div>
+                                                                        <div class="col-12">
+                                                                            <label for="keterangan"
+                                                                                class="form-label">Keterangan</label>
+                                                                            <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Enter keterangan..." rows="3">{{ $dr->keterangan }}</textarea>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Save
+                                                                        changes</button>
+                                                                </div>
                                                             </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">Save
-                                                                    changes</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
+                                                        </form>
+                                                    </div>
                                                 </div>
+                                                <form
+                                                    action="{{ route('assetHealthReport.deleteDetailReportAsset', $dr->id) }}"
+                                                    method="post" id="delete-form_{{ $dr->id }}">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit"
+                                                        onclick="deleteConfirm(event, {{ $dr->id }})"
+                                                        class="ms-3 btn btn-danger"><i class='bx bxs-trash'></i></button>
+                                                </form>
                                             </div>
-                                            <form
-                                                action="{{ route('assetHealthReport.deleteDetailReportAsset', $dr->id) }}"
-                                                method="post" id="delete-form_{{ $dr->id }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit"
-                                                    onclick="deleteConfirm(event, {{ $dr->id }})"
-                                                    class="ms-3 btn btn-danger"><i class='bx bxs-trash'></i></button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="12" class="text-center">No data available</td>
                                 </tr>
-                            @endforeach
+                            @endif
 
 
                         </tbody>

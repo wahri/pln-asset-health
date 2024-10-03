@@ -22,6 +22,8 @@ class DetailReport extends Model
         'progress_saat_ini',
         'target_selesai',
         'realisasi_selesai',
+        'issue',
+        'keterangan'
     ];
 
 
