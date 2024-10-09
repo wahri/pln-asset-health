@@ -41,6 +41,8 @@
         <!--end breadcrumb-->
 
         <hr />
+        @include('components.buttonBack')
+
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
@@ -77,13 +79,13 @@
                                             </span>
                                         </td>
                                         <td class="gap-2 d-flex">
-                                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                            {{-- <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#editReport_{{ $report->id }}">
                                                 <i class="bx bx-edit-alt"></i>
-                                            </button>
+                                            </button> --}}
 
                                             {{-- modal edit --}}
-                                            <div class="modal fade" id="editReport_{{ $report->id }}" tabindex="-1"
+                                            {{-- <div class="modal fade" id="editReport_{{ $report->id }}" tabindex="-1"
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
@@ -133,7 +135,7 @@
                                                         </form>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             {{-- end --}}
                                             <a href="{{ route('assetHealthReport.detailReportAsset', $report->id) }}"
                                                 class="btn btn-primary btn-sm">

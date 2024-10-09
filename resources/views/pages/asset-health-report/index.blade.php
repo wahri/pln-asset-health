@@ -22,6 +22,8 @@
         <!--end breadcrumb-->
 
         <hr />
+        @include('components.buttonBack')
+
         <div class="border-0 border-4 card border-top border-primary">
             <div class="card-body">
                 <div class="card-title d-flex align-items-center">

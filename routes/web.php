@@ -11,13 +11,14 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+
 Route::prefix('/dashboard')->name('dashboard.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
 });
 
 Route::middleware(['auth'])->group(function () {
 
-   
+
 
     Route::prefix('/asset-health-report')->name('assetHealthReport.')->group(function () {
         // Menampilkan daftar report asset health
@@ -40,6 +41,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Menampilkan detail asset berdasarkan report assets ID
         Route::get('/report/detail/{id_report_assets}', [AssetHealthReportController::class, 'detail'])->name('detailReportAsset');
+
+        Route::post('/report/detail/changeStatus', [AssetHealthReportController::class, 'changeStatus'])->name('changeStatus');
 
         // Menghapus detail asset berdasarkan detail report ID
         Route::delete('/report/detail/delete/{id_detail_report}', [AssetHealthReportController::class, 'deleteDetailReportAsset'])->name('deleteDetailReportAsset');
@@ -80,4 +83,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

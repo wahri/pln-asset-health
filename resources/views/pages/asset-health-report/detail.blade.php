@@ -43,10 +43,14 @@
 
         <hr />
 
+        @include('components.buttonBack')
+
 
 
         <div class="card radius-10">
             <div class="card-body">
+                <div class="alert alert-success" role="alert" id="statusAlert" style="display: none">
+                </div>
                 <h6 class="mb-0 font-weight-bold">Detail Report</h6>
                 <hr>
                 <div class="table-responsive mt-4">
@@ -64,7 +68,7 @@
                                 </td>
 
                             </tr>
-                            
+
                             <tr>
                                 <td class="px-0">
                                     <div class="d-flex align-items-center">
@@ -72,7 +76,7 @@
                                         <div><strong>No Asset</strong></div>
                                     </div>
                                 </td>
-                                 <td>
+                                <td>
                                     : {{ $reportAsset->asset->no_asset }}
                                 </td>
 
@@ -84,21 +88,45 @@
                                         <div><strong>Nama</strong> </div>
                                     </div>
                                 </td>
-                                 <td>
+                                <td>
                                     : {{ $reportAsset->asset->name }}
                                 </td>
 
                             </tr>
                             <tr>
+
+
                                 <td class="px-0">
                                     <div class="d-flex align-items-center">
                                         <i class="bx bxs-checkbox me-2 font-24" style="color: #f39c12;"></i>
-                                        <div><strong>Status Asset</strong></div>
+                                        <div><strong>Status Asset :</strong></div>
                                     </div>
                                 </td>
-                                 <td>
-                                    : {{ $reportAsset->status }}
+                                <td>
+                                    <select class="form-select form-select-md" name="status" id="status"
+                                        onchange="changeStatus({{ $reportAsset->id }})">
+                                        <option value="{{ $reportAsset->status }}" selected>
+                                            {{ ucfirst($reportAsset->status) }}</option>
+
+                                        @if ($reportAsset->status !== 'normal')
+                                            <option value="normal">Normal</option>
+                                        @endif
+                                        @if ($reportAsset->status !== 'abnormal')
+                                            <option value="abnormal">Abnormal</option>
+                                        @endif
+                                        @if ($reportAsset->status !== 'fault')
+                                            <option value="fault">Fault</option>
+                                        @endif
+                                    </select>
+                                    {{-- <div id="statusAlert" class="form-text text-danger">
+                                    </div> --}}
+
                                 </td>
+
+
+
+
+
 
                             </tr>
                         </tbody>
@@ -147,14 +175,14 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="inputNoWO" class="form-label">No WO</label>
-                                                    <input type="text" class="form-control" id="inputNoWO" name="no_wo"
-                                                        placeholder="Enter No WO">
+                                                    <input type="text" class="form-control" id="inputNoWO"
+                                                        name="no_wo" placeholder="Enter No WO">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="inputTanggalIdentifikasi" class="form-label">Tanggal
                                                         Identifikasi</label>
-                                                    <input type="date" class="form-control" id="inputTanggalIdentifikasi"
-                                                        name="tanggal_identifikasi">
+                                                    <input type="date" class="form-control"
+                                                        id="inputTanggalIdentifikasi" name="tanggal_identifikasi">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label for="status_sr" class="form-label">Status SR</label>
@@ -464,6 +492,40 @@
     <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+    <script>
+        async function changeStatus(id) {
+            var status = document.getElementById('status').value;
+            var statusAlert = document.getElementById('statusAlert');
+
+            try {
+                let response = await axios.post('{{ route('assetHealthReport.changeStatus') }}', {
+                    id: id,
+                    status: status
+                });
+
+                showAlert(response.data.message, 'success', statusAlert);
+            } catch (error) {
+                console.log(error);
+                let errorMessage = error.response && error.response.data.message ?
+                    error.response.data.message :
+                    'Something went wrong';
+
+                showAlert(errorMessage, 'error', statusAlert);
+            }
+        }
+
+        function showAlert(message, type, element) {
+            element.innerHTML = message;
+            element.style.display = 'block';
+
+            setTimeout(function() {
+                element.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+
 
 
     <!-- Initialize DataTables -->

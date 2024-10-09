@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('kondisi_asset')->nullable();
             $table->text('action_plan')->nullable();
             $table->string('progress_saat_ini')->nullable();
-            $table->year('target_selesai')->nullable();
+            $table->string('target_selesai')->nullable();
             $table->integer('realisasi_selesai')->nullable();
             $table->text('issue')->nullable();
             $table->string('keterangan')->nullable();

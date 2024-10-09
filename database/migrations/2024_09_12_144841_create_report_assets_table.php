@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('report_assets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('asset_id')->references('id')->on('assets')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('report_id')->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
-            $table->enum('status', ['normal', 'abnormal', 'fault'])->default('normal');
+            $table->foreignId('report_id')->nullable()->references('id')->on('reports')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('status', ['normal', 'abnormal', 'fault'])->default('normal')->nullable();
             $table->timestamps();
         });
     }
