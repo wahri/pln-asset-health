@@ -138,7 +138,7 @@
                                             </div> --}}
                                             {{-- end --}}
                                             <a href="{{ route('assetHealthReport.detailReportAsset', $report->id) }}"
-                                                class="btn btn-primary btn-sm">
+                                                class="btn btn-info btn-sm">
                                                 <i class="bx bx-laptop"></i>
                                             </a>
                                         </td>

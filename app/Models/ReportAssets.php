@@ -21,6 +21,11 @@ class ReportAssets extends Model
         return $this->belongsTo(Report::class);
     }
 
+    public function detailReports()
+    {
+        return $this->hasMany(DetailReport::class, 'report_asset_id');
+    }
+
 
     // Aksesori untuk mendapatkan kelas CSS berdasarkan status
     public function getStatusClassAttribute()

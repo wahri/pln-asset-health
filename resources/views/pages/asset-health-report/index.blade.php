@@ -22,7 +22,6 @@
         <!--end breadcrumb-->
 
         <hr />
-        @include('components.buttonBack')
 
         <div class="border-0 border-4 card border-top border-primary">
             <div class="card-body">
@@ -48,7 +47,7 @@
                                     <td>
                                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
                                             <a href="{{ route('assetHealthReport.showLocation', $l->name) }}"
-                                                class="btn btn-primary">
+                                                class="btn btn-info">
                                                 Report <i class='bx bx-log-in-circle'></i>
                                             </a>
                                         </div>

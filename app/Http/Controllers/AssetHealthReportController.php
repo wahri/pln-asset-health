@@ -99,9 +99,8 @@ class AssetHealthReportController extends Controller
       $location = Location::where('name', $validatedData['location'])->firstOrFail();
 
 
-
       // Ambil laporan terakhir berdasarkan lokasi
-      $reportFirstLast = Report::where('location_id', $location->id)->orderBy('date', 'desc')->first();
+      $reportFirstLast = Report::with('reportAssets.detailReports')->where('location_id', $location->id)->orderBy('date', 'desc')->first();
 
 
 
@@ -130,30 +129,58 @@ class AssetHealthReportController extends Controller
           }
         }
       } else {
-        $units = Unit::where('location_id', $location->id)->get();
+        // $units = Unit::where('location_id', $location->id)->get();
 
-        foreach ($units as $unit) {
-          $assets = Asset::where('unit_id', $unit->id)->get();
+        // foreach ($units as $unit) {
+        //   $assets = Asset::where('unit_id', $unit->id)->get();
 
-          foreach ($assets as $asset) {
-            // Ambil status dari reportAssets yang terkait dengan report terakhir
-            $previousReportAssets = ReportAssets::where('report_id', $reportFirstLast->id)
-              ->where('asset_id', $asset->id)
-              ->first();
+        //   foreach ($assets as $asset) {
+        //     // Ambil status dari reportAssets yang terkait dengan report terakhir
+        //     $previousReportAssets = ReportAssets::where('report_id', $reportFirstLast->id)
+        //       ->where('asset_id', $asset->id)
+        //       ->first();
 
-            // Jika ada record pada report sebelumnya, copy statusnya ke report baru
-            if ($previousReportAssets) {
-              ReportAssets::updateOrCreate(
-                [
-                  'report_id' => $report->id,  // Menghubungkan dengan laporan baru
-                  'asset_id' => $asset->id     // Hubungkan dengan asset yang sama
-                ],
-                [
-                  'status' => $previousReportAssets->status // Copy status dari laporan sebelumnya
-                ]
-              );
-            }
+        //     // Jika ada record pada report sebelumnya, copy statusnya ke report baru
+        //     if ($previousReportAssets) {
+        //       ReportAssets::updateOrCreate(
+        //         [
+        //           'report_id' => $report->id,  // Menghubungkan dengan laporan baru
+        //           'asset_id' => $asset->id     // Hubungkan dengan asset yang sama
+        //         ],
+        //         [
+        //           'status' => $previousReportAssets->status // Copy status dari laporan sebelumnya
+        //         ]
+        //       );
+        //     }
+        //   }
+        // }
+
+        foreach ($reportFirstLast->reportAssets as $reportAsset) {
+          $newReportAsset = $report->reportAssets()->create([
+            'asset_id' => $reportAsset->asset_id,
+            'status' => $reportAsset->status
+          ]);
+
+          foreach ($reportAsset->detailReports as $detailReport) {
+
+         
+
+            $newReportAsset->detailReports()->create([
+              'no_sr' => $detailReport->no_sr,
+              'no_wo' => $detailReport->no_wo,
+              'tanggal_identifikasi' => $detailReport->tanggal_identifikasi,
+              'status_sr' => $detailReport->status_sr,
+              'kondisi_asset' => $detailReport->kondisi_asset,
+              'action_plan' => $detailReport->action_plan,
+              'progress_saat_ini' => $detailReport->progress_saat_ini,
+              'target_selesai' => $detailReport->target_selesai,
+              'realisasi_selesai' => $detailReport->realisasi_selesai,
+              'issue' => $detailReport->issue,
+              'keterangan' => $detailReport->keterangan
+            ]);
           }
+
+         
         }
       }
 

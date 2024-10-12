@@ -13,4 +13,9 @@ class Report extends Model
         'date',
         'location_id'
     ];
+
+    public function reportAssets()
+    {
+        return $this->hasMany(ReportAssets::class);
+    }
 }
