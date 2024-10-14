@@ -23,9 +23,8 @@ class DetailReport extends Model
         'target_selesai',
         'realisasi_selesai',
         'issue',
-        'keterangan'
+        'keterangan',
     ];
-
 
     public function reportAsset()
     {

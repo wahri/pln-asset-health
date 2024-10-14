@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ReportAssets extends Model
 {
     use HasFactory;
-    protected $fillable = ['asset_id', 'report_id', 'status'];
 
+    protected $fillable = ['asset_id', 'report_id', 'status'];
 
     public function asset()
     {
@@ -25,7 +25,6 @@ class ReportAssets extends Model
     {
         return $this->hasMany(DetailReport::class, 'report_asset_id');
     }
-
 
     // Aksesori untuk mendapatkan kelas CSS berdasarkan status
     public function getStatusClassAttribute()

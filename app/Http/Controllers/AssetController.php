@@ -12,7 +12,6 @@ class AssetController extends Controller
     public function index($name_unit)
     {
 
-
         $unit = Unit::firstOrCreate(['name' => $name_unit]);
 
         $dataAssetGroup = AssetGroup::with('assets')->where('unit_id', $unit->id)->get();
@@ -24,8 +23,6 @@ class AssetController extends Controller
 
     public function store(Request $request)
     {
-
-       
 
         try {
 

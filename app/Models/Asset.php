@@ -27,7 +27,6 @@ class Asset extends Model
         return $this->belongsTo(AssetGroup::class, 'asset_group_id', 'id');
     }
 
-
     public function reportAssets()
     {
         return $this->hasMany(ReportAssets::class);
@@ -46,5 +45,4 @@ class Asset extends Model
                 return 'secondary'; // default warna jika status lain
         }
     }
-
 }

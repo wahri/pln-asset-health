@@ -11,7 +11,7 @@ class Report extends Model
 
     protected $fillable = [
         'date',
-        'location_id'
+        'location_id',
     ];
 
     public function reportAssets()

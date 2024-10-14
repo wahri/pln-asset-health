@@ -11,7 +11,6 @@ class UnitController extends Controller
     public function index($name)
     {
 
-
         $location = Location::firstOrCreate(['name' => $name]);
 
         // $unit = $this->unit->getDataALLWhere('location_id', $location->id);
