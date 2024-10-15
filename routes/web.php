@@ -14,6 +14,7 @@ Route::get('/', function () {
 Route::prefix('/dashboard')->name('dashboard.')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/getDataChart', [DashboardController::class, 'getDataChart'])->name('getDataChart');
+
 });
 
 Route::middleware(['auth'])->group(function () {

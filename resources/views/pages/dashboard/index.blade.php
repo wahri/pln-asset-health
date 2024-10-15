@@ -66,7 +66,7 @@
                                 <label class="form-label" for="locationSelect">Select Location</label>
                                 <select class="form-select select2" id="exampleFormControlSelect1"
                                     @change="setSelectedLocation($event.target.value)">
-                                    <option selected>Pilih Lokasi</option>
+                                    <option value="0">Semua Lokasi</option>
                                     @foreach ($locations as $location)
                                         <option value="{{ $location->id }}">{{ $location->name }}</option>
                                     @endforeach
@@ -108,7 +108,9 @@
             <div class="row">
                 <div class="col-12 col-lg-4 d-lg-flex align-items-lg-stretch">
                     <div class="card radius-10 w-100">
-                        <div class="mb-2 bg-transparent card-header font-weight-bold mb-lg-0" x-text="d.unit"></div>
+                        <div class="mb-2 bg-transparent card-header font-weight-bold mb-lg-0" 
+     x-text="d.unit + (d.location ? ' - ' + d.location : ' ')"></div>
+
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table mb-0 table-striped">
@@ -158,7 +160,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body" >
+                        <div class="card-body">
                             <div class="gap-2 d-flex align-items-center ms-auto font-13">
                                 <span class="px-1 border rounded cursor-pointer"><i
                                         class="bx bxs-circle text-success me-1"></i>Normal</span>
@@ -219,6 +221,7 @@
             Alpine.data('alphineData', () => ({
                 open: false,
                 data: [],
+                dataLocationAll: [],
                 dataTables: null,
                 selectedLocation: null,
 
@@ -237,44 +240,83 @@
                     this.selectedLocation = value; // Menyimpan ID lokasi yang dipilih
                 },
 
+                grupmontData(data) {
+                    const monthOrder = [
+                        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                        "Juli", "Agustus", "September", "Oktober", "November",
+                        "Desember"
+                    ];
+
+                    // Menambahkan properti 'monthIndex' untuk sorting
+                    data.forEach(item => {
+                        item.monthIndex = monthOrder.indexOf(item.date);
+                    });
+
+                    // Mengurutkan data berdasarkan monthIndex
+                    const sortedData = data.sort((a, b) => a.monthIndex - b.monthIndex);
+
+                    // Mengambil bulan terkini
+                    const latestMonthIndex = sortedData[sortedData.length - 1].monthIndex;
+                    const latestMonthName = monthOrder[latestMonthIndex];
+
+                    // Memfilter data untuk mendapatkan semua entri dengan bulan terkini
+                    const latestMonthData = sortedData.filter(item => item.date ===
+                        latestMonthName);
+
+                    return latestMonthData;
+
+                },
+
                 async getDataChart(id) {
-
                     try {
-                        let response = await axios.post('{{ route('dashboard.getDataChart') }}', {
-                            id: id
-                        });
 
+                        let responseLocation = await axios.post(
+                            '{{ route('dashboard.getDataChart') }}', {
+                                id: id
+                            });
 
-
-                        const data = response.data;
+                        const data = responseLocation.data;
                         this.data = data;
 
-                        /// Array untuk urutan bulan
-                        const monthOrder = [
-                            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-                        ];
-
-                        // Menambahkan properti 'monthIndex' untuk sorting
-                        data.forEach(item => {
-                            item.monthIndex = monthOrder.indexOf(item.date);
-                        });
-
-                        // Mengurutkan data berdasarkan monthIndex
-                        const sortedData = data.sort((a, b) => a.monthIndex - b.monthIndex);
-
-                        // Mengambil bulan terkini
-                        const latestMonthIndex = sortedData[sortedData.length - 1].monthIndex;
-                        const latestMonthName = monthOrder[latestMonthIndex];
-
-                        // Memfilter data untuk mendapatkan semua entri dengan bulan terkini
-                        const latestMonthData = sortedData.filter(item => item.date ===
-                            latestMonthName);
 
 
-                        this.loadDataChart(latestMonthData);
+                        // const monthOrder = [
+                        //     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                        //     "Juli", "Agustus", "September", "Oktober", "November",
+                        //     "Desember"
+                        // ];
+
+                        // // Menambahkan properti 'monthIndex' untuk sorting
+                        // data.forEach(item => {
+                        //     item.monthIndex = monthOrder.indexOf(item.date);
+                        // });
+
+                        // // Mengurutkan data berdasarkan monthIndex
+                        // const sortedData = data.sort((a, b) => a.monthIndex - b.monthIndex);
+
+                        // // Mengambil bulan terkini
+                        // const latestMonthIndex = sortedData[sortedData.length - 1].monthIndex;
+                        // const latestMonthName = monthOrder[latestMonthIndex];
+
+                        // // Memfilter data untuk mendapatkan semua entri dengan bulan terkini
+                        // const latestMonthData = sortedData.filter(item => item.date ===
+                        //     latestMonthName);
+
+
+                        if (id !== null) {
+                            this.getGroupedDataLocation(data);
+                        } else {
+                            this.loadDataChart(data);
+                        }
+
+
+
+                        console.log(data);
+                        // load data apexChart
                         this.getGroupedData(data);
-                        // this.loadDataApexChart(data);
+
+
+
 
                     } catch (error) {
                         console.error("Error fetching chart data:", error);
@@ -284,12 +326,24 @@
                 loadDataChart(data) {
 
 
+                    let charts = null;
+                    const hasUndefinedUnit = data.some(item => item.location === undefined);
+
+
+                    if (hasUndefinedUnit) {
+                        charts = this.grupmontData(this.data);
+                    } else {
+                        charts = data;
+                    }
+
+
+
                     "use strict";
 
                     const chartContainer = document.getElementById('chartContainer');
                     chartContainer.innerHTML = '';
 
-                    data.map((item, index) => {
+                    charts.map((item, index) => {
 
                         const chartName = 'chart' + (index +
                             1);
@@ -319,7 +373,7 @@
                                 enabled: false,
                             },
                             title: {
-                                text: item.unit,
+                                text: item.location ? item.location : item.unit,
                             },
                             subtitle: {
                                 text: "Ratio of systems monitored",
@@ -385,121 +439,128 @@
 
                 },
 
-             loadDataApexChart(data) {
-    "use strict";
+                loadDataApexChart(data) {
+                    "use strict";
 
-    // Memastikan panjang data
-    if (!Array.isArray(data) || data.length === 0) {
-        console.error("Data is empty or not an array");
-        return;
-    }
-
-    // Menunggu semua elemen dirender sebelum memulai
-    this.$nextTick(() => {
-        // Loop melalui setiap unit data
-        data.forEach((unitData, index) => {
-            const chartElementId = 'charts' + (index + 1);
-            const chartElement = document.getElementById(chartElementId);
-
-            if (!chartElement) {
-                console.error(`charts element not found for index: ${index + 1}`);
-                return; // Lewatkan jika elemen tidak ditemukan
-            }
-
-            // Hancurkan instance chart jika ada
-            const existingChart = chartElement.chartInstance;
-            if (existingChart) {
-                existingChart.destroy(); // Hancurkan chart yang sudah ada
-            }
-
-            // Ambil data untuk grafik dari unit
-            const months = unitData.data.map(item => item.month || ''); // Menghindari undefined
-            const normalData = unitData.data.map(item => item.normal || 0); // Ubah menjadi 0 jika undefined
-            const abnormalData = unitData.data.map(item => item.abnormal || 0); // Ubah menjadi 0 jika undefined
-            const faultData = unitData.data.map(item => item.fault || 0); // Ubah menjadi 0 jika undefined
-
-            const options = {
-                series: [
-                    {
-                        name: "Normal",
-                        data: normalData,
-                    },
-                    {
-                        name: "Abnormal",
-                        data: abnormalData,
-                    },
-                    {
-                        name: "Fault",
-                        data: faultData,
+                    // Memastikan panjang data
+                    if (!Array.isArray(data) || data.length === 0) {
+                        console.error("Data is empty or not an array");
+                        return;
                     }
-                ],
-                chart: {
-                    foreColor: "#9a9797",
-                    type: "bar",
-                    height: 320,
-                    stacked: true,
-                    toolbar: {
-                        show: false,
-                    },
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        columnWidth: "18%",
-                    },
-                },
-                legend: {
-                    show: false,
-                    position: "top",
-                    horizontalAlign: "left",
-                    offsetX: -20,
-                },
-                dataLabels: {
-                    enabled: false,
-                },
-                stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ["transparent"],
-                },
-                colors: ["#198754", "#ffc107", "#dc3545"],
-                xaxis: {
-                    categories: months, // Menggunakan bulan dari data
-                },
-                fill: {
-                    opacity: 1,
-                },
-                grid: {
-                    show: true,
-                    borderColor: "rgba(0, 0, 0, 0.15)",
-                    strokeDashArray: 4,
-                },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            height: 310,
-                        },
-                        plotOptions: {
-                            bar: {
-                                columnWidth: "30%",
-                            },
-                        },
-                    },
-                }],
-            };
 
-            // Membuat instance chart dan merender
-            const chartInstance = new ApexCharts(chartElement, options);
-            chartInstance.render().then(() => {
-                // Simpan instance chart ke elemen untuk akses selanjutnya
-                chartElement.chartInstance = chartInstance;
-            }).catch(err => {
-                console.error('Error rendering chart:', err);
-            });
-        });
-    });
-},
+                    // Menunggu semua elemen dirender sebelum memulai
+                    this.$nextTick(() => {
+                        // Loop melalui setiap unit data
+                        data.forEach((unitData, index) => {
+                            const chartElementId = 'charts' + (index + 1);
+                            const chartElement = document.getElementById(
+                                chartElementId);
+
+                            if (!chartElement) {
+                                console.error(
+                                    `charts element not found for index: ${index + 1}`
+                                );
+                                return; // Lewatkan jika elemen tidak ditemukan
+                            }
+
+                            // Hancurkan instance chart jika ada
+                            const existingChart = chartElement.chartInstance;
+                            if (existingChart) {
+                                existingChart
+                                    .destroy(); // Hancurkan chart yang sudah ada
+                            }
+
+                            // Ambil data untuk grafik dari unit
+                            const months = unitData.data.map(item => item.month ||
+                                ''); // Menghindari undefined
+                            const normalData = unitData.data.map(item => item.normal ||
+                                0); // Ubah menjadi 0 jika undefined
+                            const abnormalData = unitData.data.map(item => item
+                                .abnormal || 0); // Ubah menjadi 0 jika undefined
+                            const faultData = unitData.data.map(item => item.fault ||
+                                0); // Ubah menjadi 0 jika undefined
+
+                            const options = {
+                                series: [{
+                                        name: "Normal",
+                                        data: normalData,
+                                    },
+                                    {
+                                        name: "Abnormal",
+                                        data: abnormalData,
+                                    },
+                                    {
+                                        name: "Fault",
+                                        data: faultData,
+                                    }
+                                ],
+                                chart: {
+                                    foreColor: "#9a9797",
+                                    type: "bar",
+                                    height: 320,
+                                    stacked: true,
+                                    toolbar: {
+                                        show: false,
+                                    },
+                                },
+                                plotOptions: {
+                                    bar: {
+                                        horizontal: false,
+                                        columnWidth: "18%",
+                                    },
+                                },
+                                legend: {
+                                    show: false,
+                                    position: "top",
+                                    horizontalAlign: "left",
+                                    offsetX: -20,
+                                },
+                                dataLabels: {
+                                    enabled: false,
+                                },
+                                stroke: {
+                                    show: true,
+                                    width: 2,
+                                    colors: ["transparent"],
+                                },
+                                colors: ["#198754", "#ffc107", "#dc3545"],
+                                xaxis: {
+                                    categories: months, // Menggunakan bulan dari data
+                                },
+                                fill: {
+                                    opacity: 1,
+                                },
+                                grid: {
+                                    show: true,
+                                    borderColor: "rgba(0, 0, 0, 0.15)",
+                                    strokeDashArray: 4,
+                                },
+                                responsive: [{
+                                    breakpoint: 480,
+                                    options: {
+                                        chart: {
+                                            height: 310,
+                                        },
+                                        plotOptions: {
+                                            bar: {
+                                                columnWidth: "30%",
+                                            },
+                                        },
+                                    },
+                                }],
+                            };
+
+                            // Membuat instance chart dan merender
+                            const chartInstance = new ApexCharts(chartElement, options);
+                            chartInstance.render().then(() => {
+                                // Simpan instance chart ke elemen untuk akses selanjutnya
+                                chartElement.chartInstance = chartInstance;
+                            }).catch(err => {
+                                console.error('Error rendering chart:', err);
+                            });
+                        });
+                    });
+                },
 
 
 
@@ -532,6 +593,7 @@
                         } else {
                             // Jika unit belum ada, tambahkan unit baru
                             acc.push({
+                                location: item.location,
                                 unit: item.unit,
                                 data: [{
                                     month: item.date.toLowerCase(),
@@ -546,11 +608,39 @@
 
                     this.dataTables = groupedData;
 
+                    console.log(this.dataTables);
+
 
                     this.loadDataApexChart(this.dataTables);
 
 
 
+                },
+                getGroupedDataLocation(data) {
+                    const groupedData = data.reduce((acc, item) => {
+                        // Cek apakah lokasi sudah ada di accumulator
+                        let existingLocation = acc.find(location => location.location === item
+                            .location);
+
+                        if (existingLocation) {
+                            // Jika lokasi sudah ada, tambahkan nilai status ke total
+                            existingLocation.normal += item.normal;
+                            existingLocation.abnormal += item.abnormal;
+                            existingLocation.fault += item.fault;
+                        } else {
+                            // Jika lokasi belum ada, tambahkan lokasi baru dengan nilai status awal
+                            acc.push({
+                                location: item.location,
+                                normal: item.normal,
+                                abnormal: item.abnormal,
+                                fault: item.fault
+                            });
+                        }
+                        return acc;
+                    }, []);
+
+                    // Setelah data dikelompokkan, Anda bisa menggunakannya
+                    this.loadDataChart(groupedData);
                 }
 
 
