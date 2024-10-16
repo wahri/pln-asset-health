@@ -62,6 +62,37 @@
                         </div>
                     </div>
 
+                    <button class="btn btn-primary float-end mb-3 pt-2 me-3" data-bs-toggle="modal"
+                        data-bs-target="#importExcel">Import Excel</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form action="{{ route('assetManagement.import.asset') }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Import Data Asset</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label"> Choose Excel File</label>
+                                            <input class="form-control" type="file" id="formFile" required name="fileAsset">
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
 
 
                 </div>
@@ -82,63 +113,62 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $loc->name }}</td>
                                     <td class="d-flex gap-2">
-                                            <button type="button" class="btn btn-info " data-bs-toggle="modal"
-                                                data-bs-target="#editLocation-{{ $loc->id }}">
-                                                <i class='bx bxs-edit text-white'></i>
-                                            </button>
+                                        <button type="button" class="btn btn-info " data-bs-toggle="modal"
+                                            data-bs-target="#editLocation-{{ $loc->id }}">
+                                            <i class='bx bxs-edit text-white'></i>
+                                        </button>
 
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="editLocation-{{ $loc->id }}" tabindex="-1"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <form
-                                                            action="{{ route('assetManagement.location.update', $loc->id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('put')
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="addLocationUnit">Add
-                                                                    Location Unit</h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="mb-3">
-                                                                    <label for="locationUnit" class="form-label">Location
-                                                                        Unit</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="locationUnit" name="locationUnit"
-                                                                        value="{{ $loc->name }}">
-
-                                                                </div>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="editLocation-{{ $loc->id }}" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form action="{{ route('assetManagement.location.update', $loc->id) }}"
+                                                        method="post">
+                                                        @csrf
+                                                        @method('put')
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="addLocationUnit">Add
+                                                                Location Unit</h1>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label for="locationUnit" class="form-label">Location
+                                                                    Unit</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="locationUnit" name="locationUnit"
+                                                                    value="{{ $loc->name }}">
 
                                                             </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">Save
-                                                                    changes</button>
-                                                            </div>
-                                                        </form>
 
-                                                    </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Save
+                                                                changes</button>
+                                                        </div>
+                                                    </form>
+
                                                 </div>
                                             </div>
-                                            <form action="{{ route('assetManagement.location.destroy', $loc->id) }}"
-                                                method="post" id="delete-form_{{ $loc->id }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-danger"
-                                                    onclick="deleteConfirm(event, {{ $loc->id }})"><i
-                                                        class='bx bxs-trash'></i>
-                                                </button>
+                                        </div>
+                                        <form action="{{ route('assetManagement.location.destroy', $loc->id) }}"
+                                            method="post" id="delete-form_{{ $loc->id }}">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="deleteConfirm(event, {{ $loc->id }})"><i
+                                                    class='bx bxs-trash'></i>
+                                            </button>
 
-                                            </form>
-                                            <a href="{{ route('assetManagement.unitPembangkit.index', $loc->name) }}"
-                                                class="btn btn-primary">
-                                                Unit     <i class='bx bx-log-in-circle'></i>
-                                            </a>
+                                        </form>
+                                        <a href="{{ route('assetManagement.unitPembangkit.index', $loc->name) }}"
+                                            class="btn btn-primary">
+                                            Unit <i class='bx bx-log-in-circle'></i>
+                                        </a>
                                     </td>
 
                                 </tr>

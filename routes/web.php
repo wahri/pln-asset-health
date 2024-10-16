@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetHealthReportController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ImportDataController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,12 @@ Route::middleware(['auth'])->group(function () {
 
         // Menyimpan detail report baru berdasarkan reportAssets ID
         Route::post('/report/detail/store/{id_reportAssets}', [AssetHealthReportController::class, 'StoreDetailReports'])->name('storeDetailReport');
+
+        Route::prefix('/import')->name('import.')->group(function () {
+            Route::post('/report', [ImportDataController::class, 'importReportByExcel'])->name('report');
+        });
+
+
     });
 
     Route::prefix('/asset-management')->name('assetManagement.')->group(function () {
@@ -77,6 +84,11 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/store', [AssetController::class, 'store'])->name('store');
             Route::put('/update/{id}', [AssetController::class, 'update'])->name('update');
             Route::delete('/delete/{id}', [AssetController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('/import')->name('import.')->group(function () {
+            Route::post('/asset', [ImportDataController::class, 'importAssetByExcel'])->name('asset');
+           
         });
     });
 });

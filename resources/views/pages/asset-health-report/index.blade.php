@@ -25,13 +25,65 @@
 
         <div class="border-0 border-4 card border-top border-primary">
             <div class="card-body">
-                <div class="card-title d-flex align-items-center">
-                    <div><i class="bx bxs-file me-1 font-22 text-primary"></i>
+
+
+
+
+
+                <div class="card-title">
+                     @include('components.alert')
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <div><i class="bx bxs-file me-1 font-22 text-primary"></i>
+                            </div>
+                            <h5 class="mb-0 text-primary">Pilih Lokasi Pembangkit</h5>
+                        </div>
+                        <div class="col">
+
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary btn-md float-end mb-3 pt-2 me-3" data-bs-toggle="modal"
+                                data-bs-target="#importExcel">Export Excel</button>
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                              <div class="modal-dialog">
+                            <form action="{{ route('assetHealthReport.import.report') }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Import Data Report</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="formFile" class="form-label"> Choose Excel File</label>
+                                            <input class="form-control" type="file" id="formFile" required name="fileReport">
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <h5 class="mb-0 text-primary">Pilih Lokasi Pembangkit</h5>
                 </div>
 
-                <div class="table-responsive">
+
+
+
+
+                <div class="table-responsive mt-4">
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>
