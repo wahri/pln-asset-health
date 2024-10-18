@@ -61,6 +61,15 @@ Route::middleware(['auth'])->group(function () {
         });
 
 
+        Route::prefix('/asset-report')->name('assetReport.')->group(function () {
+            Route::get('/', [AssetHealthReportController::class, 'assetReport'])->name('index');
+            Route::get('/search', [AssetHealthReportController::class, 'searchAssetReport'])->name('searchAssetReport');
+            Route::get('/show/{id_report_asset}', [AssetHealthReportController::class, 'showAssetReport'])->name('showAssetReport');
+
+            
+        });
+
+
     });
 
     Route::prefix('/asset-management')->name('assetManagement.')->group(function () {

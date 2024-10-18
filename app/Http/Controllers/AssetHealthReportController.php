@@ -9,7 +9,9 @@ use App\Models\Location;
 use App\Models\Report;
 use App\Models\ReportAssets;
 use App\Models\Unit;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Pest\Plugins\Retry;
 
 class AssetHealthReportController extends Controller
 {
@@ -89,7 +91,7 @@ class AssetHealthReportController extends Controller
 
             // Buat laporan baru (atau ambil jika sudah ada)
             $report = Report::firstOrCreate([
-                'date' => $validatedData['date'].'-01', // Tanggal untuk laporan baru
+                'date' => $validatedData['date'] . '-01', // Tanggal untuk laporan baru
                 'location_id' => $location->id,
             ]);
 
@@ -158,13 +160,12 @@ class AssetHealthReportController extends Controller
                             'keterangan' => $detailReport->keterangan,
                         ]);
                     }
-
                 }
             }
 
             return back()->with('success', 'Report date and assets added successfully.');
         } catch (\Throwable $th) {
-            return back()->with('error', 'An error occurred: '.$th->getMessage());
+            return back()->with('error', 'An error occurred: ' . $th->getMessage());
         }
     }
 
@@ -305,5 +306,56 @@ class AssetHealthReportController extends Controller
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage()], 500);
         }
+    }
+    public function assetReport(Request $request)
+    {
+
+
+        $locations = Location::all();
+        return view('pages.asset-health-report.asset-report.index', compact('locations'));
+    }
+
+    public function searchAssetReport(Request $request)
+    {
+        $locations = Location::all();
+
+        try {
+            // Validasi input form
+            $validated = $request->validate([
+                'lokasi' => 'required',
+                'status' => 'required',
+            ]);
+
+            // Query untuk mencari berdasarkan status dan lokasi
+            $assertReport = DetailReport::with('reportAsset.asset.unit.location')
+                ->whereHas('reportAsset', function ($query) use ($request) {
+                    $query->where('status', $request->status);  // Filter berdasarkan status dari input
+                })
+                ->whereHas('reportAsset.asset.unit.location', function ($query) use ($request) {
+                    $query->where('locations.name', $request->lokasi);  // Filter berdasarkan lokasi dari input
+                })
+                ->get();
+
+            // Mengembalikan hasil ke view
+            return view('pages.asset-health-report.asset-report.index', compact('locations', 'assertReport'));
+        } catch (\Throwable $th) {
+            // Mengembalikan error jika terjadi kesalahan
+            return back()->with('error', 'Something went wrong');
+        }
+    }
+    public function showAssetReport($id_report_asset){
+
+        $detailReport = DetailReport::with('reportAsset.asset.assetGroup')
+        ->where('report_asset_id', $id_report_asset)
+            ->first();
+
+            $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();
+
+
+
+       
+
+
+        return view('pages.asset-health-report.asset-report.show',compact('detailReport','detailReportsAll'));
     }
 }
