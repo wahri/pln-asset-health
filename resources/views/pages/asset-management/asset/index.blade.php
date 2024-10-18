@@ -109,10 +109,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Asset Group</th>
                                 <th>No Asset</th>
                                 <th>Name Asset</th>
-                                <th>Asset Group</th>
-                                <th>Kondisi Saat ini</th>
+                                <th>Status</th>
                                 <th>Action</th>
 
                             </tr>
