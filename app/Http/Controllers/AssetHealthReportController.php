@@ -12,6 +12,7 @@ use App\Models\Unit;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Pest\Plugins\Retry;
+use Carbon\Carbon;
 
 class AssetHealthReportController extends Controller
 {
@@ -343,19 +344,58 @@ class AssetHealthReportController extends Controller
             return back()->with('error', 'Something went wrong');
         }
     }
-    public function showAssetReport($id_report_asset){
+    public function showAssetReport($id_report_asset)
+    {
+
 
         $detailReport = DetailReport::with('reportAsset.asset.assetGroup')
-        ->where('report_asset_id', $id_report_asset)
+            ->where('report_asset_id', $id_report_asset)
             ->first();
 
-            $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();
+        $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();
 
+        return view('pages.asset-health-report.asset-report.show', compact('detailReport', 'detailReportsAll'));
+    }
 
+    public function getDataStatus($id_report_asset)
+    {
+        // Mengambil status dari DetailReport beserta relasi reportAsset dan report
+        $status = DetailReport::with('reportAsset.report')
+            ->whereHas('reportAsset', function ($query) use ($id_report_asset) {
+                // Menyaring berdasarkan id dari report_asset
+                $query->where('report_asset_id', $id_report_asset);
+            })
+            ->whereHas('reportAsset.report', function ($query) {
+                // Menyaring berdasarkan tahun ini
+                $query->whereYear('date', Carbon::now()->year);
+            })
+            ->get();
 
-       
+        // Mengelompokkan data berdasarkan bulan dari Januari hingga Desember
+        $monthlyStatus = collect(range(1, 12))->mapWithKeys(function ($month) use ($status) {
+            // Memfilter data berdasarkan bulan
+            $monthData = $status->filter(function ($item) use ($month) {
+                return Carbon::parse($item->reportAsset->report->date)->month == $month;
+            });
 
+            // Menghitung status Normal, Abnormal, dan Fault
+            $normalCount = $monthData->where('reportAsset.status', 'normal')->count();
+            $abnormalCount = $monthData->where('reportAsset.status', 'abnormal')->count();
+            $faultCount = $monthData->where('reportAsset.status', 'fault')->count();
 
-        return view('pages.asset-health-report.asset-report.show',compact('detailReport','detailReportsAll'));
+            // Mengonversi angka bulan menjadi nama bulan
+            $monthName = Carbon::create()->month($month)->format('F');
+
+            return [
+                $monthName => [
+                    'normal_count' => $normalCount,
+                    'abnormal_count' => $abnormalCount,
+                    'fault_count' => $faultCount,
+                ]
+            ];
+        });
+
+        // Debug untuk melihat hasil
+        dd($monthlyStatus->toArray());
     }
 }

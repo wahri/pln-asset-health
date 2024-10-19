@@ -8,6 +8,7 @@
     @endpush
     <div class="page-content">
         <!--breadcrumb-->
+
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
             <div class="breadcrumb-title pe-3">Asset Report</div>
             <div class="ps-3">
@@ -39,51 +40,64 @@
                 </div>
                 <h6 class="mb-0 font-weight-bold">Detail Report</h6>
                 <hr>
-                <div class="table-responsive mt-4">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td style="width: 10px">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bx bxs-checkbox me-2 font-24" style="color: #9b59b6;"></i>
-                                        <div><strong>System</strong></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    : {{ $detailReport->reportAsset->asset->assetGroup->name }}
-                                </td>
 
-                            </tr>
+                <div class=" text-start">
+                    <div class="row">
+                        <div class="col">
+                            <div class="table-responsive mt-4">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 10px">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bx bxs-checkbox me-2 font-24" style="color: #9b59b6;"></i>
+                                                    <div><strong>System</strong></div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                : {{ $detailReport->reportAsset->asset->assetGroup->name }}
+                                            </td>
 
-                            <tr>
-                                <td class="px-0">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bx bxs-checkbox me-2 font-24" style="color: #e74c3c;"></i>
-                                        <div><strong>No Asset</strong></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    : {{ $detailReport->reportAsset->asset->no_asset }}
-                                </td>
+                                        </tr>
 
-                            </tr>
-                            <tr>
-                                <td class="px-0">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bx bxs-checkbox me-2 font-24" style="color: #2ecc71;"></i>
-                                        <div><strong>Nama</strong> </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    : {{ $detailReport->reportAsset->asset->name }}
-                                </td>
+                                        <tr>
+                                            <td class="px-0">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bx bxs-checkbox me-2 font-24" style="color: #e74c3c;"></i>
+                                                    <div><strong>No Asset</strong></div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                : {{ $detailReport->reportAsset->asset->no_asset }}
+                                            </td>
 
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-0">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bx bxs-checkbox me-2 font-24" style="color: #2ecc71;"></i>
+                                                    <div><strong>Nama</strong> </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                : {{ $detailReport->reportAsset->asset->name }}
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      
+                        <div class="col">
+                               <div id="chart1"></div>
+                        </div>
+                    </div>
                 </div>
+
+
             </div>
         </div>
 
@@ -151,7 +165,6 @@
             </div>
         </div>
     </div>
-    {{-- <div id="chart1"></div> --}}
 @endsection
 
 
@@ -177,80 +190,90 @@
     <script src="{{ asset('assets/plugins/highcharts/js/accessibility.js') }}"></script>
     <script src="{{ asset('assets/plugins/apexcharts-bundle/js/apexcharts.min.js') }}"></script>
 
-   <script>
-    $(function() {
-        "use strict";
+    <script>
+        $(function() {
+            "use strict";
 
-        // chart 5
-        Highcharts.chart('chart1', {
-            chart: {
-                type: 'line',
-                styledMode: true
-            },
-            title: {
-                text: 'Status Asset per Bulan'
-            },
-            credits: {
-                enabled: false
-            },
-            exporting: {
-                buttons: {
-                    contextButton: {
-                        enabled: false,
-                    }
-                }
-            },
-            yAxis: {
+            // chart 5
+            Highcharts.chart('chart1', {
+                chart: {
+                    type: 'line',
+                    styledMode: true
+                },
                 title: {
-                    text: 'Jumlah',
-                    style: {
-                        display: 'none',
-                    }
-                }
-            },
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
-            plotOptions: {
-                series: {
-                    label: {
-                        connectorAllowed: false
-                    },
-                    pointStart: 2024 // Ganti dengan tahun yang sesuai jika diperlukan
-                }
-            },
-            series: [{
-                name: 'Normal',
-                data: [30, 40, 25, 50, 60, 80, 90, 70, 60, 50, 45, 55] // Ganti dengan data sebenarnya
-            }, {
-                name: 'Abnormal',
-                data: [10, 15, 5, 20, 25, 30, 35, 20, 15, 10, 12, 18] // Ganti dengan data sebenarnya
-            }, {
-                name: 'Fault',
-                data: [5, 10, 15, 10, 8, 6, 5, 7, 8, 12, 15, 20] // Ganti dengan data sebenarnya
-            }],
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
+                    text: 'Status Asset per Bulan'
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            enabled: false,
                         }
                     }
-                }]
-            }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Jumlah'
+                    },
+                    min: 0 // Menetapkan nilai minimum untuk sumbu Y
+                },
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt',
+                        'Nov', 'Des'
+                    ],
+                    title: {
+                        text: 'Bulan'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle'
+                },
+                plotOptions: {
+                    series: {
+                        label: {
+                            connectorAllowed: false
+                        },
+                        // Menambahkan data labels untuk setiap titik
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y}' // Menampilkan nilai di titik data
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Normal',
+                    data: [30, 40, 25, 50, 60, 80, 90, 70, 60, 50, 45, 55]
+                }, {
+                    name: 'Abnormal',
+                    data: [10, 15, 5, 20, 25, 30, 35, 20, 15, 10, 12, 18]
+                }, {
+                    name: 'Fault',
+                    data: [5, 10, 15, 10, 8, 6, 5, 7, 8, 12, 15, 20]
+                }],
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                }
+            });
         });
-    });
-</script>
+    </script>
+
+
+
 
 
 
