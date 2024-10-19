@@ -144,8 +144,8 @@
                                                         class='bx bxs-trash'></i></button>
                                             </form>
 
-                                              <a href="{{ route('assetManagement.assets.index', $u->name) }}"  class="btn btn-primary">
-                                                Asset <i class='bx bx-wrench'></i>
+                                              <a href="{{ route('assetManagement.assets.index', $u->id) }}"  class="btn btn-primary">
+                                                Asset<i class='bx bx-wrench'></i>
                                             </a>
 
                                     </td>

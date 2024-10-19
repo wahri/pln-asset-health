@@ -9,11 +9,10 @@ use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
-    public function index($name_unit)
+    public function index($id_unit)
     {
 
-
-        $unit = Unit::firstOrCreate(['name' => $name_unit]);
+        $unit = Unit::firstOrCreate(['id' => $id_unit]);
 
         $dataAssetGroup = AssetGroup::with('assets')->where('unit_id', $unit->id)->get();
 
