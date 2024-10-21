@@ -25,55 +25,55 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        $location = Location::create([
-            'name' => 'Duri',
-        ]);
+        // $location = Location::create([
+        //     'name' => 'Duri',
+        // ]);
 
-        Unit::insert([
-            [
-                'location_id' => $location->id,
-                'name' => 'PLTMG 1',
-            ],
-            [
-                'location_id' => $location->id,
-                'name' => 'PLTMG 2',
-            ],
-            [
-                'location_id' => $location->id,
-                'name' => 'PLTMG 3',
-            ],
-        ]);
+        // Unit::insert([
+        //     [
+        //         'location_id' => $location->id,
+        //         'name' => 'PLTMG 1',
+        //     ],
+        //     [
+        //         'location_id' => $location->id,
+        //         'name' => 'PLTMG 2',
+        //     ],
+        //     [
+        //         'location_id' => $location->id,
+        //         'name' => 'PLTMG 3',
+        //     ],
+        // ]);
 
-        AssetGroup::insert([
-            [
-                'unit_id' => 1,
-                'name' => 'SWITCHGEAR 15 KV',
-            ],
-            [
-                'unit_id' => 1,
-                'name' => 'GENERATOR FRAME, INCL. STATOR, ROTOR',
-            ],
-        ]);
+        // AssetGroup::insert([
+        //     [
+        //         'unit_id' => 1,
+        //         'name' => 'SWITCHGEAR 15 KV',
+        //     ],
+        //     [
+        //         'unit_id' => 1,
+        //         'name' => 'GENERATOR FRAME, INCL. STATOR, ROTOR',
+        //     ],
+        // ]);
 
-        Asset::insert([
-            [
-                'unit_id' => 1,
-                'asset_group_id' => 1,
-                'no_asset' => 'PLBP-MG-01-AKA10GS001',
-                'name' => 'SWITCHGEAR 15 KV',
-            ],
-            [
-                'unit_id' => 1,
-                'asset_group_id' => 2,
-                'no_asset' => 'PLBP-MG-01-MKA10AG001',
-                'name' => 'ROTOR ASSY GENERATOR',
-            ],
-            [
-                'unit_id' => 1,
-                'asset_group_id' => 2,
-                'no_asset' => 'PLBP-MG-01-MKA10AG002',
-                'name' => 'STATOR ASSY GENERATOR',
-            ],
-        ]);
+        // Asset::insert([
+        //     [
+        //         'unit_id' => 1,
+        //         'asset_group_id' => 1,
+        //         'no_asset' => 'PLBP-MG-01-AKA10GS001',
+        //         'name' => 'SWITCHGEAR 15 KV',
+        //     ],
+        //     [
+        //         'unit_id' => 1,
+        //         'asset_group_id' => 2,
+        //         'no_asset' => 'PLBP-MG-01-MKA10AG001',
+        //         'name' => 'ROTOR ASSY GENERATOR',
+        //     ],
+        //     [
+        //         'unit_id' => 1,
+        //         'asset_group_id' => 2,
+        //         'no_asset' => 'PLBP-MG-01-MKA10AG002',
+        //         'name' => 'STATOR ASSY GENERATOR',
+        //     ],
+        // ]);
     }
 }
