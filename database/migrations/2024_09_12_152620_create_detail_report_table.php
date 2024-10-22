@@ -20,11 +20,11 @@ return new class extends Migration
             $table->string('status_sr')->nullable();
             $table->text('kondisi_asset')->nullable();
             $table->text('action_plan')->nullable();
-            $table->string('progress_saat_ini')->nullable();
+            $table->text('progress_saat_ini')->nullable();
             $table->string('target_selesai')->nullable();
             $table->integer('realisasi_selesai')->nullable();
             $table->text('issue')->nullable();
-            $table->string('keterangan')->nullable();
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
     }

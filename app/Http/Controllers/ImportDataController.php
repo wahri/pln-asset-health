@@ -21,6 +21,7 @@ class ImportDataController extends Controller
 
             return back()->with('success', 'Asset imported successfully');
         } catch (\Throwable $th) {
+            dd($th->getMessage());
             return back()->with('error', 'Something went wrong');
         }
     }
