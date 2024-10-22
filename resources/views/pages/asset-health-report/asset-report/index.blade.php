@@ -76,7 +76,7 @@
 
 
 
-                <div class="table-responsive mt-5">
+                <div class="mt-5 ">
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>

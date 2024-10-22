@@ -42,8 +42,8 @@
 
                         </div>
                         <div class="col">
-                            <button class="btn btn-primary btn-md float-end mb-3 pt-2 me-3" data-bs-toggle="modal"
-                                data-bs-target="#importExcel">Export Excel</button>
+                            <button class="pt-2 mb-3 btn btn-secondary btn-md float-end me-3" data-bs-toggle="modal"
+                                data-bs-target="#importExcel">Import Data Report</button>
 
 
                             <!-- Modal -->
@@ -68,7 +68,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                        <button type="submit" class="btn btn-primary">Import</button>
                                     </div>
                                 </div>
                             </form>
@@ -83,7 +83,7 @@
 
 
 
-                <div class="table-responsive mt-4">
+                <div class="mt-4 table-responsive">
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>

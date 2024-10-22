@@ -22,6 +22,11 @@ class AssetImport implements ToModel
             return null;
         }
 
+        $checkAsset = Asset::where('no_asset', $row[2])->first();
+        if ($checkAsset) {
+            return null;
+        }
+
         // Mencari atau membuat lokasi berdasarkan kolom 'location'
         $location = Location::firstOrCreate(['name' => $row[0]]);
 
@@ -50,6 +55,4 @@ class AssetImport implements ToModel
             'status' => 'normal',   // Set nilai default untuk status
         ]);
     }
-
-
 }

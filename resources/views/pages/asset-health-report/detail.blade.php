@@ -8,11 +8,11 @@
     @endpush
     <div class="page-content">
         <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="mb-3 page-breadcrumb d-none d-sm-flex align-items-center">
             <div class="breadcrumb-title pe-3">Asset Health Report</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
+                    <ol class="p-0 mb-0 breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
@@ -53,7 +53,7 @@
                 </div>
                 <h6 class="mb-0 font-weight-bold">Detail Report</h6>
                 <hr>
-                <div class="table-responsive mt-4">
+                <div class="mt-4 table-responsive">
                     <table class="table">
                         <tbody>
                             <tr>
@@ -139,7 +139,7 @@
         <div class="card">
             <div class="card-body">
 
-                <div class="d-lg-flex align-items-center mb-4 gap-3">
+                <div class="gap-3 mb-4 d-lg-flex align-items-center">
 
                     <div class="position-relative">
                         {{-- <input type="text" class="form-control ps-5 radius-30" placeholder="Search Order"> <span
@@ -147,7 +147,7 @@
                                 class="bx bx-search"></i></span> --}}
                     </div>
                     <div class="ms-auto">
-                        <button type="button" class="btn btn-primary radius-30 mt-2 mt-lg-0" data-bs-toggle="modal"
+                        <button type="button" class="mt-2 btn btn-primary radius-30 mt-lg-0" data-bs-toggle="modal"
                             data-bs-target="#addSR"><i class="bx bxs-plus-square"></i>Add SR</button>
 
 
@@ -264,7 +264,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive">
+                <div class="">
                     <table class="table mb-0">
                         <thead class="table-light">
                             <tr>
@@ -396,7 +396,7 @@
                                                                                 Ini</label>
                                                                             <select name="progresSaatIni"
                                                                                 id="progresSaatIni"
-                                                                                class="form-select  select2-edit-ProgresSaatini">
+                                                                                class="form-select select2-edit-ProgresSaatini">
                                                                                 <option
                                                                                     value="{{ $dr->progress_saat_ini ? $dr->progress_saat_ini : '' }}">
                                                                                     {{ $dr->progress_saat_ini ? $dr->progress_saat_ini : 'Pilih Progres Saat Ini' }}

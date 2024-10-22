@@ -62,8 +62,8 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-primary float-end mb-3 pt-2 me-3" data-bs-toggle="modal"
-                        data-bs-target="#importExcel">Import Excel</button>
+                    <button class="btn btn-secondary float-end mb-3 pt-2 me-3" data-bs-toggle="modal"
+                        data-bs-target="#importExcel">Import Data Excel</button>
                     <!-- Modal -->
                     <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="exampleModalLabel"
                         aria-hidden="true">
@@ -86,7 +86,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                        <button type="submit" class="btn btn-primary">Import</button>
                                     </div>
                                 </div>
                             </form>

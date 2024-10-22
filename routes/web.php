@@ -9,13 +9,12 @@ use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/login');
+    return redirect('/dashboard');
 });
 
-Route::prefix('/dashboard')->name('dashboard.')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('/dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/getDataChart', [DashboardController::class, 'getDataChart'])->name('getDataChart');
-
 });
 
 Route::middleware(['auth'])->group(function () {
