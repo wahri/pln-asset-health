@@ -5,6 +5,7 @@ use App\Http\Controllers\AssetHealthReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ImportDataController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
 
@@ -99,6 +100,14 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/asset', [ImportDataController::class, 'importAssetByExcel'])->name('asset');
            
         });
+    });
+
+    Route::prefix('/settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::post('/update-account', [SettingsController::class, 'updateAccount'])->name('updateAccount');
+
+
+       
     });
 });
 

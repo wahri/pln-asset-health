@@ -51,8 +51,8 @@
           </li>
 
 
-          <li>
-              <a href="widgets.html">
+          <li {{ request()->routeIs('settings.*') ? 'mm-active' : '' }}>
+              <a href="{{ route('settings.index') }}">
                   <div class="parent-icon">
                       <i class="bx bx-cog"></i>
                   </div>
