@@ -39,38 +39,36 @@ class ReportImport implements ToModel
             'keterangan'
         ];
 
-      
-
         if (count($row) >= count($headers) && !array_diff($headers, $row)) {
-            return null; 
+            return null;
         }
         $location = Location::firstOrCreate(['name' => $row[0]]);
 
         $report = Report::firstOrCreate([
             'location_id' => $location->id,
-            'date' => $this->convertMonth($row[1]) 
+            'date' => $this->convertMonth($row[1])
         ]);
 
         $asset = Asset::with('unit.location')
-        ->whereHas('unit', function ($query) use ($location) {
-            $query->where('location_id', $location->id);
-        })
+            ->whereHas('unit', function ($query) use ($location) {
+                $query->where('location_id', $location->id);
+            })
             ->where('no_asset', $row[2])
             ->first();
 
-          
-
         if (!$asset) {
-           
             return null;
         }
 
-        $reportAsset = ReportAssets::firstOrCreate([
-            'asset_id' => $asset->id,
-            'report_id' => $report->id,
-            'status' => $row[3],
-        ]);
+        $reportAsset = ReportAssets::where('asset_id', $asset->id)
+            ->where('report_id', $report->id)
+            ->first();
 
+        if (!$reportAsset) {
+            return null;
+        }
+        $reportAsset->status = $row[3];
+        $reportAsset->save();
 
         // Mengembalikan DetailReport dengan data dari Excel
         return new DetailReport([

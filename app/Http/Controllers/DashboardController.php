@@ -6,6 +6,7 @@ use App\Models\Location;
 use App\Models\ReportAssets;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -14,6 +15,42 @@ class DashboardController extends Controller
         $locations = Location::all();
 
         return view('pages.dashboard.index', compact('locations'));
+    }
+
+    public function getReportData(Request $request)
+    {
+        // Ambil report terakhir untuk setiap lokasi
+
+        $latestReports = DB::table('reports as r1')
+            ->join('locations as l', 'r1.location_id', '=', 'l.id')
+            ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name')
+            ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
+            ->get();
+
+        // Ambil count asset berdasarkan status pada report terakhir setiap lokasi
+        $reportAssetCounts = DB::table('report_assets')
+            ->select('status', 'report_id', DB::raw('COUNT(*) as asset_count'))
+            ->whereIn('report_id', $latestReports->pluck('report_id'))
+            ->groupBy('report_id', 'status')
+            ->get();
+
+        // Menyusun hasil per lokasi
+        $result = $latestReports->map(function ($report) use ($reportAssetCounts) {
+            $assets = $reportAssetCounts->where('report_id', $report->report_id);
+
+            return [
+                'location_id' => $report->location_id,
+                'location_name' => $report->location_name,
+                'report_id' => $report->report_id,
+                'asset_counts' => [
+                    'normal' => $assets->where('status', 'normal')->sum('asset_count'),
+                    'abnormal' => $assets->where('status', 'abnormal')->sum('asset_count'),
+                    'fault' => $assets->where('status', 'fault')->sum('asset_count'),
+                ]
+            ];
+        });
+
+        return $result;
     }
 
     public function getDataChart(Request $request)
@@ -130,13 +167,7 @@ class DashboardController extends Controller
                 ];
             }
 
-
-        
-
-
             return response()->json($finalData);
         }
     }
-
- 
 }

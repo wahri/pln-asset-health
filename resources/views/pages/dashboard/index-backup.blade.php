@@ -9,53 +9,6 @@
 
 @section('content')
     <div class="page-content" x-data="alphineData">
-        {{-- <div class="row row-cols-1 row-cols-lg-3">
-            <div class="col">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <p class="mb-0">Goal Completions</p>
-                                <h4 class="font-weight-bold">1,94,2335</h4>
-                                <p class="mb-0 text-secondary font-13">Analytics for last month</p>
-                            </div>
-                            <div class="text-white widgets-icons bg-gradient-kyoto"><i class='bx bxs-cube'></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <p class="mb-0">Bounce Rate</p>
-                                <h4 class="font-weight-bold">58% <small class="text-danger font-13">(-16%)</small></h4>
-                                <p class="mb-0 text-secondary font-13">Analytics for last week</p>
-                            </div>
-                            <div class="text-white widgets-icons bg-gradient-blues"><i class='bx bx-line-chart'></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <p class="mb-0">New Sessions</p>
-                                <h4 class="font-weight-bold">96% <small class="text-danger font-13">(+54%)</small></h4>
-                                <p class="mb-0 text-secondary font-13">Analytics for last week</p>
-                            </div>
-                            <div class="text-white widgets-icons bg-gradient-moonlit"><i class='bx bx-bar-chart'></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
 
         <div class="row">
             <div class="col-12">
@@ -81,35 +34,14 @@
             </div>
         </div>
         <div class="row" id="chartContainer" x-init="getDataChart()">
-            {{-- <div class="col-12 col-lg-4">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div id="chart1"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div id="chart2"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div class="card radius-10">
-                    <div class="card-body">
-                        <div id="chart3"></div>
-                    </div>
-                </div>
-            </div> --}}
         </div>
 
         <template x-for="(d,index) in dataTables" :key="index">
             <div class="row">
                 <div class="col-12 col-lg-4 d-lg-flex align-items-lg-stretch">
                     <div class="card radius-10 w-100">
-                        <div class="mb-2 bg-transparent card-header font-weight-bold mb-lg-0" 
-     x-text="d.unit + (d.location ? ' - ' + d.location : ' ')"></div>
+                        <div class="mb-2 bg-transparent card-header font-weight-bold mb-lg-0"
+                            x-text="d.unit + (d.location ? ' - ' + d.location : ' ')"></div>
 
                         <div class="card-body">
                             <div class="table-responsive">
@@ -200,7 +132,6 @@
 
     <script>
         $(document).ready(function() {
-
             $(document).ready(function() {
                 $('#exampleFormControlSelect1').select2({
                     theme: "bootstrap-5",
@@ -209,8 +140,6 @@
                     closeOnSelect: false,
                 });
             });
-
-
         });
     </script>
 
@@ -269,7 +198,6 @@
 
                 async getDataChart(id) {
                     try {
-
                         let responseLocation = await axios.post(
                             '{{ route('dashboard.getDataChart') }}', {
                                 id: id
@@ -278,45 +206,15 @@
                         const data = responseLocation.data;
                         this.data = data;
 
-
-
-                        // const monthOrder = [
-                        //     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-                        //     "Juli", "Agustus", "September", "Oktober", "November",
-                        //     "Desember"
-                        // ];
-
-                        // // Menambahkan properti 'monthIndex' untuk sorting
-                        // data.forEach(item => {
-                        //     item.monthIndex = monthOrder.indexOf(item.date);
-                        // });
-
-                        // // Mengurutkan data berdasarkan monthIndex
-                        // const sortedData = data.sort((a, b) => a.monthIndex - b.monthIndex);
-
-                        // // Mengambil bulan terkini
-                        // const latestMonthIndex = sortedData[sortedData.length - 1].monthIndex;
-                        // const latestMonthName = monthOrder[latestMonthIndex];
-
-                        // // Memfilter data untuk mendapatkan semua entri dengan bulan terkini
-                        // const latestMonthData = sortedData.filter(item => item.date ===
-                        //     latestMonthName);
-
-
                         if (id !== null) {
                             this.getGroupedDataLocation(data);
                         } else {
                             this.loadDataChart(data);
                         }
 
-
-
                         console.log(data);
                         // load data apexChart
                         this.getGroupedData(data);
-
-
-
 
                     } catch (error) {
                         console.error("Error fetching chart data:", error);
@@ -325,10 +223,8 @@
                 },
                 loadDataChart(data) {
 
-
                     let charts = null;
                     const hasUndefinedUnit = data.some(item => item.location === undefined);
-
 
                     if (hasUndefinedUnit) {
                         charts = this.grupmontData(this.data);
@@ -336,21 +232,14 @@
                         charts = data;
                     }
 
-
-
                     "use strict";
-
                     const chartContainer = document.getElementById('chartContainer');
                     chartContainer.innerHTML = '';
-
                     charts.map((item, index) => {
-
                         const chartName = 'chart' + (index +
                             1);
-
                         const cardDiv = document.createElement('div');
                         cardDiv.className = "col-12 col-lg-4";
-
                         cardDiv.innerHTML = `
                             <div class="card radius-10">
                                 <div class="card-body">

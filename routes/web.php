@@ -12,6 +12,8 @@ Route::get('/', function () {
     return redirect('/dashboard');
 });
 
+Route::get('/getReportData', [DashboardController::class, 'getReportData'])->name('getReportData');
+
 Route::prefix('/dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/getDataChart', [DashboardController::class, 'getDataChart'])->name('getDataChart');
