@@ -50,6 +50,13 @@
               </a>
           </li>
 
+           <li class="{{ request()->routeIs('export.*') ? 'mm-active' : '' }}">
+              <a href="{{ route('export.index') }}" class="">
+                  <div class="parent-icon"><i class="bx bx-export"></i></div>
+                  <div class="menu-title">Export Data</div>
+              </a>
+          </li>
+
 
           <li {{ request()->routeIs('settings.*') ? 'mm-active' : '' }}>
               <a href="{{ route('settings.index') }}">
