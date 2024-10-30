@@ -42,7 +42,7 @@
 
                 </div>
             </div>
-            {{-- <div class="card-body">
+            <div class="card-body">
                 <div class="table-responsive">
                     @if (Request::get('bulan') && Request::get('location'))
                         <table id="tabel_id" class="table table-striped table-bordered">
@@ -535,7 +535,7 @@
                         <button type="button" class="btn btn-secondary btn-sm mt-3">Detail Faults</button>
                     @endif
                 </div>
-            </div> --}}
+            </div>
         </div>
 
     </div>
