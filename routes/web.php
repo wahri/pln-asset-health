@@ -3,8 +3,10 @@
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetHealthReportController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportDataController;
 use App\Http\Controllers\ImportDataController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,11 +68,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [AssetHealthReportController::class, 'assetReport'])->name('index');
             Route::get('/search', [AssetHealthReportController::class, 'searchAssetReport'])->name('searchAssetReport');
             Route::get('/show/{id_report_asset}', [AssetHealthReportController::class, 'showAssetReport'])->name('showAssetReport');
-
-            
         });
-
-
     });
 
     Route::prefix('/asset-management')->name('assetManagement.')->group(function () {
@@ -98,9 +96,20 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('/import')->name('import.')->group(function () {
             Route::post('/asset', [ImportDataController::class, 'importAssetByExcel'])->name('asset');
-           
         });
+
+    });
+
+    Route::prefix('/settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::post('/update-account', [SettingsController::class, 'updateAccount'])->name('updateAccount');
+    });
+
+    Route::prefix('/export')->name('export.')->group(function () {
+        Route::get('/', [ExportDataController::class, 'index'])->name('index');
+        Route::get('/show', [ExportDataController::class, 'show'])->name('show');
+
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
