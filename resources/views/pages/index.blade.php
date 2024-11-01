@@ -147,8 +147,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <template x-for="(report, index) in reports" :key="index">
+                {{-- <div class="row">
+                    <template x-for="(report, index) in reports" :key="report.location_id">
                         <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
                             <div class="card">
                                 <div class="card-body">
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                     </template>
-                </div>
+                </div> --}}
 
                 <div class="row">
                     <div class="col-sm-12">
@@ -187,137 +187,6 @@
                                             <col style="width: 180px;"> <!-- Main Issue -->
                                             <col style="width: 200px;"> <!-- Keterangan -->
                                         </colgroup>
-                                        <thead>
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Unit</th>
-                                                <th>No Asset</th>
-                                                <th>Nama Asset</th>
-                                                <th>Group Asset</th>
-                                                <th>Status</th>
-                                                <th>No SR</th>
-                                                <th>No WO</th>
-                                                <th>Tgl Identifikasi</th>
-                                                <th>Status SR</th>
-                                                <th>Kondisi Asset</th>
-                                                <th>Action Plan</th>
-                                                <th>Target Selesai</th>
-                                                <th>Progress Saat Ini</th>
-                                                <th>Realisasi Selesai</th>
-                                                <th>Main Issue</th>
-                                                <th>Keterangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <template x-for="(data, index) in dataAssets" :key="data.id">
-                                                <tr>
-                                                    <td x-text="data.unit.location.name"></td>
-                                                    <td x-text="data.unit.name"></td>
-                                                    <td x-text="data.asset.no_asset"></td>
-                                                    <td x-text="data.asset.name"></td>
-                                                    <td x-text="data.asset.asset_group.name"></td>
-                                                    <td x-text="data.status"></td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.no_sr"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.no_wo"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.tanggal_identifikasi"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.status_sr"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.kondisi_asset"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.action_plan"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.target_selesai"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.progress_saat_ini"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.realisasi_selesai"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.issue"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                    <td>
-                                                        <template x-for="(sr, index) in data.detail_reports"
-                                                            :key="index">
-                                                            <span x-text="sr.keterangan"></span>
-                                                            <hr>
-                                                        </template>
-                                                    </td>
-                                                </tr>
-                                            </template>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Lokasi</th>
-                                                <th>Unit</th>
-                                                <th>No Asset</th>
-                                                <th>Nama Asset</th>
-                                                <th>Group Asset</th>
-                                                <th>Status</th>
-                                                <th>No SR</th>
-                                                <th>No WO</th>
-                                                <th>Tgl Identifikasi</th>
-                                                <th>Status SR</th>
-                                                <th>Kondisi Asset</th>
-                                                <th>Action Plan</th>
-                                                <th>Target Selesai</th>
-                                                <th>Progress Saat Ini</th>
-                                                <th>Realisasi Selesai</th>
-                                                <th>Main Issue</th>
-                                                <th>Keterangan</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
@@ -384,7 +253,12 @@
                         this.reports = response.data.charts;
                         this.dataAssets = response.data.table;
                         this.isLoading = false;
+                        // this.loadCharts()
+
                         this.$nextTick(() => this.loadCharts());
+                        this.$nextTick(() => {
+                            this.initializeDataTable();
+                        });
                     } catch (error) {
                         console.error("Error fetching data:", error);
                         this.isLoading = false;
@@ -517,17 +391,147 @@
                         },
                         series: this.reports.series,
                     });
+                    // if ($.fn.DataTable.isDataTable('#tableAssets')) {
+                    //     $('#tableAssets').DataTable().clear().destroy();
+                    // }
+                    // var table = $('#tableAssets').DataTable({
+                    //     lengthChange: false,
+                    //     buttons: ['colvis', 'excel']
+                    // });
 
+                    // table.buttons().container()
+                    //     .appendTo('#tableAssets_wrapper .col-md-6:eq(0)');
+                },
 
-                    $(document).ready(function() {
-                        var table = $('#tableAssets').DataTable({
-                            lengthChange: false,
-                            buttons: ['colvis', 'excel']
-                        });
+                initializeDataTable() {
+                    // Check if DataTable is already initialized and destroy it if necessary
+                    if ($.fn.DataTable.isDataTable('#tableAssets')) {
+                        $('#tableAssets').DataTable().clear().destroy();
+                    }
 
-                        table.buttons().container()
-                            .appendTo('#tableAssets_wrapper .col-md-6:eq(0)');
+                    // Initialize the DataTable with the new data
+                    $('#tableAssets').DataTable({
+                        data: this.dataAssets,
+                        columns: [{
+                                data: 'unit.location.name',
+                                title: 'Lokasi'
+                            },
+                            {
+                                data: 'unit.name',
+                                title: 'Unit'
+                            },
+                            {
+                                data: 'asset.no_asset',
+                                title: 'No Asset'
+                            },
+                            {
+                                data: 'asset.name',
+                                title: 'Nama Asset'
+                            },
+                            {
+                                data: 'asset.asset_group.name',
+                                title: 'Group Asset'
+                            },
+                            {
+                                data: 'status',
+                                title: 'Status'
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'No SR',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.no_sr).join(
+                                        '<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'No WO',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.no_wo).join(
+                                        '<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Tgl Identifikasi',
+                                render: function(data, type, row) {
+                                    return data.map(report => report
+                                        .tanggal_identifikasi).join('<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Status SR',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.status_sr).join(
+                                        '<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Kondisi Asset',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.kondisi_asset)
+                                        .join('<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Action Plan',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.action_plan).join(
+                                        '<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Target Selesai',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.target_selesai)
+                                        .join('<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Progress Saat Ini',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.progress_saat_ini)
+                                        .join('<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Realisasi Selesai',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.realisasi_selesai)
+                                        .join('<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Main Issue',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.issue).join(
+                                        '<hr>');
+                                }
+                            },
+                            {
+                                data: 'detail_reports',
+                                title: 'Keterangan',
+                                render: function(data, type, row) {
+                                    return data.map(report => report.keterangan).join(
+                                        '<hr>');
+                                }
+                            }
+                        ],
+                        lengthChange: false,
+                        buttons: ['colvis', 'excel'],
                     });
+
+                    // Append buttons to the desired location
+                    $('#tableAssets').DataTable().buttons().container()
+                        .appendTo('#tableAssets_wrapper .col-md-6:eq(0)');
                 },
             }));
         });
