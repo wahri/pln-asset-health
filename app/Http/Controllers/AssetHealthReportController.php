@@ -277,8 +277,7 @@ class AssetHealthReportController extends Controller
             return back()->with('success', 'Detail report asset created successfully');
         } catch (\Throwable $th) {
 
-            dd($th->getMessage());
-
+          
             return back()->with('error', 'Something went wrong');
         }
     }
@@ -383,6 +382,5 @@ class AssetHealthReportController extends Controller
         });
 
         // Debug untuk melihat hasil
-        dd($monthlyStatus->toArray());
     }
 }

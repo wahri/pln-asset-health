@@ -219,11 +219,9 @@
                                                     <label for="progresSaatIni" class="form-label">Progres Saat
                                                         Ini</label>
                                                     <div class="input-group">
-                                                        <input type="number" class="form-control"
+                                                        <input type="text" class="form-control"
                                                            name="progresSaatIni" id="progresSaatIni"
-                                                            placeholder="Enter Progres Saat Ini" min="0"
-                                                            max="100">
-                                                        <span class="input-group-text">%</span>
+                                                          >                                                    
                                                     </div>
                                                 </div>
                                                
@@ -305,7 +303,7 @@
                                                     data-bs-target="#editSR_{{ $dr->id }}"><i
                                                         class='bx bxs-edit'></i></button>
                                                 <!-- Modal -->
-                                                <div class="modal fade " id="editSR_{{ $dr->id }}" tabindex="-1"
+                                                <div class="modal fade" id="editSR_{{ $dr->id }}" tabindex="-1"
                                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-fullscreen">
                                                         <form
@@ -386,34 +384,14 @@
                                                                         </div>
 
 
-                                                                        <div class="col-md-12">
-                                                                            <label for="progresSaatIni"
-                                                                                class="form-label">Progres Saat
-                                                                                Ini</label>
-                                                                            <select name="progresSaatIni"
-                                                                                id="progresSaatIni"
-                                                                                class="form-select select2-edit-ProgresSaatini">
-                                                                                <option
-                                                                                    value="{{ $dr->progress_saat_ini ? $dr->progress_saat_ini : '' }}">
-                                                                                    {{ $dr->progress_saat_ini ? $dr->progress_saat_ini : 'Pilih Progres Saat Ini' }}
-                                                                                </option>
-
-                                                                                @foreach ($statusSR as $status)
-                                                                                    <option value="{{ $status }}">
-                                                                                        {{ $status }}
-                                                                                    </option>
-                                                                                @endforeach
-
-                                                                            </select>
-                                                                        </div>
+                                                                       
 
                                                                         <div class="col-md-4">
                                                                             <label for="targetSelesai"
                                                                                 class="form-label">Target Selesai</label>
                                                                             <input type="text" class="form-control"
                                                                                 id="targetSelesai" name="targetSelesai"
-                                                                                min="1900" max="2100"
-                                                                                step="1" placeholder="YYYY"
+                                                                               
                                                                                 placeholder="Enter Target Selesai"
                                                                                 value="{{ $dr->target_selesai }}">
                                                                         </div>
@@ -423,13 +401,13 @@
                                                                                 class="form-label">Progres Saat
                                                                                 Ini</label>
                                                                             <div class="input-group">
-                                                                                <input type="number" class="form-control"
-                                                                                    name="realisasiSelesai"
-                                                                                    id="realisasiSelesai"
-                                                                                    placeholder="Enter Realisasi Selesai"
-                                                                                    min="0" max="100"
-                                                                                    value="{{ $dr->realisasi_selesai }}">
-                                                                                <span class="input-group-text">%</span>
+                                                                                <input type="text" class="form-control"
+                                                                                  name="progresSaatIni"
+                                                                                id="progresSaatIni"
+                                                                                    placeholder="Enter Progres Saat Ini"
+                                                                                   
+                                                                                    value="{{ $dr->progress_saat_ini }}">
+                                                                               
                                                                             </div>
                                                                         </div>
 
@@ -439,8 +417,7 @@
                                                                                 Selesai</label>
                                                                             <div class="input-group">
                                                                                 <input type="number" class="form-control"
-                                                                                   name="progresSaatIni"
-                                                                                id="progresSaatIni"
+                                                                                   name="realisasiSelesai" id="realisasiSelesai"
                                                                                     placeholder="Enter Realisasi Selesai"
                                                                                     min="0" max="100"
                                                                                     value="{{ $dr->realisasi_selesai }}">
