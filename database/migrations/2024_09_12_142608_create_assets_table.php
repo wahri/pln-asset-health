@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('no_asset');
             $table->string('name');
             $table->enum('status', ['normal', 'abnormal', 'fault'])->default('normal');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -605,10 +605,19 @@ html.dark-theme .page-link {
 	background-color: #101115;
 	border: 1px solid rgb(255 255 255 / 0.12);
 }
+
+html.dark-theme .active>.page-link,
+        .page-link.active {
+            z-index: 3;
+			color: #b0b6bc;
+			background-color: rgb(255 255 255 / 28%);
+			border-color: rgb(222 226 230 / 14%);
+        }
+
 html.dark-theme .page-item.disabled .page-link {
-	color: #b0b6bc;
-	background-color: rgb(255 255 255 / 28%);
-	border-color: rgb(222 226 230 / 14%);
+	color: #b2b6ba;
+	background-color: #101115;
+	border: 1px solid rgb(255 255 255 / 0.12);
 }
 html.dark-theme .progress {
 	background-color: rgb(255 255 255 / 14%);

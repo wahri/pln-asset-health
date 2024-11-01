@@ -20,8 +20,6 @@ class DashboardController extends Controller
 
     public function getReportData(Request $request)
     {
-
-
         if ($request->location_id) {
             $latestReport = DB::table('reports')
                 ->where('location_id', $request->location_id)
@@ -57,6 +55,8 @@ class DashboardController extends Controller
                 $faultData[] = $statuses->where('status', 'fault')->sum('asset_count') ?: 0;
             }
 
+            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->where('report_id', $latestReport->id)->where('status', '!=', 'normal')->get();
+
             // Format response untuk Highcharts
             return response()->json([
                 'charts' => [
@@ -66,7 +66,8 @@ class DashboardController extends Controller
                         ['name' => 'Abnormal', 'data' => $abnormalData],
                         ['name' => 'Fault', 'data' => $faultData],
                     ]
-                ]
+                ],
+                'table' => $reportAsset
             ]);
         } else {
             // Ambil report terakhir untuk setiap lokasi
@@ -97,7 +98,7 @@ class DashboardController extends Controller
                 $faultData[] = $assets->where('status', 'fault')->sum('asset_count') ?: 0;
             }
 
-            $reportAsset = ReportAssets::where('status', '!=', 'normal')->get();
+            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->whereIn('report_id', $latestReports->pluck('report_id'))->where('status', '!=', 'normal')->get();
 
             // Format response untuk Highcharts
             return response()->json(
