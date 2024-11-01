@@ -34,7 +34,7 @@
 
                 <div class="card-title">
                     @include('components.alert')
-                    <form action="{{ route('assetHealthReport.assetReport.searchAssetReport') }}" method="get">
+                    <form action="{{ route('assetReport.searchAssetReport') }}" method="get">
                         <div class="row">
                             <div class="col-3">
                                 <label for="lokasi" class="form-label">Lokasi</label>
@@ -115,7 +115,7 @@
 
                                         <td>
                                             <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                                <a href="{{ route('assetHealthReport.assetReport.showAssetReport', $ar->report_asset_id) }}" class="btn btn-info">
+                                                <a href="{{ route('assetReport.showAssetReport', $ar->report_asset_id) }}" class="btn btn-info">
                                                     Detail <i class='bx bx-log-in-circle'></i>
                                                 </a>
                                             </div>

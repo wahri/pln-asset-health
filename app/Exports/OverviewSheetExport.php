@@ -109,8 +109,8 @@ class OverviewSheetExport implements FromCollection, WithTitle, WithHeadings, Wi
                 $event->sheet->getStyle('F1')->applyFromArray($headerStylePurple);
                 $event->sheet->getStyle('G1')->applyFromArray($headerStyleYellow);
                 $event->sheet->getStyle('H1')->applyFromArray($headerStyleRed);
-                $event->sheet->getStyle('I1')->applyFromArray($headerStyleRed);
-                $event->sheet->getStyle('J1')->applyFromArray($headerStyleYellow);
+                $event->sheet->getStyle('I1')->applyFromArray($headerStyleYellow);
+                $event->sheet->getStyle('J1')->applyFromArray($headerStyleRed);
 
                 // Get last row for merging and styling purposes
                 $lastRow = count($this->overview) + 1;

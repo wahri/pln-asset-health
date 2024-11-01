@@ -64,13 +64,12 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('/import')->name('import.')->group(function () {
             Route::post('/report', [ImportDataController::class, 'importReportByExcel'])->name('report');
         });
+    });
 
-
-        Route::prefix('/asset-report')->name('assetReport.')->group(function () {
-            Route::get('/', [AssetHealthReportController::class, 'assetReport'])->name('index');
-            Route::get('/search', [AssetHealthReportController::class, 'searchAssetReport'])->name('searchAssetReport');
-            Route::get('/show/{id_report_asset}', [AssetHealthReportController::class, 'showAssetReport'])->name('showAssetReport');
-        });
+    Route::prefix('/asset-report')->name('assetReport.')->group(function () {
+        Route::get('/', [AssetHealthReportController::class, 'assetReport'])->name('index');
+        Route::get('/search', [AssetHealthReportController::class, 'searchAssetReport'])->name('searchAssetReport');
+        Route::get('/show/{id_report_asset}', [AssetHealthReportController::class, 'showAssetReport'])->name('showAssetReport');
     });
 
     Route::prefix('/asset-management')->name('assetManagement.')->group(function () {
@@ -99,7 +98,6 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('/import')->name('import.')->group(function () {
             Route::post('/asset', [ImportDataController::class, 'importAssetByExcel'])->name('asset');
         });
-
     });
 
     Route::prefix('/settings')->name('settings.')->group(function () {
@@ -110,7 +108,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/export')->name('export.')->group(function () {
         Route::get('/', [ExportDataController::class, 'index'])->name('index');
         Route::get('/show', [ExportDataController::class, 'show'])->name('show');
-
     });
 });
 

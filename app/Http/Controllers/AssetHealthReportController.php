@@ -289,7 +289,7 @@ class AssetHealthReportController extends Controller
 
 
         $locations = Location::all();
-        return view('pages.asset-health-report.asset-report.index', compact('locations'));
+        return view('pages.asset-report.index', compact('locations'));
     }
 
     public function searchAssetReport(Request $request)
@@ -314,7 +314,7 @@ class AssetHealthReportController extends Controller
                 ->get();
 
             // Mengembalikan hasil ke view
-            return view('pages.asset-health-report.asset-report.index', compact('locations', 'assertReport'));
+            return view('pages.asset-report.index', compact('locations', 'assertReport'));
         } catch (\Throwable $th) {
             // Mengembalikan error jika terjadi kesalahan
             return back()->with('error', 'Something went wrong');
@@ -330,7 +330,7 @@ class AssetHealthReportController extends Controller
 
         $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();
 
-        return view('pages.asset-health-report.asset-report.show', compact('detailReport', 'detailReportsAll'));
+        return view('pages.asset-report.show', compact('detailReport', 'detailReportsAll'));
     }
 
     public function getDataStatus($id_report_asset)
