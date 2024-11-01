@@ -42,12 +42,41 @@ class ReportImport implements ToModel
         if (count($row) >= count($headers) && !array_diff($headers, $row)) {
             return null;
         }
-        $location = Location::firstOrCreate(['name' => $row[0]]);
+        $location = Location::where('name', $row[0])->first();
 
-        $report = Report::firstOrCreate([
-            'location_id' => $location->id,
-            'date' => $this->convertMonth($row[1])
-        ]);
+        if(!$location){
+            return null;
+        }
+
+        $checkReportDate = Report::where('location_id', $location->id)
+            ->where('date', $this->convertMonth($row[1]))
+            ->first();
+
+        if (!$checkReportDate) {
+            $report = Report::firstOrCreate([
+                'location_id' => $location->id,
+                'date' => $this->convertMonth($row[1])
+            ]);
+
+            $units = Unit::where('location_id', $location->id)->get();
+
+            foreach ($units as $unit) {
+                $assets = Asset::where('unit_id', $unit->id)->get();
+
+                foreach ($assets as $asset) {
+                    ReportAssets::updateOrCreate(
+                        [
+                            'report_id' => $report->id,
+                            'unit_id' => $asset->unit_id,
+                            'asset_id' => $asset->id,
+                            'status' => 'normal',
+                        ],
+                    );
+                }
+            }
+        } else {
+            $report = $checkReportDate;
+        }
 
         $asset = Asset::with('unit.location')
             ->whereHas('unit', function ($query) use ($location) {
@@ -72,6 +101,7 @@ class ReportImport implements ToModel
 
         // Mengembalikan DetailReport dengan data dari Excel
         return new DetailReport([
+            'report_asset_id' => $reportAsset->id,
             'report_asset_id' => $reportAsset->id,
             'no_sr' => isset($row[4]) ? $row[4] : null,
             'no_wo' => isset($row[5]) ? $row[5] : null,

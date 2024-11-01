@@ -9,8 +9,12 @@ class ReportAssets extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['asset_id', 'report_id', 'status'];
+    protected $fillable = ['asset_id', 'unit_id', 'report_id', 'status'];
 
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
     public function asset()
     {
         return $this->belongsTo(Asset::class);

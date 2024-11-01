@@ -8,10 +8,12 @@ use App\Http\Controllers\ImportDataController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UnitController;
+use App\Models\Location;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/dashboard');
+    $locations = Location::all();
+    return view('pages.index', compact('locations'));
 });
 
 Route::get('/getReportData', [DashboardController::class, 'getReportData'])->name('getReportData');

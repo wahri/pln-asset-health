@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Location;
 use App\Models\ReportAssets;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,38 +20,100 @@ class DashboardController extends Controller
 
     public function getReportData(Request $request)
     {
-        // Ambil report terakhir untuk setiap lokasi
 
-        $latestReports = DB::table('reports as r1')
-            ->join('locations as l', 'r1.location_id', '=', 'l.id')
-            ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name')
-            ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
-            ->get();
 
-        // Ambil count asset berdasarkan status pada report terakhir setiap lokasi
-        $reportAssetCounts = DB::table('report_assets')
-            ->select('status', 'report_id', DB::raw('COUNT(*) as asset_count'))
-            ->whereIn('report_id', $latestReports->pluck('report_id'))
-            ->groupBy('report_id', 'status')
-            ->get();
+        if ($request->location_id) {
+            $latestReport = DB::table('reports')
+                ->where('location_id', $request->location_id)
+                ->orderBy('date', 'desc')
+                ->first();
 
-        // Menyusun hasil per lokasi
-        $result = $latestReports->map(function ($report) use ($reportAssetCounts) {
-            $assets = $reportAssetCounts->where('report_id', $report->report_id);
+            if (!$latestReport) {
+                return response()->json([
+                    'categories' => [],
+                    'series' => []
+                ]);
+            }
 
-            return [
-                'location_id' => $report->location_id,
-                'location_name' => $report->location_name,
-                'report_id' => $report->report_id,
-                'asset_counts' => [
-                    'normal' => $assets->where('status', 'normal')->sum('asset_count'),
-                    'abnormal' => $assets->where('status', 'abnormal')->sum('asset_count'),
-                    'fault' => $assets->where('status', 'fault')->sum('asset_count'),
+            // Ambil jumlah asset berdasarkan status per unit di lokasi dan report terakhir
+            $reportAssetCounts = DB::table('report_assets')
+                ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+                ->join('units', 'assets.unit_id', '=', 'units.id')
+                ->where('report_assets.report_id', $latestReport->id)
+                ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'))
+                ->groupBy('units.id', 'report_assets.status')
+                ->get();
+
+            // Strukturkan data untuk format Highcharts
+            $units = [];
+            $normalData = [];
+            $abnormalData = [];
+            $faultData = [];
+
+            foreach ($reportAssetCounts->groupBy('unit_name') as $unitName => $statuses) {
+                $units[] = $unitName;
+                $normalData[] = $statuses->where('status', 'normal')->sum('asset_count') ?: 0;
+                $abnormalData[] = $statuses->where('status', 'abnormal')->sum('asset_count') ?: 0;
+                $faultData[] = $statuses->where('status', 'fault')->sum('asset_count') ?: 0;
+            }
+
+            // Format response untuk Highcharts
+            return response()->json([
+                'charts' => [
+                    'categories' => $units,
+                    'series' => [
+                        ['name' => 'Normal', 'data' => $normalData],
+                        ['name' => 'Abnormal', 'data' => $abnormalData],
+                        ['name' => 'Fault', 'data' => $faultData],
+                    ]
                 ]
-            ];
-        });
+            ]);
+        } else {
+            // Ambil report terakhir untuk setiap lokasi
+            $latestReports = DB::table('reports as r1')
+                ->join('locations as l', 'r1.location_id', '=', 'l.id')
+                ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name')
+                ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
+                ->get();
+            // Ambil count asset berdasarkan status pada report terakhir setiap lokasi
+            $reportAssetCounts = DB::table('report_assets')
+                ->select('status', 'report_id', DB::raw('COUNT(*) as asset_count'))
+                ->whereIn('report_id', $latestReports->pluck('report_id'))
+                ->groupBy('report_id', 'status')
+                ->get();
 
-        return $result;
+            // Persiapkan data untuk Highcharts
+            $locations = [];
+            $normalData = [];
+            $abnormalData = [];
+            $faultData = [];
+
+            foreach ($latestReports as $report) {
+                $locations[] = $report->location_name;
+
+                $assets = $reportAssetCounts->where('report_id', $report->report_id);
+                $normalData[] = $assets->where('status', 'normal')->sum('asset_count') ?: 0;
+                $abnormalData[] = $assets->where('status', 'abnormal')->sum('asset_count') ?: 0;
+                $faultData[] = $assets->where('status', 'fault')->sum('asset_count') ?: 0;
+            }
+
+            $reportAsset = ReportAssets::where('status', '!=', 'normal')->get();
+
+            // Format response untuk Highcharts
+            return response()->json(
+                [
+                    'charts' => [
+                        'categories' => $locations,
+                        'series' => [
+                            ['name' => 'Normal', 'data' => $normalData],
+                            ['name' => 'Abnormal', 'data' => $abnormalData],
+                            ['name' => 'Fault', 'data' => $faultData],
+                        ]
+                    ],
+                    'table' => $reportAsset
+                ]
+            );
+        }
     }
 
     public function getDataChart(Request $request)

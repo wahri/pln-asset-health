@@ -106,6 +106,7 @@ class AssetHealthReportController extends Controller
                         ReportAssets::updateOrCreate(
                             [
                                 'report_id' => $report->id,
+                                'unit_id' => $asset->unit_id,
                                 'asset_id' => $asset->id,
                                 'status' => $asset->status,
                             ],
@@ -113,31 +114,6 @@ class AssetHealthReportController extends Controller
                     }
                 }
             } else {
-                // $units = Unit::where('location_id', $location->id)->get();
-
-                // foreach ($units as $unit) {
-                //   $assets = Asset::where('unit_id', $unit->id)->get();
-
-                //   foreach ($assets as $asset) {
-                //     // Ambil status dari reportAssets yang terkait dengan report terakhir
-                //     $previousReportAssets = ReportAssets::where('report_id', $reportFirstLast->id)
-                //       ->where('asset_id', $asset->id)
-                //       ->first();
-
-                //     // Jika ada record pada report sebelumnya, copy statusnya ke report baru
-                //     if ($previousReportAssets) {
-                //       ReportAssets::updateOrCreate(
-                //         [
-                //           'report_id' => $report->id,  // Menghubungkan dengan laporan baru
-                //           'asset_id' => $asset->id     // Hubungkan dengan asset yang sama
-                //         ],
-                //         [
-                //           'status' => $previousReportAssets->status // Copy status dari laporan sebelumnya
-                //         ]
-                //       );
-                //     }
-                //   }
-                // }
 
                 foreach ($reportFirstLast->reportAssets as $reportAsset) {
                     $newReportAsset = $report->reportAssets()->create([
