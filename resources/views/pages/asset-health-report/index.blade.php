@@ -25,13 +25,8 @@
 
         <div class="border-0 border-4 card border-top border-primary">
             <div class="card-body">
-
-
-
-
-
                 <div class="card-title">
-                     @include('components.alert')
+                    @include('components.alert')
                     <div class="row">
                         <div class="col d-flex align-items-center">
                             <div><i class="bx bxs-file me-1 font-22 text-primary"></i>
@@ -49,39 +44,37 @@
                             <!-- Modal -->
                             <div class="modal fade" id="importExcel" tabindex="-1" aria-labelledby="exampleModalLabel"
                                 aria-hidden="true">
-                              <div class="modal-dialog">
-                            <form action="{{ route('assetHealthReport.import.report') }}" method="post" enctype="multipart/form-data">
-                                @csrf
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Import Data Report</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="formFile" class="form-label"> Choose Excel File</label>
-                                            <input class="form-control" type="file" id="formFile" required name="fileReport">
-                                        </div>
+                                <div class="modal-dialog">
+                                    <form action="{{ route('assetHealthReport.import.report') }}" method="post"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Import Data Report</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="formFile" class="form-label"> Choose Excel File</label>
+                                                    <input class="form-control" type="file" id="formFile" required
+                                                        name="fileReport">
+                                                </div>
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Import</button>
-                                    </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Import</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                            </form>
-                        </div>
                             </div>
 
                         </div>
                     </div>
                 </div>
-
-
-
-
 
                 <div class="mt-4 table-responsive">
                     <table id="example2" class="table table-striped table-bordered">
@@ -103,6 +96,26 @@
                                                 Report <i class='bx bx-log-in-circle'></i>
                                             </a>
                                         </div>
+                                        <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+                                            <form action="{{ route('assetHealthReport.deleteLocation', $l->id) }}"
+                                                method="post" id="delete-form_{{ $l->id }}">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" onclick="deleteConfirm(event, {{ $l->id }})"
+                                                    class="btn btn-danger">
+                                                    Delete <i class='bx bx-trash'></i>
+                                                </button>
+                                            </form>
+
+
+
+
+
+
+
+                                        </div>
+
+
                                     </td>
 
                                 </tr>

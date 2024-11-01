@@ -18,9 +18,20 @@ class AssetHealthReportController extends Controller
 {
     public function index()
     {
+
+
         $locations = Location::all();
 
         return view('pages.asset-health-report.index', compact('locations'));
+    }
+
+    public function deleteLocation( $location_id){
+
+        $location = Location::find($location_id);
+
+        $location->delete();
+
+        return redirect('/asset-health-report')->with('success', 'Location deleted successfully.');
     }
 
     public function show($locationName)
