@@ -199,12 +199,12 @@
                                                     </select>
 
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-6">
                                                     <label for="kondisiAsset" class="form-label">Kondisi Asset</label>
                                                     <textarea class="form-control" id="kondisiAsset" name="kondisiAsset" placeholder="Enter Kondisi Asset..."
                                                         rows="3"></textarea>
                                                 </div>
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <label for="actionPlan" class="form-label">Action Plan</label>
                                                     <textarea class="form-control" name="actionPlan" id="actionPlan" rows="3" placeholder="Enter Action Plan..."></textarea>
 
@@ -237,11 +237,11 @@
                                                         <span class="input-group-text">%</span>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-6">
                                                     <label for="issue" class="form-label">issue</label>
                                                     <textarea class="form-control" id="issue" name="issue" placeholder="Enter issue..." rows="3"></textarea>
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-6">
                                                     <label for="keterangan" class="form-label">Keterangan</label>
                                                     <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Enter keterangan..." rows="3"></textarea>
                                                 </div>
@@ -368,13 +368,13 @@
                                                                             </select>
 
                                                                         </div>
-                                                                        <div class="col-12">
+                                                                        <div class="col-6">
                                                                             <label for="kondisiAsset"
                                                                                 class="form-label">Kondisi Asset</label>
                                                                             <textarea class="form-control" id="kondisiAsset" name="kondisiAsset" placeholder="Enter Kondisi Asset..."
                                                                                 rows="3">{{ $dr->kondisi_asset }}</textarea>
                                                                         </div>
-                                                                        <div class="col-md-12">
+                                                                        <div class="col-md-6">
                                                                             <label for="actionPlan"
                                                                                 class="form-label">Action
                                                                                 Plan</label>
@@ -424,12 +424,12 @@
                                                                                 <span class="input-group-text">%</span>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-12">
+                                                                        <div class="col-6">
                                                                             <label for="issue"
                                                                                 class="form-label">issue</label>
                                                                             <textarea class="form-control" id="issue" name="issue" placeholder="Enter issue..." rows="3">{{ $dr->issue }}</textarea>
                                                                         </div>
-                                                                        <div class="col-12">
+                                                                        <div class="col-6">
                                                                             <label for="keterangan"
                                                                                 class="form-label">Keterangan</label>
                                                                             <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Enter keterangan..." rows="3">{{ $dr->keterangan }}</textarea>
