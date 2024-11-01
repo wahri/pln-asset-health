@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="">
-                    <table id="example2" class="table table-striped table-bordered">
+                    <table id="example" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
@@ -60,7 +60,7 @@
                                 <th width="10%">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        {{-- <tbody>
                             @php $iteration = 1; @endphp
                             @foreach ($reportAssets as $assetGroupName => $reports)
                                 @php $rowspan = count($reports); @endphp
@@ -79,64 +79,7 @@
                                             </span>
                                         </td>
                                         <td class="gap-2 d-flex">
-                                            {{-- <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#editReport_{{ $report->id }}">
-                                                <i class="bx bx-edit-alt"></i>
-                                            </button> --}}
-
-                                            {{-- modal edit --}}
-                                            {{-- <div class="modal fade" id="editReport_{{ $report->id }}" tabindex="-1"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <form
-                                                            action="{{ route('assetHealthReport.updateReportAssets', $report->id) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit
-                                                                    Data
-                                                                </h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-
-
-
-
-                                                                <div class="mb-3">
-                                                                    <label for="status" class="form-label">Status</label>
-                                                                    <select name="status" id="status"
-                                                                        class="form-select">
-                                                                        <option value="normal"
-                                                                            {{ $report->asset->status == 'normal' ? 'selected' : '' }}>
-                                                                            Normal</option>
-                                                                        <option value="abnormal"
-                                                                            {{ $report->asset->status == 'abnormal' ? 'selected' : '' }}>
-                                                                            Abnormal</option>
-                                                                        <option value="fault"
-                                                                            {{ $report->asset->status == 'fault' ? 'selected' : '' }}>
-                                                                            Fault</option>
-                                                                    </select>
-                                                                </div>
-
-
-
-
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">Save
-                                                                    changes</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
-                                            {{-- end --}}
+                                           
                                             <a href="{{ route('assetHealthReport.detailReportAsset', $report->id) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="bx bx-laptop"></i>
@@ -147,6 +90,33 @@
 
                                 @php $iteration++; @endphp
                             @endforeach
+
+                        </tbody> --}}
+
+                        <tbody>
+
+
+                            @foreach ($reportAssets as $ra)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $ra->asset->assetGroup->name }}</td>
+                                    <td>{{ $ra->asset->name }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $ra->status_class }}">
+                                            {{ ucfirst($ra->status) }}
+                                        </span>
+                                    </td>
+                                    <td class="gap-2 d-flex">
+
+                                        <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
+                                            class="btn btn-info btn-sm">
+                                            <i class="bx bx-laptop"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+
+
 
                         </tbody>
 
@@ -168,8 +138,13 @@
     <!-- Initialize DataTables -->
     <script>
         $(document).ready(function() {
-            $('#example').DataTable();
+            $('#example').DataTable({
+                lengthChange: false,
+                buttons: ['colvis', 'excel'],
+                dom: 'Bfrtip' // untuk menampilkan tombol di atas tabel
+            });
         });
+
 
         // $(document).ready(function() {
         //     var table = $('#example2').DataTable();

@@ -67,14 +67,23 @@ class AssetHealthReportController extends Controller
     public function showReportUnit(Location $location, Report $report, Unit $unit)
     {
 
+        // $reportAssets = ReportAssets::whereHas('asset', function ($query) use ($unit) {
+        //     $query->where('unit_id', $unit->id);
+        // })->where('report_id', $report->id)
+        //     ->with(['asset', 'asset.assetGroup'])
+        //     ->get()
+        //     ->groupBy('asset.assetGroup.name');
+
         $reportAssets = ReportAssets::whereHas('asset', function ($query) use ($unit) {
             $query->where('unit_id', $unit->id);
         })->where('report_id', $report->id)
             ->with(['asset', 'asset.assetGroup'])
-            ->get()
-            ->groupBy('asset.assetGroup.name');
+            ->get();
 
         $assetsGrup = AssetGroup::all();
+
+
+      
 
         return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'reportAssets', 'assetsGrup'));
     }
