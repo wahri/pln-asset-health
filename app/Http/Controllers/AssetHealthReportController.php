@@ -18,9 +18,21 @@ class AssetHealthReportController extends Controller
 {
     public function index()
     {
+
+
         $locations = Location::all();
 
         return view('pages.asset-health-report.index', compact('locations'));
+    }
+
+    public function deleteLocation($location_id)
+    {
+
+        $location = Location::find($location_id);
+
+        $location->delete();
+
+        return redirect('/asset-health-report')->with('success', 'Location deleted successfully.');
     }
 
     public function show($locationName)
@@ -156,19 +168,26 @@ class AssetHealthReportController extends Controller
         $unit = $reportAsset->asset->unit->name;
 
         $statusSR = [
-            '0',
-            '-',
             'APPR',
-            'INPROG',
-            'INPROGINPROG',
-            'MENUNGGU WO FEEDBACK',
-            'WAMTL',
-            'WFEEDBACK',
+            'CAN',
+            'CLOSE',
+            'COMP',
+            'HISTEDIT',
+            'INPLAN',
+            'INPLN',
+            'INPRG',
+            'PTWR',
+            'WAPPR',
+            'WAPPR',
+            'WENG',
+            'WEQSHUT',
             'WJOBCARD',
             'WMATL',
+            'WMATSHUT',
             'WOUTAGE',
-            'WPROC',
-            'WUNSHUT',
+            'WPCOND',
+            'WPREP',
+            'WPTWR',
         ];
 
         $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();
@@ -266,7 +285,6 @@ class AssetHealthReportController extends Controller
             return back()->with('success', 'Detail report asset created successfully');
         } catch (\Throwable $th) {
 
-            dd($th->getMessage());
 
             return back()->with('error', 'Something went wrong');
         }
@@ -372,6 +390,5 @@ class AssetHealthReportController extends Controller
         });
 
         // Debug untuk melihat hasil
-        dd($monthlyStatus->toArray());
     }
 }

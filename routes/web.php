@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 Route::get('/getReportData', [DashboardController::class, 'getReportData'])->name('getReportData');
 
-Route::prefix('/dashboard')->name('dashboard.')->group(function () {
+Route::prefix('/dashboard')->middleware('auth')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/getDataChart', [DashboardController::class, 'getDataChart'])->name('getDataChart');
 });
@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/asset-health-report')->name('assetHealthReport.')->group(function () {
         // Menampilkan daftar report asset health
         Route::get('/', [AssetHealthReportController::class, 'index'])->name('index');
+        Route::delete('/delete-location/{id_location}', [AssetHealthReportController::class, 'deleteLocation'])->name('deleteLocation');
 
         // Menampilkan asset berdasarkan lokasi
         Route::get('/location/{location}', [AssetHealthReportController::class, 'show'])->name('showLocation');

@@ -152,14 +152,14 @@
 
 
                         <!-- Modal -->
-                        <div class="modal fade" id="addSR" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        <div class="modal fade " id="addSR" tabindex="-1" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
+                            <div class="modal-dialog modal-fullscreen">
                                 <form action="{{ route('assetHealthReport.storeDetailReport', $reportAsset->id) }}"
                                     method="post">
                                     @csrf
 
-                                    <div class="modal-content">
+                                    <div class="modal-content container">
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="exampleModalLabel">Add SR</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -168,23 +168,23 @@
                                         <div class="modal-body">
                                             <div class="row g-3">
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-3">
                                                     <label for="inputNoSR" class="form-label">No SR</label>
                                                     <input type="text" class="form-control" id="inputNoSR" name="no_sr"
                                                         placeholder="Enter No SR">
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-3">
                                                     <label for="inputNoWO" class="form-label">No WO</label>
                                                     <input type="text" class="form-control" id="inputNoWO"
                                                         name="no_wo" placeholder="Enter No WO">
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-3">
                                                     <label for="inputTanggalIdentifikasi" class="form-label">Tanggal
                                                         Identifikasi</label>
                                                     <input type="date" class="form-control"
                                                         id="inputTanggalIdentifikasi" name="tanggal_identifikasi">
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-3">
                                                     <label for="status_sr" class="form-label">Status SR</label>
                                                     <select name="status_sr" id="status_sr" class="form-select select2">
                                                         <option selected value="">
@@ -199,40 +199,34 @@
                                                     </select>
 
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-6">
                                                     <label for="kondisiAsset" class="form-label">Kondisi Asset</label>
                                                     <textarea class="form-control" id="kondisiAsset" name="kondisiAsset" placeholder="Enter Kondisi Asset..."
                                                         rows="3"></textarea>
                                                 </div>
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <label for="actionPlan" class="form-label">Action Plan</label>
                                                     <textarea class="form-control" name="actionPlan" id="actionPlan" rows="3" placeholder="Enter Action Plan..."></textarea>
 
                                                 </div>
-                                                <div class="col-md-12">
-                                                    <label for="progresSaatIni" class="form-label">Progres Saat
-                                                        Ini</label>
-                                                    <select name="progresSaatIni" id="progresSaatIni"
-                                                        class="form-select select2">
-                                                        <option selected value="">
-                                                            Pilih Progres Saat Ini
-                                                        </option>
-
-
-                                                        @foreach ($statusSR as $status)
-                                                            <option value="{{ $status }}">{{ $status }}
-                                                            </option>
-                                                        @endforeach
-
-                                                    </select>
-                                                </div>
-
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <label for="targetSelesai" class="form-label">Target Selesai</label>
                                                     <input type="text" class="form-control" id="targetSelesai"
                                                         name="targetSelesai" placeholder="Enter Target Selesai">
                                                 </div>
-                                                <div class="col-md-6">
+
+                                                 <div class="col-md-4">
+                                                    <label for="progresSaatIni" class="form-label">Progres Saat
+                                                        Ini</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control"
+                                                           name="progresSaatIni" id="progresSaatIni" placeholder="Enter Progres Saat Ini"
+                                                          >                                                    
+                                                    </div>
+                                                </div>
+                                               
+                                               
+                                                 <div class="col-md-4">
                                                     <label for="realisasiSelesai" class="form-label">Realisasi
                                                         Selesai</label>
                                                     <div class="input-group">
@@ -243,11 +237,11 @@
                                                         <span class="input-group-text">%</span>
                                                     </div>
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-6">
                                                     <label for="issue" class="form-label">issue</label>
                                                     <textarea class="form-control" id="issue" name="issue" placeholder="Enter issue..." rows="3"></textarea>
                                                 </div>
-                                                <div class="col-12">
+                                                <div class="col-6">
                                                     <label for="keterangan" class="form-label">Keterangan</label>
                                                     <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Enter keterangan..." rows="3"></textarea>
                                                 </div>
@@ -274,8 +268,8 @@
                                 <th>Status SR</th>
                                 <th>Kondisi Asset</th>
                                 <th>Action Plan</th>
-                                <th>Progres Saat ini</th>
                                 <th>Target Selesai</th>
+                                <th>Progres Saat ini</th>
                                 <th>Realisasi Selesai</th>
                                 <th>Issue</th>
                                 <th>Keterangan</th>
@@ -296,8 +290,8 @@
                                         <td>{{ $dr->kondisi_asset }}</td>
 
                                         <td>{{ $dr->action_plan }}</td>
-                                        <td>{{ $dr->progress_saat_ini }}</td>
                                         <td>{{ $dr->target_selesai }}</td>
+                                        <td>{{ $dr->progress_saat_ini }}</td>
                                         <td>
                                             {{ $dr->realisasi_selesai }}
                                         </td>
@@ -311,13 +305,13 @@
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="editSR_{{ $dr->id }}" tabindex="-1"
                                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
+                                                    <div class="modal-dialog modal-fullscreen">
                                                         <form
                                                             action="{{ route('assetHealthReport.updateDetailReport', $dr->id) }}"
                                                             method="post">
                                                             @csrf
                                                             @method('put')
-                                                            <div class="modal-content">
+                                                            <div class="modal-content container">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="exampleModalLabel">
                                                                         Add SR
@@ -329,7 +323,7 @@
                                                                 <div class="modal-body">
                                                                     <div class="row g-3">
 
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-3">
                                                                             <label for="inputNoSR" class="form-label">No
                                                                                 SR</label>
                                                                             <input type="text" class="form-control"
@@ -337,7 +331,7 @@
                                                                                 placeholder="Enter No SR"
                                                                                 value="{{ $dr->no_sr }}">
                                                                         </div>
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-3">
                                                                             <label for="inputNoWO" class="form-label">No
                                                                                 WO</label>
                                                                             <input type="text" class="form-control"
@@ -345,7 +339,7 @@
                                                                                 placeholder="Enter No WO"
                                                                                 value="{{ $dr->no_wo }}">
                                                                         </div>
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-3">
                                                                             <label for="inputTanggalIdentifikasi"
                                                                                 class="form-label">Tanggal
                                                                                 Identifikasi</label>
@@ -354,7 +348,7 @@
                                                                                 name="tanggal_identifikasi"
                                                                                 value="{{ $dr->tanggal_identifikasi }}">
                                                                         </div>
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-3">
                                                                             <label for="status_sr"
                                                                                 class="form-label">Status
                                                                                 SR</label>
@@ -374,13 +368,13 @@
                                                                             </select>
 
                                                                         </div>
-                                                                        <div class="col-12">
+                                                                        <div class="col-6">
                                                                             <label for="kondisiAsset"
                                                                                 class="form-label">Kondisi Asset</label>
                                                                             <textarea class="form-control" id="kondisiAsset" name="kondisiAsset" placeholder="Enter Kondisi Asset..."
                                                                                 rows="3">{{ $dr->kondisi_asset }}</textarea>
                                                                         </div>
-                                                                        <div class="col-md-12">
+                                                                        <div class="col-md-6">
                                                                             <label for="actionPlan"
                                                                                 class="form-label">Action
                                                                                 Plan</label>
@@ -390,58 +384,52 @@
                                                                         </div>
 
 
-                                                                        <div class="col-md-12">
-                                                                            <label for="progresSaatIni"
-                                                                                class="form-label">Progres Saat
-                                                                                Ini</label>
-                                                                            <select name="progresSaatIni"
-                                                                                id="progresSaatIni"
-                                                                                class="form-select select2-edit-ProgresSaatini">
-                                                                                <option
-                                                                                    value="{{ $dr->progress_saat_ini ? $dr->progress_saat_ini : '' }}">
-                                                                                    {{ $dr->progress_saat_ini ? $dr->progress_saat_ini : 'Pilih Progres Saat Ini' }}
-                                                                                </option>
+                                                                       
 
-                                                                                @foreach ($statusSR as $status)
-                                                                                    <option value="{{ $status }}">
-                                                                                        {{ $status }}
-                                                                                    </option>
-                                                                                @endforeach
-
-                                                                            </select>
-                                                                        </div>
-
-                                                                        <div class="col-md-6">
+                                                                        <div class="col-md-4">
                                                                             <label for="targetSelesai"
                                                                                 class="form-label">Target Selesai</label>
                                                                             <input type="text" class="form-control"
                                                                                 id="targetSelesai" name="targetSelesai"
-                                                                                min="1900" max="2100"
-                                                                                step="1" placeholder="YYYY"
+                                                                               
                                                                                 placeholder="Enter Target Selesai"
                                                                                 value="{{ $dr->target_selesai }}">
                                                                         </div>
 
-                                                                        <div class="col-md-6">
+                                                                         <div class="col-md-4">
+                                                                            <label for="progresSaatIni"
+                                                                                class="form-label">Progres Saat
+                                                                                Ini</label>
+                                                                            <div class="input-group">
+                                                                                <input type="text" class="form-control"
+                                                                                  name="progresSaatIni"
+                                                                                id="progresSaatIni"
+                                                                                    placeholder="Enter Progres Saat Ini"
+                                                                                   
+                                                                                    value="{{ $dr->progress_saat_ini }}">
+                                                                               
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-4">
                                                                             <label for="realisasiSelesai"
                                                                                 class="form-label">Realisasi
                                                                                 Selesai</label>
                                                                             <div class="input-group">
                                                                                 <input type="number" class="form-control"
-                                                                                    name="realisasiSelesai"
-                                                                                    id="realisasiSelesai"
+                                                                                   name="realisasiSelesai" id="realisasiSelesai"
                                                                                     placeholder="Enter Realisasi Selesai"
                                                                                     min="0" max="100"
                                                                                     value="{{ $dr->realisasi_selesai }}">
                                                                                 <span class="input-group-text">%</span>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-12">
+                                                                        <div class="col-6">
                                                                             <label for="issue"
                                                                                 class="form-label">issue</label>
                                                                             <textarea class="form-control" id="issue" name="issue" placeholder="Enter issue..." rows="3">{{ $dr->issue }}</textarea>
                                                                         </div>
-                                                                        <div class="col-12">
+                                                                        <div class="col-6">
                                                                             <label for="keterangan"
                                                                                 class="form-label">Keterangan</label>
                                                                             <textarea class="form-control" id="keterangan" name="keterangan" placeholder="Enter keterangan..." rows="3">{{ $dr->keterangan }}</textarea>
