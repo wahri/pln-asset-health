@@ -220,7 +220,7 @@
                                                         Ini</label>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control"
-                                                           name="progresSaatIni" id="progresSaatIni"
+                                                           name="progresSaatIni" id="progresSaatIni" placeholder="Enter Progres Saat Ini"
                                                           >                                                    
                                                     </div>
                                                 </div>
