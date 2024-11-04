@@ -96,7 +96,7 @@
                                     <col style="width: 120px;"> <!-- No SR -->
                                     <col style="width: 120px;"> <!-- No WO -->
                                     <col style="width: 130px;"> <!-- Tgl Identifikasi -->
-                                    <col style="width: 100px;"> <!-- Status SR -->
+                                    <col style="width: 100px;"> <!-- Status WO -->
                                     <col style="width: 300px;"> <!-- Kondisi Asset -->
                                     <col style="width: 300px;"> <!-- Action Plan -->
                                     <col style="width: 130px;"> <!-- Target Selesai -->
@@ -376,7 +376,7 @@
                             },
                             {
                                 data: 'detail_reports',
-                                title: 'Status SR',
+                                title: 'Status WO',
                                 render: function(data, type, row) {
                                     return data.map(report => report.status_sr).join(
                                         '<hr>');

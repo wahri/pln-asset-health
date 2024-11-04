@@ -159,7 +159,7 @@
                                     method="post">
                                     @csrf
 
-                                    <div class="modal-content container">
+                                    <div class="container modal-content">
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="exampleModalLabel">Add SR</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -180,15 +180,15 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="inputTanggalIdentifikasi" class="form-label">Tanggal
-                                                        Identifikasi</label>
+                                                        SR</label>
                                                     <input type="date" class="form-control"
                                                         id="inputTanggalIdentifikasi" name="tanggal_identifikasi">
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <label for="status_sr" class="form-label">Status SR</label>
+                                                    <label for="status_sr" class="form-label">Status WO</label>
                                                     <select name="status_sr" id="status_sr" class="form-select select2">
                                                         <option selected value="">
-                                                            Pilih Status SR
+                                                            Pilih Status WO
                                                         </option>
 
                                                         @foreach ($statusSR as $status)
@@ -265,7 +265,7 @@
                                 <th>No SR</th>
                                 <th>No WO</th>
                                 <th>Tanggal Identifikasi</th>
-                                <th>Status SR</th>
+                                <th>Status WO</th>
                                 <th>Kondisi Asset</th>
                                 <th>Action Plan</th>
                                 <th>Target Selesai</th>
@@ -311,7 +311,7 @@
                                                             method="post">
                                                             @csrf
                                                             @method('put')
-                                                            <div class="modal-content container">
+                                                            <div class="container modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="exampleModalLabel">
                                                                         Add SR
@@ -341,8 +341,9 @@
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <label for="inputTanggalIdentifikasi"
-                                                                                class="form-label">Tanggal
-                                                                                Identifikasi</label>
+                                                                                class="form-label">
+                                                                                Tanggal SR
+                                                                            </label>
                                                                             <input type="date" class="form-control"
                                                                                 id="inputTanggalIdentifikasi"
                                                                                 name="tanggal_identifikasi"
@@ -356,7 +357,7 @@
                                                                                 class="form-select select2-edit">
                                                                                 <option
                                                                                     value="{{ $dr->status_sr ? $dr->status_sr : '' }}">
-                                                                                    {{ $dr->status_sr ? $dr->status_sr : 'Pilih Status SR' }}
+                                                                                    {{ $dr->status_sr ? $dr->status_sr : 'Pilih Status WO' }}
                                                                                 </option>
 
                                                                                 @foreach ($statusSR as $status)

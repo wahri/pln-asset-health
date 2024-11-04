@@ -178,7 +178,7 @@
                                             <col style="width: 120px;"> <!-- No SR -->
                                             <col style="width: 120px;"> <!-- No WO -->
                                             <col style="width: 130px;"> <!-- Tgl Identifikasi -->
-                                            <col style="width: 100px;"> <!-- Status SR -->
+                                            <col style="width: 100px;"> <!-- Status WO -->
                                             <col style="width: 300px;"> <!-- Kondisi Asset -->
                                             <col style="width: 300px;"> <!-- Action Plan -->
                                             <col style="width: 130px;"> <!-- Target Selesai -->
@@ -186,6 +186,7 @@
                                             <col style="width: 150px;"> <!-- Realisasi Selesai -->
                                             <col style="width: 180px;"> <!-- Main Issue -->
                                             <col style="width: 200px;"> <!-- Keterangan -->
+                                            <col style="width: 100px;"> <!-- Keterangan -->
                                         </colgroup>
                                     </table>
                                 </div>
@@ -462,7 +463,7 @@
                             },
                             {
                                 data: 'detail_reports',
-                                title: 'Status SR',
+                                title: 'Status WO',
                                 render: function(data, type, row) {
                                     return data.map(report => report.status_sr).join(
                                         '<hr>');
@@ -523,6 +524,18 @@
                                     return data.map(report => report.keterangan).join(
                                         '<hr>');
                                 }
+                            },
+                            {
+                                title: 'Aksi',
+                                orderable: false,
+                                searchable: false,
+                                render: function(data, type, row) {
+                                    return `
+                                        <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
+                                            Lihat Detail
+                                        </button>
+                                    `;
+                                }
                             }
                         ],
                         lengthChange: false,
@@ -535,6 +548,12 @@
                 },
             }));
         });
+
+        // Fungsi untuk menangani klik tombol 'Lihat Detail'
+        function viewAssetDetails(assetId) {
+            // Arahkan ke halaman detail atau tampilkan modal berdasarkan assetId
+            window.location.href = `/asset-management/assets/detail/${assetId}`; // Contoh mengarahkan ke halaman detail
+        }
     </script>
 
 

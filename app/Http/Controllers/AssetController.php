@@ -91,4 +91,11 @@ class AssetController extends Controller
             return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
+
+    public function showDetail(Asset $asset)
+    {
+        dd($asset);
+
+        return view('pages.asset-management.asset.index', compact('dataAssetGroup', 'assetGroup', 'unit'));
+    }
 }

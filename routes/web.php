@@ -94,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/store', [AssetController::class, 'store'])->name('store');
             Route::put('/update/{id}', [AssetController::class, 'update'])->name('update');
             Route::delete('/delete/{id}', [AssetController::class, 'destroy'])->name('destroy');
+            Route::get('/detail/{asset}', [AssetController::class, 'showDetail'])->name('showDetail');
         });
 
         Route::prefix('/import')->name('import.')->group(function () {

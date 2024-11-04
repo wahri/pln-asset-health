@@ -84,7 +84,7 @@
                                 <th>No SR</th>
                                 <th>No WO</th>
                                 <th>Tanggal Identifikasi</th>
-                                <th>Status SR</th>
+                                <th>Status WO</th>
                                 <th>Kondisi Asset</th>
                                 <th>Action Plan</th>
                                 <th>Progres Saat ini</th>
