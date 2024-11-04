@@ -25,18 +25,21 @@ class AssetHealthReportController extends Controller
         return view('pages.asset-health-report.index', compact('locations'));
     }
 
-    public function deleteLocation($location_id)
+    public function deleteReport($id)
     {
+        try {
+            Report::where('id', $id)->delete();
 
-        $location = Location::find($location_id);
-
-        $location->delete();
-
-        return redirect('/asset-health-report')->with('success', 'Location deleted successfully.');
+            return back()->with('success', 'Report deleted successfully');
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Something went wrong');
+        }
     }
+
 
     public function show($locationName)
     {
+
 
         // Ambil lokasi berdasarkan nama
         $location = Location::where('name', $locationName)->firstOrFail();
@@ -83,7 +86,7 @@ class AssetHealthReportController extends Controller
         $assetsGrup = AssetGroup::all();
 
 
-      
+
 
         return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'reportAssets', 'assetsGrup'));
     }

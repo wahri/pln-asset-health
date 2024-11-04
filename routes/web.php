@@ -28,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/asset-health-report')->name('assetHealthReport.')->group(function () {
         // Menampilkan daftar report asset health
         Route::get('/', [AssetHealthReportController::class, 'index'])->name('index');
-        Route::delete('/delete-location/{id_location}', [AssetHealthReportController::class, 'deleteLocation'])->name('deleteLocation');
+        Route::delete('/delete-report/{id_report}', [AssetHealthReportController::class, 'deleteReport'])->name('deleteReport');
 
         // Menampilkan asset berdasarkan lokasi
         Route::get('/location/{location}', [AssetHealthReportController::class, 'show'])->name('showLocation');

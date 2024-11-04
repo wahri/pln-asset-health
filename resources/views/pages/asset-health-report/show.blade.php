@@ -92,6 +92,24 @@
                                                 Unit <i class='bx bx-log-in-circle'></i>
                                             </a>
                                         </div>
+                                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+                                            <form action="{{ route('assetHealthReport.deleteReport', $report->id) }}"
+                                                method="post" id="delete-form_{{ $report->id }}">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" onclick="deleteConfirm(event, {{ $report->id }})"
+                                                    class="btn btn-danger">
+                                                    Delete <i class='bx bx-trash'></i>
+                                                </button>
+                                            </form>
+
+
+
+
+
+
+
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -128,7 +146,7 @@
         });
     </script>
 
-    <script>
+     <script>
         function deleteConfirm(event, id) {
             event.preventDefault(); // Mencegah submit form secara default
 
