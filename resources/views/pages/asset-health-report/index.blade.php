@@ -96,24 +96,7 @@
                                                 Report <i class='bx bx-log-in-circle'></i>
                                             </a>
                                         </div>
-                                        <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                            <form action="{{ route('assetHealthReport.deleteLocation', $l->id) }}"
-                                                method="post" id="delete-form_{{ $l->id }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" onclick="deleteConfirm(event, {{ $l->id }})"
-                                                    class="btn btn-danger">
-                                                    Delete <i class='bx bx-trash'></i>
-                                                </button>
-                                            </form>
-
-
-
-
-
-
-
-                                        </div>
+                                       
 
 
                                     </td>
@@ -149,29 +132,4 @@
         });
     </script>
 
-    <script>
-        function deleteConfirm(event, id) {
-            event.preventDefault(); // Mencegah submit form secara default
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#delete-form_' + id).submit(); // Kirim form setelah konfirmasi
-                } else {
-                    Swal.fire(
-                        'Cancelled',
-                        'Your data is safe :)',
-                        'error'
-                    );
-                }
-            });
-        }
-    </script>
 @endpush
