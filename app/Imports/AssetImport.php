@@ -6,10 +6,37 @@ use App\Models\Asset;
 use App\Models\AssetGroup;
 use App\Models\Location;
 use App\Models\Unit;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class AssetImport implements ToModel
+class AssetImport implements ToModel, WithStartRow, WithHeadingRow
 {
+    protected $messages = [];
+    protected $no_asset = [];
+    protected $nama_asset = [];
+
+
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
+
+    public function getNoAsset(): array
+    {
+        return $this->no_asset;
+    }
+
+    public function getAssetName(): array
+    {
+        return $this->nama_asset;
+    }
+
+    public function startRow(): int
+    {
+        return 2; // assuming the first row is the header
+    }
     /**
      * @param array $row
      *
@@ -17,42 +44,74 @@ class AssetImport implements ToModel
      */
     public function model(array $row)
     {
-        // Memastikan tidak menangkap baris kosong atau header dengan mengecek apakah 'location' adalah header
-        if ($row[0] === 'location' || $row[1] === 'unit' || $row[2] === 'no_asset' || $row[3] === 'asset_group' || $row[4] === 'asset_name') {
-            return null;
-        }
+        return DB::transaction(function () use ($row) {
+            try {
+                $this->no_asset[] = $row['no_asset'];
+                $this->nama_asset[] = $row['asset_name'];
+                if (!isset($row['no']) || !isset($row['location']) || !isset($row['unit']) || !isset($row['asset_name'])) {
+                    return null;
+                }
+                if (trim($row['no']) == null || trim($row['location']) == null || trim($row['unit']) == null || trim($row['asset_name']) == null) {
+                    return null;
+                }
 
-        $checkAsset = Asset::where('no_asset', $row[2])->first();
-        if ($checkAsset) {
-            return null;
-        }
 
-        // Mencari atau membuat lokasi berdasarkan kolom 'location'
-        $location = Location::firstOrCreate(['name' => $row[0]]);
+                // Mencari atau membuat lokasi berdasarkan kolom 'location'
+                $location = Location::firstOrCreate(['name' => trim($row['location'])]);
 
-        // Mencari atau membuat unit berdasarkan kolom 'unit' dan 'location_id'
-        $unit = Unit::firstOrCreate(
-            [
-                'location_id' => $location->id,
-                'name' => $row[1]
-            ]
-        );
+                // Mencari atau membuat unit berdasarkan kolom 'unit' dan 'location_id'
+                $unit = Unit::firstOrCreate(
+                    [
+                        'location_id' => $location->id,
+                        'name' => trim($row['unit'])
+                    ]
+                );
 
-        // Mencari atau membuat asset group berdasarkan kolom 'asset_group' dan 'unit_id'
-        $assetGroup = AssetGroup::firstOrCreate(
-            [
-                'unit_id' => $unit->id,
-                'name' => $row[3]
-            ]
-        );
+                // Mencari atau membuat asset group berdasarkan kolom 'asset_group' dan 'unit_id'
+                $assetGroup = null;
+                if (isset($row['asset_group'])) {
+                    $assetGroup = AssetGroup::firstOrCreate(
+                        [
+                            'unit_id' => $unit->id,
+                            'name' => trim($row['asset_group'])
+                        ]
+                    );
+                }
 
-        // Membuat asset baru dengan data yang diambil dari Excel
-        return new Asset([
-            'unit_id' => $unit->id,
-            'asset_group_id' => $assetGroup->id,
-            'no_asset' => $row[2],  // Kolom 'no_asset'
-            'name' => $row[4],      // Kolom 'asset_name'
-            'status' => 'normal',   // Set nilai default untuk status
-        ]);
+                $asset = Asset::updateOrCreate(
+                    [
+                        'unit_id' => $unit->id,
+                        'name' => trim($row['asset_name']),
+                    ],
+                    [
+                        'asset_group_id' => $assetGroup->id ?? null,
+                        'no_asset' => trim($row['no_asset']),
+                    ]
+                );
+
+                // $checkAsset = Asset::where('no_asset', trim($row['no_asset']))
+                //     ->where('unit_id', $unit->id)
+                //     ->where('name', trim($row['asset_name']))
+                //     ->where('asset_group_id', $assetGroup->id ?? null)
+                //     ->first();
+
+                // if ($checkAsset) {
+                //     return null;
+                // }
+                // // Membuat asset baru dengan data yang diambil dari Excel
+                // $asset = Asset::create([
+                //     'unit_id' => $unit->id,
+                //     'asset_group_id' => $assetGroup->id ?? null,
+                //     'no_asset' => trim($row['no_asset']),  // Kolom 'no_asset'
+                //     'name' => trim($row['asset_name']),      // Kolom 'asset_name'
+                // ]);
+
+
+                return $asset;
+            } catch (\Exception $e) {
+                $this->messages[] = "- Baris ke-" . $row['no'] . " error: " . $e->getMessage() . "<br>";
+                return null;
+            }
+        });
     }
 }

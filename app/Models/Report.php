@@ -18,4 +18,8 @@ class Report extends Model
     {
         return $this->hasMany(ReportAssets::class);
     }
+    public function reportAsset()
+    {
+        return $this->hasOne(ReportAssets::class);
+    }
 }

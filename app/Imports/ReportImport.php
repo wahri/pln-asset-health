@@ -44,18 +44,18 @@ class ReportImport implements ToModel
         }
         $location = Location::where('name', $row[0])->first();
 
-        if(!$location){
+        if (!$location) {
             return null;
         }
 
         $checkReportDate = Report::where('location_id', $location->id)
-            ->where('date', $this->convertMonth($row[1]))
+            ->where('date', $this->convertMonth($row[1], $row))
             ->first();
-
+        
         if (!$checkReportDate) {
             $report = Report::firstOrCreate([
                 'location_id' => $location->id,
-                'date' => $this->convertMonth($row[1])
+                'date' => $this->convertMonth($row[1], $row)
             ]);
 
             $units = Unit::where('location_id', $location->id)->get();
@@ -105,7 +105,7 @@ class ReportImport implements ToModel
             'report_asset_id' => $reportAsset->id,
             'no_sr' => isset($row[4]) ? $row[4] : null,
             'no_wo' => isset($row[5]) ? $row[5] : null,
-            'tanggal_identifikasi' => isset($row[6]) ? $this->convertExcelDate($row[6]) : null,
+            'tanggal_identifikasi' => $row[6] ? $this->convertExcelDate($row[6]) : null,
             'status_sr' => isset($row[7]) ? $row[7] : null,
             'kondisi_asset' => isset($row[8]) ? $row[8] : null,
             'action_plan' => isset($row[9]) ? $row[9] : null,
@@ -118,11 +118,8 @@ class ReportImport implements ToModel
     }
 
 
-    public function convertMonth($month)
+    public function convertMonth($month, $data)
     {
-
-
-
         // Mapping bulan Indonesia ke bulan bahasa Inggris
         $bulanIndonesiaKeInggris = [
             'Januari' => 'January',
@@ -144,6 +141,13 @@ class ReportImport implements ToModel
         // Ganti bulan dari bahasa Indonesia ke bahasa Inggris
         foreach ($bulanIndonesiaKeInggris as $bulanIndonesia => $bulanInggris) {
             $dateString = str_replace($bulanIndonesia, $bulanInggris, $dateString);
+        }
+
+        // Regular expression to match "Month YYYY" format (e.g., "January 2024")
+        $regex = '/^(January|February|March|April|May|June|July|August|September|October|November|December) \d{4}$/';
+
+        if (!preg_match($regex, $dateString)) {
+            dd('Invalid month format: ', $data);
         }
 
         // Konversi string "October 2024" menjadi Carbon object

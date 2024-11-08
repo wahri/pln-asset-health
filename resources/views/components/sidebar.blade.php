@@ -34,11 +34,10 @@
               <a href="{{ route('assetHealthReport.index') }}">
 
                   <div class="parent-icon"> <i class="bx bx-briefcase-alt-2"></i></div>
-                  <div class="menu-title"> Asset Health
-                      Report</div>
+                  <div class="menu-title"> Asset Report</div>
               </a>
           </li>
-          <li class="{{ request()->routeIs('assetReport.*') ? 'mm-active' : '' }}"> <a
+          {{-- <li class="{{ request()->routeIs('assetReport.*') ? 'mm-active' : '' }}"> <a
                   href="{{ route('assetReport.index') }}">
                   <div class="parent-icon">
                       <i class=" bx bx-cylinder"></i>
@@ -51,7 +50,7 @@
                   </div>
 
               </a>
-          </li>
+          </li> --}}
           <li class="{{ request()->routeIs('assetManagement.*') ? 'mm-active' : '' }}">
               <a href="{{ route('assetManagement.location.index') }}" class="">
                   <div class="parent-icon"><i class="bx bx-command"></i></div>

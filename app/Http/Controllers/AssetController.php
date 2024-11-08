@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asset;
 use App\Models\AssetGroup;
+use App\Models\Report;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 
@@ -34,9 +35,11 @@ class AssetController extends Controller
                 'status' => 'required',
             ]);
 
-            $assetGroup = AssetGroup::firstOrCreate([
-                'unit_id' => $request->unit_id,
-                'name' => $request->assetGroup]
+            $assetGroup = AssetGroup::firstOrCreate(
+                [
+                    'unit_id' => $request->unit_id,
+                    'name' => $request->assetGroup
+                ]
             );
 
             asset::create([
@@ -93,9 +96,15 @@ class AssetController extends Controller
     }
 
     public function showDetail(Asset $asset)
-    {
-        dd($asset);
+    {  
+        $report = Report::whereHas('reportAssets', function ($query) use ($asset) {
+            $query->where('asset_id', $asset->id);
+        })->with(['reportAsset' => function ($query) use ($asset) {
+            $query->where('asset_id', $asset->id);
+        }, 'reportAsset.detailReports'])->latest('date')->first();
 
-        return view('pages.asset-management.asset.index', compact('dataAssetGroup', 'assetGroup', 'unit'));
+        $asset->load('assetGroup', 'unit', 'unit.location');
+
+        return view('pages.asset-management.asset.index', compact('report', 'asset'));
     }
 }

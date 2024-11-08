@@ -12,18 +12,20 @@ class ImportDataController extends Controller
 {
     public function importAssetByExcel(Request $request)
     {
-        try {
-            $request->validate([
-                'fileAsset' => 'required|mimes:xlsx,xls,csv',
-            ]);
+        $request->validate([
+            'fileAsset' => 'required|mimes:xlsx,xls,csv',
+        ]);
 
-            Excel::import(new AssetImport, $request->file('fileAsset'));
 
-            return back()->with('success', 'Asset imported successfully');
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            return back()->with('error', 'Something went wrong');
-        }
+        $import = new AssetImport;
+        Excel::import($import, $request->file('fileAsset'));
+
+        $messages = $import->getMessages();
+        $no_assets = $import->getNoAsset();
+        $nama_asset = $import->getAssetName();
+
+        return back()->with('success', 'Asset imported successfully')
+            ->with('messages', $messages);
     }
 
 
