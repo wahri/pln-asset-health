@@ -24,6 +24,8 @@ class ImportDataController extends Controller
         $no_assets = $import->getNoAsset();
         $nama_asset = $import->getAssetName();
 
+        dd($messages, $no_assets, $nama_asset);
+
         return back()->with('success', 'Asset imported successfully')
             ->with('messages', $messages);
     }
