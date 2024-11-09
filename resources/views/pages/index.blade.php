@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/dark-theme.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/header-colors.css') }}" />
+    
     <title>Asset Wellness Monitoring System</title>
 
     <style>
@@ -146,6 +147,62 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-striped table-hover table-sm table-dark" style="width:100%">
+                                        <thead>
+                                            <tr id="tableHeader1">
+                                                {{-- <th rowspan="2" width="15%">Bulan</th>
+                                                <th colspan="3" class="text-center">Koto Panjang</th>
+                                                <th colspan="3" class="text-center">Duri</th>
+                                                <th colspan="3" class="text-center">Location 3</th> --}}
+                                            </tr>
+                                            <tr id="tableHeader2">
+                                                {{-- <th>Normal</th>
+                                                <th>Abnormal</th>
+                                                <th>Fault</th>
+                                                <th>Normal</th>
+                                                <th>Abnormal</th>
+                                                <th>Fault</th>
+                                                <th>Normal</th>
+                                                <th>Abnormal</th>
+                                                <th>Fault</th> --}}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            {{-- <tr>
+                                                <td>Januari</td>
+                                                <td>12</td>
+                                                <td>21</td>
+                                                <td>21</td>
+                                                <td>12</td>
+                                                <td>21</td>
+                                                <td>12</td>
+                                                <td>12</td>
+                                                <td>21</td>
+                                                <td>12</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Februari</td>
+                                                <td>1</td>
+                                                <td>2</td>
+                                                <td>1</td>
+                                                <td>3</td>
+                                                <td>3</td>
+                                                <td>1</td>
+                                                <td>12</td>
+                                                <td>21</td>
+                                                <td>12</td>
+                                            </tr> --}}
+                                            <!-- Add more rows as needed -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {{-- <div class="row">
                     <template x-for="(report, index) in reports" :key="report.location_id">
@@ -231,6 +288,7 @@
     <!--app JS-->
     <script src="{{ asset('assets-horizontal/js/app.js') }}"></script>
 
+
     <script defer>
         document.addEventListener('alpine:init', () => {
             Alpine.data('alpineData', () => ({
@@ -238,6 +296,8 @@
                 reports: [],
                 location_id: '',
                 dataAssets: [],
+                headers: [],
+                data: [],
 
                 init() {
                     this.getData();
@@ -253,13 +313,34 @@
                         });
                         this.reports = response.data.charts;
                         this.dataAssets = response.data.table;
+                        this.headers = response.data.monthlyReport.headers;
+                        this.data = response.data.monthlyReport.data;
                         this.isLoading = false;
                         // this.loadCharts()
 
-                        this.$nextTick(() => this.loadCharts());
-                        this.$nextTick(() => {
-                            this.initializeDataTable();
-                        });
+                          if (this.location_id == '') {
+                          this.$nextTick(() => {
+                              this.loadCharts();
+                              this.initializeDataTableMonthAll();
+
+                          });
+                          this.$nextTick(() => {
+                              this.initializeDataTable();
+                          });
+
+                      } else {
+                          // this.loadCharts()
+                          this.$nextTick(() => {
+                              this.loadCharts();
+                              this.initializeDataTableMonth();
+
+                          });
+                          this.$nextTick(() => {
+                              this.initializeDataTable();
+                          });
+
+                      }
+
                     } catch (error) {
                         console.error("Error fetching data:", error);
                         this.isLoading = false;
@@ -546,6 +627,143 @@
                     $('#tableAssets').DataTable().buttons().container()
                         .appendTo('#tableAssets_wrapper .col-md-6:eq(0)');
                 },
+                initializeDataTableMonthAll() {
+                    const headers = this.headers; // Data untuk header lokasi dan kolom
+                    const data = this.data; // Data bulan dengan data untuk setiap lokasi
+
+                    // Function untuk generate table header
+                    function generateTableHeader() {
+                        let header1 = document.getElementById('tableHeader1');
+                        let header2 = document.getElementById('tableHeader2');
+
+                        // Clear konten sebelumnya
+                        header1.innerHTML = '';
+                        header2.innerHTML = '';
+
+                        // Menambahkan baris pertama (judul lokasi)
+                        header1.innerHTML = '<th rowspan="2" width="15%">Bulan</th>';
+                        headers.forEach(header => {
+                            header1.innerHTML +=
+                                `<th colspan="3" class="text-center">${header.location}</th>`;
+                        });
+
+                        // Menambahkan baris kedua (kolom-kolom untuk setiap lokasi)
+                        headers.forEach(header => {
+                            header.columns.forEach(col => {
+                                header2.innerHTML += `<th>${col}</th>`;
+                            });
+                        });
+                    }
+
+                    // Function untuk generate table body
+                    function generateTableBody() {
+                        let tableBody = document.getElementById('tableBody');
+
+                        // Clear baris sebelumnya
+                        tableBody.innerHTML = '';
+
+                        // Menampilkan data dari bawah ke atas
+                        const reversedData = data.reverse(); // Membalikkan urutan data
+
+                        // Menambahkan data untuk setiap bulan
+                        reversedData.forEach(row => {
+                            let tableRow = `<tr><td>${row.month}</td>`;
+
+                            // Menambahkan data untuk setiap lokasi yang ada dalam headers
+                            headers.forEach(header => {
+                                header.columns.forEach((col, index) => {
+                                    // Ambil data berdasarkan nama lokasi dan kolom
+                                    const locationKey = header.location
+                                        .toLowerCase().replace(' ',
+                                        ''); // Mengambil nama lokasi dan memodifikasinya untuk key
+                                    const value = row[locationKey][
+                                    index]; // Mengakses data sesuai dengan lokasi dan kolom
+                                    tableRow += `<td>${value}</td>`;
+                                });
+                            });
+
+                            tableRow += '</tr>';
+                            tableBody.innerHTML += tableRow;
+                        });
+                    }
+
+                    // Generate table
+                    generateTableHeader();
+                    generateTableBody();
+
+                },
+                initializeDataTableMonth() {
+                       const headers = this.headers; // Get headers (locations and columns)
+                  const data = this.data; // Get data for each month (Normal, Abnormal, Fault)
+
+                  // Function to generate the table header
+                  function generateTableHeader() {
+                      let header1 = document.getElementById('tableHeader1');
+                      let header2 = document.getElementById('tableHeader2');
+
+                      // Clear previous content
+                      header1.innerHTML = '';
+                      header2.innerHTML = '';
+
+                      // Add first row (location headers)
+                      header1.innerHTML = '<th rowspan="2" width="15%">Bulan</th>';
+                      headers.forEach(header => {
+                          header1.innerHTML +=
+                              `<th colspan="3" class="text-center">${header.location}</th>`;
+                      });
+
+                      // Add second row (columns for each location)
+                      headers.forEach(header => {
+                          header.columns.forEach(col => {
+                              header2.innerHTML += `<th>${col}</th>`;
+                          });
+                      });
+                  }
+
+                  // Function to generate the table body
+                  function generateTableBody() {
+                      let tableBody = document.getElementById('tableBody');
+
+                      // Clear previous rows
+                      tableBody.innerHTML = '';
+
+                      // Reverse the data so the latest month comes first
+                      const reversedData = Object.entries(data)
+                          .reverse(); // Convert the object into an array of [month, data]
+
+                      // Add data for each month
+                      reversedData.forEach(([month, row]) => {
+                          let tableRow = `<tr><td>${month}</td>`;
+
+                          headers.forEach(header => {
+                              header.columns.forEach((col) => {
+                                  // For each location and each column (Normal, Abnormal, Fault), we get the value from the row
+                                  let value =
+                                      '0'; // Default value for missing data
+                                  if (row[col] && row[col][header
+                                          .location
+                                      ]) {
+                                      value = row[col][header
+                                          .location
+                                      ];
+                                  }
+                                  tableRow += `<td>${value}</td>`;
+                              });
+                          });
+
+                          tableRow += '</tr>';
+                          tableBody.innerHTML += tableRow;
+                      });
+
+
+                  }
+
+                  // Generate table
+                  generateTableHeader();
+                  generateTableBody();
+
+                }
+
             }));
         });
 
@@ -555,6 +773,13 @@
             window.location.href = `/asset-management/assets/detail/${assetId}`; // Contoh mengarahkan ke halaman detail
         }
     </script>
+
+    {{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+    <script>
+      new DataTable("#example");
+    </script> --}}
 
 
     {{-- <script>

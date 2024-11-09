@@ -24,7 +24,7 @@ class ImportDataController extends Controller
         $no_assets = $import->getNoAsset();
         $nama_asset = $import->getAssetName();
 
-        dd($messages, $no_assets, $nama_asset);
+        // dd($messages, $no_assets, $nama_asset);
 
         return back()->with('success', 'Asset imported successfully')
             ->with('messages', $messages);
@@ -42,7 +42,7 @@ class ImportDataController extends Controller
 
             return back()->with('success', 'Report imported successfully');
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            // dd($th->getMessage());
             return back()->with('error', 'Something went wrong');
         }
     }
