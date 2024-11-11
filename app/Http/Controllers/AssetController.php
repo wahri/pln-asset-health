@@ -12,6 +12,7 @@ class AssetController extends Controller
 {
     public function index($id_unit)
     {
+        $assets = Asset::where('unit_id', $id_unit)->with('assetGroup')->get();
 
         $unit = Unit::firstOrCreate(['id' => $id_unit]);
 
@@ -19,7 +20,7 @@ class AssetController extends Controller
 
         $assetGroup = AssetGroup::all();
 
-        return view('pages.asset-management.asset.index', compact('dataAssetGroup', 'assetGroup', 'unit'));
+        return view('pages.asset-management.asset.index', compact('dataAssetGroup', 'assetGroup', 'unit', 'assets'));
     }
 
     public function store(Request $request)

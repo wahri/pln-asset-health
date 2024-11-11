@@ -6,6 +6,7 @@ use App\Imports\AssetImport;
 use App\Imports\ReportImport;
 use Illuminate\Http\Request;
 use App\Imports\UsersImport;
+use App\Models\Asset;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportDataController extends Controller
@@ -21,10 +22,6 @@ class ImportDataController extends Controller
         Excel::import($import, $request->file('fileAsset'));
 
         $messages = $import->getMessages();
-        $no_assets = $import->getNoAsset();
-        $nama_asset = $import->getAssetName();
-
-        dd($messages, $no_assets, $nama_asset);
 
         return back()->with('success', 'Asset imported successfully')
             ->with('messages', $messages);

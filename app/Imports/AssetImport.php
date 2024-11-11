@@ -14,8 +14,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 class AssetImport implements ToModel, WithStartRow, WithHeadingRow
 {
     protected $messages = [];
-    protected $no_asset = [];
-    protected $nama_asset = [];
+    protected $assets = [];
 
 
     public function getMessages(): array
@@ -23,14 +22,9 @@ class AssetImport implements ToModel, WithStartRow, WithHeadingRow
         return $this->messages;
     }
 
-    public function getNoAsset(): array
+    public function getAssets(): array
     {
-        return $this->no_asset;
-    }
-
-    public function getAssetName(): array
-    {
-        return $this->nama_asset;
+        return $this->assets;
     }
 
     public function startRow(): int
@@ -46,8 +40,7 @@ class AssetImport implements ToModel, WithStartRow, WithHeadingRow
     {
         return DB::transaction(function () use ($row) {
             try {
-                $this->no_asset[] = $row['no_asset'];
-                $this->nama_asset[] = $row['asset_name'];
+                $this->assets[] = $row;
                 if (!isset($row['no']) || !isset($row['location']) || !isset($row['unit']) || !isset($row['asset_name'])) {
                     return null;
                 }

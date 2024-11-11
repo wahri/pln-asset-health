@@ -51,7 +51,7 @@ class ReportImport implements ToModel
         $checkReportDate = Report::where('location_id', $location->id)
             ->where('date', $this->convertMonth($row[1], $row))
             ->first();
-        
+
         if (!$checkReportDate) {
             $report = Report::firstOrCreate([
                 'location_id' => $location->id,
@@ -84,6 +84,9 @@ class ReportImport implements ToModel
             })
             ->where('no_asset', $row[2])
             ->first();
+
+        $asset->status = $row[3];
+        $asset->save();
 
         if (!$asset) {
             return null;

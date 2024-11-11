@@ -118,32 +118,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($dataAssetGroup as $a)
-                                <tr>
-                                    <td class="align-middle" rowspan="{{ $a->assets->count() }}">{{ $loop->iteration }}</td>
-                                    <td class="align-middle" rowspan="{{ $a->assets->count() }}">{{ $a->name }}</td>
-                                    <td>{{ $a->assets->first()->no_asset ?? '' }}</td>
-                                    <td>{{ $a->assets->first()->name }}</td>
+                        @foreach ($assets as $asset)
+                                <tr class="align-middle">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $asset->assetGroup->name }}</td>
+                                    <td>{{ $asset->no_asset ?? '' }}</td>
+                                    <td>{{ $asset->name ?? '' }}</td>
 
                                     <td>                                        
-                                        <span class="badge bg-{{ $a->assets->first()->status_class }}">
-                                            {{ ucfirst($a->assets->first()->status) }}
+                                        <span class="badge bg-{{ $asset->status_class }}">
+                                            {{ ucfirst($asset->status) }}
                                         </span>
                                     </td>
                                     <td class="gap-2 d-flex">
                                         <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                            data-bs-target="#editAsset_{{ $a->assets->first()->id }}"><i
+                                            data-bs-target="#editAsset_{{ $asset->id }}"><i
                                                 class='text-white bx bxs-edit'></i></button>
 
                                         <!-- Modal -->
-                                        <div class="modal fade" id="editAsset_{{ $a->assets->first()->id }}"
+                                        <div class="modal fade" id="editAsset_{{ $asset->id }}"
                                             tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
-
-
                                                     <form
-                                                        action="{{ route('assetManagement.assets.update', $a->assets->first()->id) }}"
+                                                        action="{{ route('assetManagement.assets.update', $asset->id) }}"
                                                         method="post">
                                                         @csrf
                                                         @method('put')
@@ -161,8 +159,8 @@
                                                                 </label>
                                                                 <select name="unit_id" id="unit_id"
                                                                     class="form-select">
-                                                                    <option value="{{ $a->assets->first()->unit_id }}">
-                                                                        {{ $a->assets->first()->unit->name }}</option>
+                                                                    <option value="{{ $asset->unit_id }}">
+                                                                        {{ $asset->unit->name }}</option>
                                                                 </select>
                                                             </div>
                                                             <div class="mb-3">
@@ -171,12 +169,12 @@
                                                                 <select name="assetGroup" id="assetGroup"
                                                                     class="form-select select2-edit">
                                                                     <option selected value="" disabled
-                                                                        {{ !$a->assets->first()->assetGroup ? 'selected' : '' }}>
+                                                                        {{ !$asset->assetGroup ? 'selected' : '' }}>
                                                                         Select
                                                                         an Asset Group</option>
                                                                     @foreach ($assetGroup as $ag)
                                                                         <option value="{{ $ag->name }}"
-                                                                            {{ $a->assets->first()->assetGroup && $a->assets->first()->assetGroup->id == $ag->id ? 'selected' : '' }}>
+                                                                            {{ $asset->assetGroup && $asset->assetGroup->id == $ag->id ? 'selected' : '' }}>
                                                                             {{ $ag->name }}
                                                                         </option>
                                                                     @endforeach
@@ -188,14 +186,14 @@
                                                                     Asset</label>
                                                                 <input type="text" class="form-control" id="nameAsset"
                                                                     name="nameAsset"
-                                                                    value="{{ $a->assets->first()->name }}">
+                                                                    value="{{ $asset->name }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="noAsset" class="form-label">No Asset
                                                                 </label>
                                                                 <input type="text" class="form-control" id="noAsset"
                                                                     name="noAsset"
-                                                                    value="{{ $a->assets->first()->no_asset }}">
+                                                                    value="{{ $asset->no_asset }}">
                                                             </div>
 
                                                             <div class="mb-3">
@@ -204,13 +202,13 @@
                                                                 <select name="status" id="status"
                                                                     class="form-select">
                                                                     <option value="normal"
-                                                                        {{ $a->assets->first()->status == 'normal' ? 'selected' : '' }}>
+                                                                        {{ $asset->status == 'normal' ? 'selected' : '' }}>
                                                                         Normal</option>
                                                                     <option value="abnormal"
-                                                                        {{ $a->assets->first()->status == 'abnormal' ? 'selected' : '' }}>
+                                                                        {{ $asset->status == 'abnormal' ? 'selected' : '' }}>
                                                                         Abnormal</option>
                                                                     <option value="fault"
-                                                                        {{ $a->assets->first()->status == 'fault' ? 'selected' : '' }}>
+                                                                        {{ $asset->status == 'fault' ? 'selected' : '' }}>
                                                                         Fault</option>
                                                                 </select>
                                                             </div>
@@ -228,12 +226,12 @@
                                             </div>
                                         </div>
                                         <form
-                                            action="{{ route('assetManagement.assets.destroy', $a->assets->first()->id) }}"
-                                            method="post" id="delete-form_{{ $a->assets->first()->id }}">
+                                            action="{{ route('assetManagement.assets.destroy', $asset->id) }}"
+                                            method="post" id="delete-form_{{ $asset->id }}">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="btn btn-danger"
-                                                onclick="deleteConfirm(event,{{ $a->assets->first()->id }})"><i
+                                                onclick="deleteConfirm(event,{{ $asset->id }})"><i
                                                     class='bx bxs-trash'></i></button>
                                         </form>
 
@@ -242,131 +240,6 @@
 
                                     </td>
                                 </tr>
-                                @foreach ($a->assets->skip(1) as $secondItem)
-                                    <tr>
-
-                                        <td>{{ $secondItem->no_asset }}</td>
-                                        <td>{{ $secondItem->name }}</td>
-
-                                        <td>
-                                            <span class="badge bg-{{ $secondItem->status_class }}">
-                                                {{ ucfirst($secondItem->status) }}
-                                            </span>
-                                        </td>
-                                        <td class="gap-2 d-flex">
-                                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                                data-bs-target="#editAsset_{{ $secondItem->id }}"><i
-                                                    class='text-white bx bxs-edit'></i></button>
-
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="editAsset_{{ $secondItem->id }}"
-                                                tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-
-
-                                                        <form
-                                                            action="{{ route('assetManagement.assets.update', $secondItem->id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('put')
-                                                            <input type="hidden" name="unit_id"
-                                                                value="{{ $unit->id }}">
-                                                            <div class="modal-header">
-                                                                <h1 class="modal-title fs-5" id="addAsset">Tambah Asset
-                                                                </h1>
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="mb-3">
-                                                                    <label for="unit" class="form-label">Unit
-                                                                    </label>
-                                                                    <select name="unit_id" id="unit_id"
-                                                                        class="form-select">
-                                                                        <option
-                                                                            value="{{ $secondItem->unit_id }}">
-                                                                            {{ $secondItem->unit->name }}</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="assetGroup" class="form-label">Asset
-                                                                        Group</label>
-                                                                    <select name="assetGroup" id="assetGroup"
-                                                                        class="form-select select2-edit">
-                                                                        <option selected value="" disabled
-                                                                            {{ !$secondItem->assetGroup ? 'selected' : '' }}>
-                                                                            Select
-                                                                            an Asset Group</option>
-                                                                        @foreach ($assetGroup as $ag)
-                                                                            <option value="{{ $ag->name }}"
-                                                                                {{ $secondItem->assetGroup && $secondItem->assetGroup->id == $ag->id ? 'selected' : '' }}>
-                                                                                {{ $ag->name }}
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-
-                                                                <div class="mb-3">
-                                                                    <label for="nameAsset" class="form-label">Name
-                                                                        Asset</label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="nameAsset" name="nameAsset"
-                                                                        value="{{ $secondItem->name }}">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="noAsset" class="form-label">No Asset
-                                                                    </label>
-                                                                    <input type="text" class="form-control"
-                                                                        id="noAsset" name="noAsset"
-                                                                        value="{{ $secondItem->no_asset }}">
-                                                                </div>
-
-                                                                <div class="mb-3">
-                                                                    <label for="status" class="form-label">Situasi Saat
-                                                                        ini</label>
-                                                                    <select name="status" id="status"
-                                                                        class="form-select">
-                                                                        <option value="normal"
-                                                                            {{ $secondItem->status == 'normal' ? 'selected' : '' }}>
-                                                                            Normal</option>
-                                                                        <option value="abnormal"
-                                                                            {{ $secondItem->status == 'abnormal' ? 'selected' : '' }}>
-                                                                            Abnormal</option>
-                                                                        <option value="fault"
-                                                                            {{ $secondItem->status == 'fault' ? 'selected' : '' }}>
-                                                                            Fault</option>
-                                                                    </select>
-                                                                </div>
-
-
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">Save
-                                                                    changes</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <form
-                                                action="{{ route('assetManagement.assets.destroy', $secondItem->id) }}"
-                                                method="post" id="delete-form_{{ $secondItem->id }}">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-danger"
-                                                    onclick="deleteConfirm(event,{{ $secondItem->id }})"><i
-                                                        class='bx bxs-trash'></i></button>
-                                            </form>
-
-
-
-
-                                        </td>
-                                    </tr>
-                                @endforeach
                             @endforeach
 
                         </tbody>
