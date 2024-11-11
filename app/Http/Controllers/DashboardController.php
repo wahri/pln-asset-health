@@ -57,63 +57,206 @@ class DashboardController extends Controller
 
             $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->where('report_id', $latestReport->id)->where('status', '!=', 'normal')->get();
 
+
+
+            // Fetch monthly report data
+            $monthlyReportData = DB::table('report_assets')
+            ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+                ->join('units', 'assets.unit_id', '=', 'units.id')
+                ->join('reports', 'report_assets.report_id', '=', 'reports.id')
+                ->where('reports.location_id', $request->location_id)
+                ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'), DB::raw('MONTH(reports.date) as report_month'))
+                ->groupBy('units.id', 'report_assets.status', 'report_month')
+                ->get();
+
+            // Initialize the monthly data structure with zeroes
+            $months = array_reverse([
+                '01' => 'Januari',
+                '02' => 'Februari',
+                '03' => 'Maret',
+                '04' => 'April',
+                '05' => 'Mei',
+                '06' => 'Juni',
+                '07' => 'Juli',
+                '08' => 'Agustus',
+                '09' => 'September',
+                '10' => 'Oktober',
+                '11' => 'November',
+                '12' => 'Desember',
+            ]);
+
+            $monthlyData = [];
+            foreach ($months as $monthCode => $monthName) {
+                $monthlyData[$monthName] = [
+                    'Normal' => [],
+                    'Abnormal' => [],
+                    'Fault' => [],
+                ];
+            }
+
+            // Populate the monthly data based on the fetched results
+            foreach ($monthlyReportData as $report) {
+                $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
+                $unitName = $report->unit_name;
+
+                if ($report->status == 'normal') {
+                    $monthlyData[$monthName]['Normal'][$unitName] = $report->asset_count ?: 0;
+                } elseif ($report->status == 'abnormal') {
+                    $monthlyData[$monthName]['Abnormal'][$unitName] = $report->asset_count ?: 0;
+                } elseif ($report->status == 'fault') {
+                    $monthlyData[$monthName]['Fault'][$unitName] = $report->asset_count ?: 0;
+                }
+            }
+
+            // Prepare headers using units related to the selected location
+            $units = DB::table('units')->where('location_id', $request->location_id)->get();
+            $monthlyReport = [
+                'headers' => array_map(function ($unit) {
+                    return [
+                        'location' => $unit->name,
+                        'columns' => ['Normal', 'Abnormal', 'Fault'],
+                    ];
+                }, $units->toArray()),
+                'data' => $monthlyData,
+            ];
+
+
+
             // Format response untuk Highcharts
             return response()->json([
                 'charts' => [
-                    'categories' => $units,
+                    'categories' =>
+                    $units->pluck('name')->toArray(),
                     'series' => [
                         ['name' => 'Normal', 'data' => $normalData],
                         ['name' => 'Abnormal', 'data' => $abnormalData],
                         ['name' => 'Fault', 'data' => $faultData],
                     ]
                 ],
-                'table' => $reportAsset
+                'table' => $reportAsset,
+                'monthlyReport' => $monthlyReport 
             ]);
         } else {
-            // Ambil report terakhir untuk setiap lokasi
+            // Ambil laporan terakhir untuk setiap lokasi
             $latestReports = DB::table('reports as r1')
                 ->join('locations as l', 'r1.location_id', '=', 'l.id')
-                ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name')
+                ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name', DB::raw('MONTH(r1.date) as report_month'))
                 ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
                 ->get();
-            // Ambil count asset berdasarkan status pada report terakhir setiap lokasi
+
+            // Siapkan data untuk tiap bulan dan lokasi
+            // Urutan bulan dimulai dari Desember ke Januari
+            $months = array_reverse(['01' => 'Januari',
+                '02' => 'Februari',
+                '03' => 'Maret',
+                '04' => 'April',
+                '05' => 'Mei',
+                '06' => 'Juni',
+                '07' => 'Juli',
+                '08' => 'Agustus',
+                '09' => 'September',
+                '10' => 'Oktober',
+                '11' => 'November',
+                '12' => 'Desember',
+            ]);
+            $locations = $latestReports->pluck('location_name')->unique()->toArray();
+            $monthlyData = [];
+
+            // Inisialisasi data untuk tiap bulan dan lokasi
+            foreach ($months as $month => $monthName) {
+                $monthlyData[$monthName] = [];
+                foreach ($locations as $location) {
+                    $monthlyData[$monthName][$location] = [
+                        'Normal' => 0,
+                        'Abnormal' => 0,
+                        'Fault' => 0,
+                    ];
+                }
+            }
+            // Ambil data report assets berdasarkan status dan lokasi
             $reportAssetCounts = DB::table('report_assets')
-                ->select('status', 'report_id', DB::raw('COUNT(*) as asset_count'))
-                ->whereIn('report_id', $latestReports->pluck('report_id'))
-                ->groupBy('report_id', 'status')
+                ->join('reports', 'report_assets.report_id', '=', 'reports.id')
+                ->join('locations', 'reports.location_id', '=', 'locations.id')
+                ->select('locations.name as location_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'), DB::raw('MONTH(reports.date) as report_month'))
+                ->groupBy('locations.name', 'report_assets.status', 'report_month')
                 ->get();
 
+            // Mengisi data ke dalam $monthlyData sesuai bulan dan status
+            foreach ($reportAssetCounts as $report) {
+                $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
+                $location = $report->location_name;
+
+                if ($report->status == 'normal') {
+                    $monthlyData[$monthName][$location]['Normal'] = $report->asset_count;
+                } elseif ($report->status == 'abnormal') {
+                    $monthlyData[$monthName][$location]['Abnormal'] = $report->asset_count;
+                } elseif ($report->status == 'fault') {
+                    $monthlyData[$monthName][$location]['Fault'] = $report->asset_count;
+                }
+            }
+
+            // Persiapkan data untuk monthlyReport sesuai dengan struktur yang diinginkan
+            $monthlyReportData = [];
+            foreach ($monthlyData as $month => $locationsData) {
+                $dataRow = ['month' => $month];
+                foreach ($locations as $location) {
+                    $dataRow[strtolower(str_replace(' ', '', $location))] = [
+                        $locationsData[$location]['Normal'],
+                        $locationsData[$location]['Abnormal'],
+                        $locationsData[$location]['Fault'],
+                    ];
+                }
+                $monthlyReportData[] = $dataRow;
+            }
+
+
+
             // Persiapkan data untuk Highcharts
-            $locations = [];
             $normalData = [];
             $abnormalData = [];
             $faultData = [];
 
             foreach ($latestReports as $report) {
-                $locations[] = $report->location_name;
-
-                $assets = $reportAssetCounts->where('report_id', $report->report_id);
+                $assets = $reportAssetCounts->where('location_name', $report->location_name);
                 $normalData[] = $assets->where('status', 'normal')->sum('asset_count') ?: 0;
                 $abnormalData[] = $assets->where('status', 'abnormal')->sum('asset_count') ?: 0;
                 $faultData[] = $assets->where('status', 'fault')->sum('asset_count') ?: 0;
             }
 
-            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->whereIn('report_id', $latestReports->pluck('report_id'))->where('status', '!=', 'normal')->get();
+            // Ambil data report assets berdasarkan status pada report terakhir setiap lokasi
+            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
+                ->whereIn('report_id', $latestReports->pluck('report_id'))
+                ->where('status', '!=', 'normal')
+                ->get();
 
-            // Format response untuk Highcharts
-            return response()->json(
-                [
-                    'charts' => [
-                        'categories' => $locations,
-                        'series' => [
-                            ['name' => 'Normal', 'data' => $normalData],
-                            ['name' => 'Abnormal', 'data' => $abnormalData],
-                            ['name' => 'Fault', 'data' => $faultData],
-                        ]
-                    ],
-                    'table' => $reportAsset
-                ]
-            );
+            // Format response untuk Highcharts dan tambahan data bulanan
+
+            return response()->json([
+                'charts' => [
+                    'categories' => $locations,
+                    'series' => [
+                        ['name' => 'Normal', 'data' => $normalData],
+                        ['name' => 'Abnormal', 'data' => $abnormalData],
+                        ['name' => 'Fault', 'data' => $faultData],
+                    ]
+                ],
+
+                'table' => $reportAsset, // Menyediakan data untuk tabel yang lama
+                // 'monthlyReport' => [
+                //     'categories' => $locations,
+                //     'series' => $monthlyData
+                // ],
+
+                'monthlyReport' => [
+                    'headers' => array_map(function ($location) {
+                        return [
+                            'location' => $location,
+                            'columns' => ['Normal', 'Abnormal', 'Fault'],
+                        ];
+                    }, $locations),
+                    'data' => $monthlyReportData,
+                ],
+            ]);
         }
     }
 

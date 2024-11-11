@@ -39,7 +39,7 @@ class ImportDataController extends Controller
 
             return back()->with('success', 'Report imported successfully');
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            // dd($th->getMessage());
             return back()->with('error', 'Something went wrong');
         }
     }
