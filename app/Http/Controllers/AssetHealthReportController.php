@@ -69,39 +69,26 @@ class AssetHealthReportController extends Controller
 
     public function showReportUnit(Location $location, Report $report, Unit $unit)
     {
-
-        // $reportAssets = ReportAssets::whereHas('asset', function ($query) use ($unit) {
-        //     $query->where('unit_id', $unit->id);
-        // })->where('report_id', $report->id)
-        //     ->with(['asset', 'asset.assetGroup'])
-        //     ->get()
-        //     ->groupBy('asset.assetGroup.name');
-        // Ambil asset report berdasarkan unit dan report ID, serta hindari duplikasi data jika diperlukan
-        $reportAssets = ReportAssets::whereHas('asset', function ($query) use ($unit) {
-            $query->where('unit_id', $unit->id);
-        })
-        ->where('report_id', $report->id)
-        ->with([
-            'asset' => function ($query) {
-                $query->with('assetGroup'); // Ambil asset group terkait dengan asset
+        // Ambil data assets yang berkaitan dengan unit dan report yang spesifik
+        $reportsAssets = Asset::with([
+            'reportAssets' => function ($query) use ($report) {
+                $query->where('report_id', $report->id)
+                    ->with('detailReports');
             },
-            'report', // Ambil data report terkait
-            'unit' => function ($query) {
-                $query->with('location'); // Ambil lokasi unit jika ada
-            },
-            'detailReports' => function ($query) {
-                $query->distinct(); // Hindari duplikasi data di detailReports
-            }
+            'assetGroup',
+            'unit'
         ])
-        ->get();
+            ->where('unit_id', $unit->id)
+            ->get();
+
+
 
         // Ambil semua grup asset jika diperlukan
         $assetsGrup = AssetGroup::all();
 
-
-
-        return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'reportAssets', 'assetsGrup'));
+        return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'reportsAssets', 'assetsGrup'));
     }
+
 
     public function editReportAsset(ReportAssets $reportAsset)
     {
