@@ -22,6 +22,11 @@ class ImportDataController extends Controller
         Excel::import($import, $request->file('fileAsset'));
 
         $messages = $import->getMessages();
+        $no_assets = $import->getAssets();
+
+        Asset::whereNotIn('no_asset', $no_assets)->whereNotNull('no_asset')->update([
+            'is_active' => 0
+        ]);
 
         return back()->with('success', 'Asset imported successfully')
             ->with('messages', $messages);

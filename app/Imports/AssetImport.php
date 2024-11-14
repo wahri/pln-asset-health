@@ -40,12 +40,14 @@ class AssetImport implements ToModel, WithStartRow, WithHeadingRow
     {
         return DB::transaction(function () use ($row) {
             try {
-                $this->assets[] = $row;
                 if (!isset($row['no']) || !isset($row['location']) || !isset($row['unit']) || !isset($row['asset_name'])) {
                     return null;
                 }
                 if (trim($row['no']) == null || trim($row['location']) == null || trim($row['unit']) == null || trim($row['asset_name']) == null) {
                     return null;
+                }
+                if (trim($row['no_asset']) != null) {
+                    $this->assets[] = trim($row['no_asset']);
                 }
 
 
@@ -71,34 +73,42 @@ class AssetImport implements ToModel, WithStartRow, WithHeadingRow
                     );
                 }
 
-                $asset = Asset::updateOrCreate(
-                    [
-                        'unit_id' => $unit->id,
-                        'name' => trim($row['asset_name']),
-                    ],
-                    [
-                        'asset_group_id' => $assetGroup->id ?? null,
-                        'no_asset' => trim($row['no_asset']),
-                    ]
-                );
+                $checkAsset = Asset::where([
+                    'unit_id' => $unit->id,
+                    'no_asset' => trim($row['no_asset']),
+                    'name' => trim($row['asset_name']),
+                    'asset_group_id' => $assetGroup->id ?? null
+                ])->first();
 
-                // $checkAsset = Asset::where('no_asset', trim($row['no_asset']))
-                //     ->where('unit_id', $unit->id)
-                //     ->where('name', trim($row['asset_name']))
-                //     ->where('asset_group_id', $assetGroup->id ?? null)
-                //     ->first();
+                if ($checkAsset) {
+                    return $checkAsset;
+                }
 
-                // if ($checkAsset) {
-                //     return null;
-                // }
-                // // Membuat asset baru dengan data yang diambil dari Excel
-                // $asset = Asset::create([
-                //     'unit_id' => $unit->id,
-                //     'asset_group_id' => $assetGroup->id ?? null,
-                //     'no_asset' => trim($row['no_asset']),  // Kolom 'no_asset'
-                //     'name' => trim($row['asset_name']),      // Kolom 'asset_name'
-                // ]);
-
+                if (isset($row['no_asset'])) {
+                    $asset = Asset::updateOrCreate(
+                        [
+                            'unit_id' => $unit->id,
+                            'no_asset' => trim($row['no_asset']),
+                        ],
+                        [
+                            'name' => trim($row['asset_name']),
+                            'asset_group_id' => $assetGroup->id ?? null,
+                        ]
+                    );
+                } elseif ($assetGroup) {
+                    $asset = Asset::updateOrCreate(
+                        [
+                            'unit_id' => $unit->id,
+                            'asset_group_id' => $assetGroup->id,
+                            'name' => trim($row['asset_name']),
+                        ],
+                        [
+                            'no_asset' => trim($row['no_asset']),
+                        ]
+                    );
+                } else {
+                    return null;
+                }
 
                 return $asset;
             } catch (\Exception $e) {

@@ -9,115 +9,108 @@ use App\Models\Report;
 use App\Models\ReportAssets;
 use App\Models\Unit;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
-class ReportImport implements ToModel
+class ReportImport implements ToModel, WithStartRow, WithHeadingRow
 {
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
+    protected $messages = [];
+
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
+    public function startRow(): int
+    {
+        return 2; // assuming the first row is the header
+    }
     public function model(array $row)
     {
-        $headers = [
-            'location',
-            'month_year',
-            'no_asset',
-            'status',
-            'no_sr',
-            'no_wo',
-            'tgl_identifikasi',
-            'status_saat_ini',
-            'kondisi_asset',
-            'action_plan',
-            'target_selesai',
-            'progress_saat_ini',
-            'realisasi_selesai',
-            'main_issue',
-            'keterangan'
-        ];
-
-        if (count($row) >= count($headers) && !array_diff($headers, $row)) {
-            return null;
-        }
-        $location = Location::where('name', $row[0])->first();
-
-        if (!$location) {
-            return null;
-        }
-
-        $checkReportDate = Report::where('location_id', $location->id)
-            ->where('date', $this->convertMonth($row[1], $row))
-            ->first();
-
-        if (!$checkReportDate) {
-            $report = Report::firstOrCreate([
-                'location_id' => $location->id,
-                'date' => $this->convertMonth($row[1], $row)
-            ]);
-
-            $units = Unit::where('location_id', $location->id)->get();
-
-            foreach ($units as $unit) {
-                $assets = Asset::where('unit_id', $unit->id)->get();
-
-                foreach ($assets as $asset) {
-                    ReportAssets::updateOrCreate(
-                        [
-                            'report_id' => $report->id,
-                            'unit_id' => $asset->unit_id,
-                            'asset_id' => $asset->id,
-                            'status' => 'normal',
-                        ],
-                    );
+        return DB::transaction(function () use ($row) {
+            try {
+                if (!isset($row['location']) || !isset($row['month_year']) || !isset($row['no_asset']) || !isset($row['status'])) {
+                    return null;
                 }
+
+                if (trim($row['location']) == null || trim($row['month_year']) == null || trim($row['no_asset']) == null || trim($row['status']) == null) {
+                    return null;
+                }
+                $location = Location::where('name', $row['location'])->first();
+                if (!$location) {
+                    return null;
+                }
+
+                $checkReportDate = Report::where('location_id', $location->id)
+                    ->where('date', $this->convertMonth($row['month_year'], $row))
+                    ->first();
+
+                if (!$checkReportDate) {
+                    $report = Report::firstOrCreate([
+                        'location_id' => $location->id,
+                        'date' => $this->convertMonth($row['month_year'], $row)
+                    ]);
+
+                    $units = Unit::where('location_id', $location->id)->get();
+
+                    foreach ($units as $unit) {
+                        $assets = Asset::where('unit_id', $unit->id)->get();
+
+                        foreach ($assets as $asset) {
+                            ReportAssets::updateOrCreate(
+                                [
+                                    'report_id' => $report->id,
+                                    'unit_id' => $asset->unit_id,
+                                    'asset_id' => $asset->id,
+                                    'status' => 'normal',
+                                ],
+                            );
+                        }
+                    }
+                } else {
+                    $report = $checkReportDate;
+                }
+
+                $asset = Asset::where('no_asset', $row['no_asset'])->first();
+                if (!$asset) {
+                    return null;
+                }
+                $asset->status = $row['status'];
+                $asset->save();
+
+                
+                $reportAsset = ReportAssets::where('asset_id', $asset->id)
+                    ->where('report_id', $report->id)
+                    ->first();
+
+                if (!$reportAsset) {
+                    return null;
+                }
+                $reportAsset->status = $row['status'];
+                $reportAsset->save();
+
+                $detailReport = DetailReport::create([
+                    'report_asset_id' => $reportAsset->id,
+                    'no_sr' => isset($row['no_sr']) ? $row['no_sr'] : null,
+                    'no_wo' => isset($row['no_wo']) ? $row['no_wo'] : null,
+                    'tanggal_identifikasi' => $row['tgl_identifikasi'] ? $this->convertExcelDate($row['tgl_identifikasi']) : null,
+                    'status_sr' => isset($row['status_saat_ini']) ? $row['status_saat_ini'] : null,
+                    'kondisi_asset' => isset($row['kondisi_asset']) ? $row['kondisi_asset'] : null,
+                    'action_plan' => isset($row['action_plan']) ? $row['action_plan'] : null,
+                    'progress_saat_ini' => isset($row['progress_saat_ini']) ? $row['progress_saat_ini'] : null,
+                    'target_selesai' => isset($row['target_selesai']) ? $row['target_selesai'] : null,
+                    'realisasi_selesai' => isset($row['realisasi_selesai']) ? $row['realisasi_selesai'] : null,
+                    'issue' => isset($row['main_issue']) ? $row['main_issue'] : null,
+                    'keterangan' => isset($row['keterangan']) ? $row['keterangan'] : null,
+                ]);
+
+                return $detailReport;
+            } catch (\Exception $e) {
+                $this->messages[] = "- Baris ke-" . $row['no'] . " error: " . $e->getMessage() . "<br>";
+                return null;
             }
-        } else {
-            $report = $checkReportDate;
-        }
-
-        $asset = Asset::with('unit.location')
-            ->whereHas('unit', function ($query) use ($location) {
-                $query->where('location_id', $location->id);
-            })
-            ->where('no_asset', $row[2])
-            ->first();
-
-        $asset->status = $row[3];
-        $asset->save();
-
-        if (!$asset) {
-            return null;
-        }
-
-        $reportAsset = ReportAssets::where('asset_id', $asset->id)
-            ->where('report_id', $report->id)
-            ->first();
-
-        if (!$reportAsset) {
-            return null;
-        }
-        $reportAsset->status = $row[3];
-        $reportAsset->save();
-
-        // Mengembalikan DetailReport dengan data dari Excel
-        return new DetailReport([
-            'report_asset_id' => $reportAsset->id,
-            'report_asset_id' => $reportAsset->id,
-            'no_sr' => isset($row[4]) ? $row[4] : null,
-            'no_wo' => isset($row[5]) ? $row[5] : null,
-            'tanggal_identifikasi' => $row[6] ? $this->convertExcelDate($row[6]) : null,
-            'status_sr' => isset($row[7]) ? $row[7] : null,
-            'kondisi_asset' => isset($row[8]) ? $row[8] : null,
-            'action_plan' => isset($row[9]) ? $row[9] : null,
-            'progress_saat_ini' => isset($row[10]) ? $row[10] : null,
-            'target_selesai' => isset($row[11]) ? $row[11] : null,
-            'realisasi_selesai' => isset($row[12]) ? $row[12] : null,
-            'issue' => isset($row[13]) ? $row[13] : null,
-            'keterangan' => isset($row[14]) ? $row[14] : null,
-        ]);
+        });
     }
 
 

@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/dark-theme.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/header-colors.css') }}" />
-    
+
     <title>Asset Wellness Monitoring System</title>
 
     <style>
@@ -151,7 +151,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="table table-striped table-hover table-sm table-dark" style="width:100%">
+                                    <table id="example"
+                                        class="table table-striped table-bordered table-hover table-sm table-dark"
+                                        style="width:100%">
                                         <thead>
                                             <tr id="tableHeader1">
                                                 {{-- <th rowspan="2" width="15%">Bulan</th>
@@ -222,6 +224,18 @@
                         <hr />
                         <div class="card">
                             <div class="card-body">
+                                <div class="mb-4 row g-3 align-items-center">
+                                    <div class="col-auto">
+                                        <label for="status" class="col-form-label">Filter Status</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <select name="status" id="status" class="form-select" x-model="status">
+                                            <option value="">Semua Status</option>
+                                            <option value="abnormal">Abnormal</option>
+                                            <option value="fault">Fault</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
                                     <table id="tableAssets" class="table table-striped table-bordered"
                                         style="color: #ffffff; table-layout: fixed">
@@ -294,6 +308,7 @@
             Alpine.data('alpineData', () => ({
                 isLoading: true,
                 reports: [],
+                status: '',
                 location_id: '',
                 dataAssets: [],
                 headers: [],
@@ -318,28 +333,21 @@
                         this.isLoading = false;
                         // this.loadCharts()
 
-                          if (this.location_id == '') {
-                          this.$nextTick(() => {
-                              this.loadCharts();
-                              this.initializeDataTableMonthAll();
+                        if (this.location_id == '') {
+                            this.$nextTick(() => {
+                                this.loadCharts();
+                                this.initializeDataTableMonthAll();
+                                this.initializeDataTable();
+                            });
+                        } else {
+                            // this.loadCharts()
+                            this.$nextTick(() => {
+                                this.loadCharts();
+                                this.initializeDataTableMonth();
+                                this.initializeDataTable();
+                            });
 
-                          });
-                          this.$nextTick(() => {
-                              this.initializeDataTable();
-                          });
-
-                      } else {
-                          // this.loadCharts()
-                          this.$nextTick(() => {
-                              this.loadCharts();
-                              this.initializeDataTableMonth();
-
-                          });
-                          this.$nextTick(() => {
-                              this.initializeDataTable();
-                          });
-
-                      }
+                        }
 
                     } catch (error) {
                         console.error("Error fetching data:", error);
@@ -516,14 +524,27 @@
                             },
                             {
                                 data: 'status',
-                                title: 'Status'
+                                title: 'Status',
+                                render: function(data, type, row) {
+                                    let className = '';
+
+                                    if (data === 'normal') {
+                                        className = 'text-success';
+                                    } else if (data === 'abnormal') {
+                                        className = 'text-warning';
+                                    } else if (data === 'fault') {
+                                        className = 'text-danger';
+                                    }
+
+                                    return `<span class="${className}">${data}</span>`;
+                                }
                             },
                             {
                                 data: 'detail_reports',
                                 title: 'No SR',
                                 render: function(data, type, row) {
                                     return data.map(report => report.no_sr).join(
-                                        '<hr>');
+                                    '<hr>');
                                 }
                             },
                             {
@@ -531,7 +552,7 @@
                                 title: 'No WO',
                                 render: function(data, type, row) {
                                     return data.map(report => report.no_wo).join(
-                                        '<hr>');
+                                    '<hr>');
                                 }
                             },
                             {
@@ -595,7 +616,7 @@
                                 title: 'Main Issue',
                                 render: function(data, type, row) {
                                     return data.map(report => report.issue).join(
-                                        '<hr>');
+                                    '<hr>');
                                 }
                             },
                             {
@@ -612,16 +633,18 @@
                                 searchable: false,
                                 render: function(data, type, row) {
                                     return `
-                                        <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
-                                            Lihat Detail
-                                        </button>
-                                    `;
+                    <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
+                        Lihat Detail
+                    </button>
+                `;
                                 }
                             }
                         ],
                         lengthChange: false,
                         buttons: ['colvis', 'excel'],
                     });
+
+
 
                     // Append buttons to the desired location
                     $('#tableAssets').DataTable().buttons().container()
@@ -650,9 +673,23 @@
                         // Menambahkan baris kedua (kolom-kolom untuk setiap lokasi)
                         headers.forEach(header => {
                             header.columns.forEach(col => {
-                                header2.innerHTML += `<th>${col}</th>`;
+                                let className = '';
+
+                                // Check the value of col and assign a class based on its status
+                                if (col === 'Normal') {
+                                    className = 'text-success';
+                                } else if (col === 'Abnormal') {
+                                    className = 'text-warning';
+                                } else if (col === 'Fault') {
+                                    className = 'text-danger';
+                                }
+
+                                // Add the <th> element with the appropriate class
+                                header2.innerHTML +=
+                                    `<th class="${className}">${col}</th>`;
                             });
                         });
+
                     }
 
                     // Function untuk generate table body
@@ -675,9 +712,11 @@
                                     // Ambil data berdasarkan nama lokasi dan kolom
                                     const locationKey = header.location
                                         .toLowerCase().replace(' ',
-                                        ''); // Mengambil nama lokasi dan memodifikasinya untuk key
+                                            ''
+                                        ); // Mengambil nama lokasi dan memodifikasinya untuk key
                                     const value = row[locationKey][
-                                    index]; // Mengakses data sesuai dengan lokasi dan kolom
+                                        index
+                                    ]; // Mengakses data sesuai dengan lokasi dan kolom
                                     tableRow += `<td>${value}</td>`;
                                 });
                             });
@@ -693,74 +732,87 @@
 
                 },
                 initializeDataTableMonth() {
-                       const headers = this.headers; // Get headers (locations and columns)
-                  const data = this.data; // Get data for each month (Normal, Abnormal, Fault)
+                    const headers = this.headers; // Get headers (locations and columns)
+                    const data = this.data; // Get data for each month (Normal, Abnormal, Fault)
 
-                  // Function to generate the table header
-                  function generateTableHeader() {
-                      let header1 = document.getElementById('tableHeader1');
-                      let header2 = document.getElementById('tableHeader2');
+                    // Function to generate the table header
+                    function generateTableHeader() {
+                        let header1 = document.getElementById('tableHeader1');
+                        let header2 = document.getElementById('tableHeader2');
 
-                      // Clear previous content
-                      header1.innerHTML = '';
-                      header2.innerHTML = '';
+                        // Clear previous content
+                        header1.innerHTML = '';
+                        header2.innerHTML = '';
 
-                      // Add first row (location headers)
-                      header1.innerHTML = '<th rowspan="2" width="15%">Bulan</th>';
-                      headers.forEach(header => {
-                          header1.innerHTML +=
-                              `<th colspan="3" class="text-center">${header.location}</th>`;
-                      });
+                        // Add first row (location headers)
+                        header1.innerHTML = '<th rowspan="2" width="15%">Bulan</th>';
+                        headers.forEach(header => {
+                            header1.innerHTML +=
+                                `<th colspan="3" class="text-center">${header.location}</th>`;
+                        });
 
-                      // Add second row (columns for each location)
-                      headers.forEach(header => {
-                          header.columns.forEach(col => {
-                              header2.innerHTML += `<th>${col}</th>`;
-                          });
-                      });
-                  }
+                        // Menambahkan baris kedua (kolom-kolom untuk setiap lokasi)
+                        headers.forEach(header => {
+                            header.columns.forEach(col => {
+                                let className = '';
 
-                  // Function to generate the table body
-                  function generateTableBody() {
-                      let tableBody = document.getElementById('tableBody');
+                                // Check the value of col and assign a class based on its status
+                                if (col === 'Normal') {
+                                    className = 'text-success';
+                                } else if (col === 'Abnormal') {
+                                    className = 'text-warning';
+                                } else if (col === 'Fault') {
+                                    className = 'text-danger';
+                                }
 
-                      // Clear previous rows
-                      tableBody.innerHTML = '';
+                                // Add the <th> element with the appropriate class
+                                header2.innerHTML +=
+                                    `<th class="${className}">${col}</th>`;
+                            });
+                        });
+                    }
 
-                      // Reverse the data so the latest month comes first
-                      const reversedData = Object.entries(data)
-                          .reverse(); // Convert the object into an array of [month, data]
+                    // Function to generate the table body
+                    function generateTableBody() {
+                        let tableBody = document.getElementById('tableBody');
 
-                      // Add data for each month
-                      reversedData.forEach(([month, row]) => {
-                          let tableRow = `<tr><td>${month}</td>`;
+                        // Clear previous rows
+                        tableBody.innerHTML = '';
 
-                          headers.forEach(header => {
-                              header.columns.forEach((col) => {
-                                  // For each location and each column (Normal, Abnormal, Fault), we get the value from the row
-                                  let value =
-                                      '0'; // Default value for missing data
-                                  if (row[col] && row[col][header
-                                          .location
-                                      ]) {
-                                      value = row[col][header
-                                          .location
-                                      ];
-                                  }
-                                  tableRow += `<td>${value}</td>`;
-                              });
-                          });
+                        // Reverse the data so the latest month comes first
+                        const reversedData = Object.entries(data)
+                            .reverse(); // Convert the object into an array of [month, data]
 
-                          tableRow += '</tr>';
-                          tableBody.innerHTML += tableRow;
-                      });
+                        // Add data for each month
+                        reversedData.forEach(([month, row]) => {
+                            let tableRow = `<tr><td>${month}</td>`;
+
+                            headers.forEach(header => {
+                                header.columns.forEach((col) => {
+                                    // For each location and each column (Normal, Abnormal, Fault), we get the value from the row
+                                    let value =
+                                        '0'; // Default value for missing data
+                                    if (row[col] && row[col][header
+                                            .location
+                                        ]) {
+                                        value = row[col][header
+                                            .location
+                                        ];
+                                    }
+                                    tableRow += `<td>${value}</td>`;
+                                });
+                            });
+
+                            tableRow += '</tr>';
+                            tableBody.innerHTML += tableRow;
+                        });
 
 
-                  }
+                    }
 
-                  // Generate table
-                  generateTableHeader();
-                  generateTableBody();
+                    // Generate table
+                    generateTableHeader();
+                    generateTableBody();
 
                 }
 
