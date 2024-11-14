@@ -49,15 +49,27 @@
                     @include('components.alert')
                 </div>
 
-                <div class="">
+                <div class="table-responsive">
                     <table id="example" class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
+                                <th width="10%">Action</th>
+                                <th>Status</th>
                                 <th>System</th>
                                 <th>Asset</th>
-                                <th>Status</th>
-                                <th width="10%">Action</th>
+                                <th>No SR</th>
+                                <th>No WO</th>
+                                <th>Tanggal Identifikasi</th>
+                                <th>Status WO</th>
+                                <th>Kondisi Asset</th>
+                                <th>Action Plan</th>
+                                <th>Target Selesai</th>
+                                <th>Progres Saat Ini</th>
+                                <th>Realisasi Selesai</th>
+                                <th>Main Issue</th>
+                                <th>Keterangan</th>
+
                             </tr>
                         </thead>
                         {{-- <tbody>
@@ -97,24 +109,67 @@
 
 
                             @foreach ($reportAssets as $ra)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $ra->asset->assetGroup->name }}</td>
-                                    <td>{{ $ra->asset->name }}</td>
-                                    <td>
-                                        <span class="badge bg-{{ $ra->status_class }}">
-                                            {{ ucfirst($ra->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="gap-2 d-flex">
-
-                                        <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
-                                            class="btn btn-info btn-sm">
-                                            <i class="bx bx-laptop"></i>
-                                        </a>
-                                    </td>
-                                </tr>
+                                @if ($ra->detailReports->isEmpty())
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td class="gap-2 d-flex">
+                                            <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
+                                                class="btn btn-info btn-sm">
+                                                <i class="bx bx-laptop"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ $ra->status_class }}">
+                                                {{ ucfirst($ra->status) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $ra->asset->assetGroup->name }}</td>
+                                        <td>{{ $ra->asset->name }}</td>
+                                        <td></td> <!-- No SR -->
+                                        <td></td> <!-- No WO -->
+                                        <td></td> <!-- Tanggal Identifikasi -->
+                                        <td></td> <!-- Status WO -->
+                                        <td></td> <!-- Kondisi Asset -->
+                                        <td></td> <!-- Action Plan -->
+                                        <td></td> <!-- Target Selesai -->
+                                        <td></td> <!-- Progres Saat Ini -->
+                                        <td></td> <!-- Realisasi Selesai -->
+                                        <td></td> <!-- Main Issue -->
+                                        <td></td> <!-- Keterangan -->
+                                    </tr>
+                                @else
+                                    @foreach ($ra->detailReports as $detail)
+                                        <tr>
+                                            <td>{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
+                                            <td class="gap-2 d-flex">
+                                                <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="bx bx-laptop"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ $ra->status_class }}">
+                                                    {{ ucfirst($ra->status) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $ra->asset->assetGroup->name }}</td>
+                                            <td>{{ $ra->asset->name }}</td>
+                                            <td>{{ $detail->no_sr }}</td>
+                                            <td>{{ $detail->no_wo }}</td>
+                                            <td>{{ $detail->tanggal_identifikasi }}</td>
+                                            <td>{{ $detail->status_sr }}</td>
+                                            <td>{{ $detail->kondisi_asset }}</td>
+                                            <td>{{ $detail->action_plan }}</td>
+                                            <td>{{ $detail->target_selesai }}</td>
+                                            <td>{{ $detail->progress_saat_ini }}</td>
+                                            <td>{{ $detail->realisasi_selesai }}</td>
+                                            <td>{{ $detail->issue }}</td>
+                                            <td>{{ $detail->keterangan }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             @endforeach
+
 
 
 

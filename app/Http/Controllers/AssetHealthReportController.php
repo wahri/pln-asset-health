@@ -76,15 +76,27 @@ class AssetHealthReportController extends Controller
         //     ->with(['asset', 'asset.assetGroup'])
         //     ->get()
         //     ->groupBy('asset.assetGroup.name');
-
+        // Ambil asset report berdasarkan unit dan report ID, serta hindari duplikasi data jika diperlukan
         $reportAssets = ReportAssets::whereHas('asset', function ($query) use ($unit) {
             $query->where('unit_id', $unit->id);
-        })->where('report_id', $report->id)
-            ->with(['asset', 'asset.assetGroup'])
-            ->get();
+        })
+        ->where('report_id', $report->id)
+        ->with([
+            'asset' => function ($query) {
+                $query->with('assetGroup'); // Ambil asset group terkait dengan asset
+            },
+            'report', // Ambil data report terkait
+            'unit' => function ($query) {
+                $query->with('location'); // Ambil lokasi unit jika ada
+            },
+            'detailReports' => function ($query) {
+                $query->distinct(); // Hindari duplikasi data di detailReports
+            }
+        ])
+        ->get();
 
+        // Ambil semua grup asset jika diperlukan
         $assetsGrup = AssetGroup::all();
-
 
 
 
