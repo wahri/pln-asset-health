@@ -1,17 +1,26 @@
 @extends('layouts.main')
+@push('css')
+    <link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+    <style>
+        /* Untuk membungkus teks di semua kolom tabel */
+        #tableAssets th,
+        #tableAssets td {
+            white-space: normal;
+            /* Membuat teks membungkus di dalam kolom */
+            word-wrap: break-word;
+            /* Menambah pembungkus kata */
+        }
+    </style>
+@endpush
 @section('content')
-    @push('css')
-        <link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-        <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-    @endpush
-
-
     <div class="page-content">
         <!--breadcrumb-->
         <div class="mb-3 page-breadcrumb d-none d-sm-flex align-items-center">
-            <div class="breadcrumb-title pe-3">Asset Health Report</div>
+            <div class="breadcrumb-title pe-3">Asset Wellness Report</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="p-0 mb-0 breadcrumb">
@@ -50,25 +59,26 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table id="example" class="table table-striped table-bordered">
+                    <table id="tableAssets" class="table table-striped table-bordered"
+                    style="color: #ffffff; table-layout: fixed">
                         <thead>
                             <tr>
-                                <th width="5%">#</th>
-                                <th width="10%">Action</th>
-                                <th>Status</th>
-                                <th>System</th>
-                                <th>Asset</th>
-                                <th>No SR</th>
-                                <th>No WO</th>
-                                <th>Tanggal Identifikasi</th>
-                                <th>Status WO</th>
-                                <th>Kondisi Asset</th>
-                                <th>Action Plan</th>
-                                <th>Target Selesai</th>
-                                <th>Progres Saat Ini</th>
-                                <th>Realisasi Selesai</th>
-                                <th>Main Issue</th>
-                                <th>Keterangan</th>
+                                <th width="100px">#</th>
+                                <th width="100px">Action</th>
+                                <th width="100px">Status</th>
+                                <th width="100px">System</th>
+                                <th width="100px">Asset</th>
+                                <th width="100px">No SR</th>
+                                <th width="100px">No WO</th>
+                                <th width="100px">Tanggal Identifikasi</th>
+                                <th width="100px">Status WO</th>
+                                <th width="250px">Kondisi Asset</th>
+                                <th width="250px">Action Plan</th>
+                                <th width="100px">Target Selesai</th>
+                                <th width="100px">Progres Saat Ini</th>
+                                <th width="100px">Realisasi Selesai</th>
+                                <th width="200px">Main Issue</th>
+                                <th width="200px">Keterangan</th>
 
                             </tr>
                         </thead>
@@ -112,13 +122,13 @@
                                 @if ($ra->detailReports->isEmpty())
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td class="gap-2 d-flex">
+                                        <td class="text-center">
                                             <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
-                                                class="btn btn-info btn-sm">
-                                                <i class="bx bx-laptop"></i>
+                                                class="btn btn-primary btn-sm">
+                                                <i class="bx bx-plus"></i> Report
                                             </a>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <span class="badge bg-{{ $ra->status_class }}">
                                                 {{ ucfirst($ra->status) }}
                                             </span>
@@ -141,13 +151,13 @@
                                     @foreach ($ra->detailReports as $detail)
                                         <tr>
                                             <td>{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
-                                            <td class="gap-2 d-flex">
+                                            <td class="text-center">
                                                 <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
-                                                    class="btn btn-info btn-sm">
-                                                    <i class="bx bx-laptop"></i>
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="bx bx-plus"></i> Report
                                                 </a>
                                             </td>
-                                            <td>
+                                            <td class="text-center">
                                                 <span class="badge bg-{{ $ra->status_class }}">
                                                     {{ ucfirst($ra->status) }}
                                                 </span>
@@ -193,8 +203,8 @@
     <!-- Initialize DataTables -->
     <script>
         $(document).ready(function() {
-            $('#example').DataTable({
-                lengthChange: false,
+            $('#tableAssets').DataTable({
+                lengthChange: true,
                 buttons: ['colvis', 'excel'],
                 dom: 'Bfrtip' // untuk menampilkan tombol di atas tabel
             });

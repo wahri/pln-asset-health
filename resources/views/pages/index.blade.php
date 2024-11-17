@@ -536,7 +536,7 @@
                                         className = 'text-danger';
                                     }
 
-                                    return `<span class="${className}">${data}</span>`;
+                                    return `<span class="${className} text-uppercase fw-bold">${data}</span>`;
                                 }
                             },
                             {
