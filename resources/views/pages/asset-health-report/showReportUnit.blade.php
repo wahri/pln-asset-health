@@ -63,7 +63,7 @@
                     style="color: #ffffff; table-layout: fixed">
                         <thead>
                             <tr>
-                                <th width="100px">#</th>
+                                <th width="10px">#</th>
                                 <th width="100px">Action</th>
                                 <th width="100px">Status</th>
                                 <th width="100px">System</th>
@@ -87,11 +87,11 @@
                             @foreach ($assets as $ra)
                                 @if ($ra->reportAssets->isEmpty())
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
                                                 class="btn btn-primary btn-sm">
-                                                <i class="bx bx-plus"></i> Report
+                                                <i class="bx bx-plus-circle"></i> Report
                                             </a>
                                         </td>
                                         <td class="text-center">
@@ -116,17 +116,17 @@
                                 @else
                                     @foreach ($ra->reportAssets as $reportAsset)
                                         @foreach ($reportAsset->detailReports as $detail)
-                                            <tr>
-                                                <td>
-                                                    {{ $loop->parent->parent->iteration }}.{{ $loop->iteration }}
+                                            <tr class="align-middle">
+                                                <td class="text-center">
+                                                    {{ $loop->parent->parent->iteration }}
                                                 </td>
-                                                <td class="gap-2 d-flex">
+                                                <td class="text-center">
                                                     <a href="{{ route('assetHealthReport.detailReportAsset', $reportAsset->id) }}"
-                                                        class="btn btn-info btn-sm">
-                                                        <i class="bx bx-laptop"></i>
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="bx bx-plus-circle"></i> Report
                                                     </a>
                                                 </td>
-                                                <td>
+                                                <td class="text-center">
                                                     <span class="badge bg-{{ $reportAsset->status_class }}">
                                                         {{ ucfirst($reportAsset->status) }}
                                                     </span>
@@ -148,15 +148,15 @@
                                         @endforeach
                                         <!-- If reportAssets has no detailReports, still show a row with empty values -->
                                         @if ($reportAsset->detailReports->isEmpty())
-                                            <tr>
-                                                <td>{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
-                                                <td class="gap-2 d-flex">
+                                            <tr class="align-middle">
+                                                <td>{{ $loop->parent->iteration }}</td>
+                                                <td class="text-center">
                                                     <a href="{{ route('assetHealthReport.detailReportAsset', $reportAsset->id) }}"
-                                                        class="btn btn-info btn-sm">
-                                                        <i class="bx bx-laptop"></i>
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="bx bx-plus-circle"></i> Report
                                                     </a>
                                                 </td>
-                                                <td>
+                                                <td class="text-center">
                                                     <span class="badge bg-{{ $reportAsset->status_class }}">
                                                         {{ ucfirst($reportAsset->status) }}
                                                     </span>
@@ -200,8 +200,7 @@
     <script>
         $(document).ready(function() {
             $('#tableAssets').DataTable({
-                lengthChange: true,
-                buttons: ['colvis', 'excel'],
+                buttons: ['pageLength', 'colvis', 'excel'],
                 dom: 'Bfrtip' // untuk menampilkan tombol di atas tabel
             });
         });

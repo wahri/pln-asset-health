@@ -240,24 +240,24 @@
                                     <table id="tableAssets" class="table table-striped table-bordered"
                                         style="color: #ffffff; table-layout: fixed">
                                         <colgroup>
-                                            <col style="width: 150px;"> <!-- Lokasi -->
-                                            <col style="width: 120px;"> <!-- Unit -->
-                                            <col style="width: 100px;"> <!-- No Asset -->
-                                            <col style="width: 200px;"> <!-- Nama Asset -->
-                                            <col style="width: 150px;"> <!-- Group Asset -->
-                                            <col style="width: 100px;"> <!-- Status -->
-                                            <col style="width: 120px;"> <!-- No SR -->
-                                            <col style="width: 120px;"> <!-- No WO -->
-                                            <col style="width: 130px;"> <!-- Tgl Identifikasi -->
-                                            <col style="width: 100px;"> <!-- Status WO -->
+                                            <col style="width: 300px;"> <!-- Lokasi -->
+                                            <col style="width: 300px;"> <!-- Unit -->
+                                            <col style="width: 300px;"> <!-- No Asset -->
+                                            <col style="width: 300px;"> <!-- Nama Asset -->
+                                            <col style="width: 300px;"> <!-- Group Asset -->
+                                            <col style="width: 300px;"> <!-- Status -->
+                                            <col style="width: 300px;"> <!-- No SR -->
+                                            <col style="width: 300px;"> <!-- No WO -->
+                                            <col style="width: 300px;"> <!-- Tgl Identifikasi -->
+                                            <col style="width: 300px;"> <!-- Status WO -->
                                             <col style="width: 300px;"> <!-- Kondisi Asset -->
                                             <col style="width: 300px;"> <!-- Action Plan -->
-                                            <col style="width: 130px;"> <!-- Target Selesai -->
-                                            <col style="width: 130px;"> <!-- Progress Saat Ini -->
-                                            <col style="width: 150px;"> <!-- Realisasi Selesai -->
-                                            <col style="width: 180px;"> <!-- Main Issue -->
-                                            <col style="width: 200px;"> <!-- Keterangan -->
-                                            <col style="width: 100px;"> <!-- Keterangan -->
+                                            <col style="width: 300px;"> <!-- Target Selesai -->
+                                            <col style="width: 300px;"> <!-- Progress Saat Ini -->
+                                            <col style="width: 300px;"> <!-- Realisasi Selesai -->
+                                            <col style="width: 300px;"> <!-- Main Issue -->
+                                            <col style="width: 300px;"> <!-- Keterangan -->
+                                            <col style="width: 300px;"> <!-- Keterangan -->
                                         </colgroup>
                                     </table>
                                 </div>
