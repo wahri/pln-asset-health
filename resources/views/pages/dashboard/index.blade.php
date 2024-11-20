@@ -4,8 +4,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-        <link href="{{ asset('assets-horizontal/plugins/datatable/css/dataTables.bootstrap5.min.css') }}"
-        rel="stylesheet" />
+    <link href="{{ asset('assets-horizontal/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
     <style>
         /* Untuk membungkus teks di semua kolom tabel */
         #tableAssets th,
@@ -31,14 +30,6 @@
     <div class="page-content" x-data="alpineData">
         <div class="row">
             <div class="col-12">
-                <h1 class="text-uppercase">Selamat Datang</h1>
-                <hr>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-12">
                 <div class="card">
                     <div class="card-body">
                         <form action="">
@@ -57,53 +48,123 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
                 <div class="card">
                     <div class="card-body">
                         <div id="col-chart"></div>
                     </div>
                 </div>
             </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="chart10"></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        {{-- <div class="row">
-            <template x-for="(report, index) in reports" :key="report.location_id">
-                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div :id="'chart-' + report.location_id"></div>
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example" class="table table-striped table-bordered table-hover table-sm"
+                                style="width:100%">
+                                <thead>
+                                    <tr id="tableHeader1">
+                                        {{-- <th rowspan="2" width="15%">Bulan</th>
+                                    <th colspan="3" class="text-center">Koto Panjang</th>
+                                    <th colspan="3" class="text-center">Duri</th>
+                                    <th colspan="3" class="text-center">Location 3</th> --}}
+                                    </tr>
+                                    <tr id="tableHeader2">
+                                        {{-- <th>Normal</th>
+                                    <th>Abnormal</th>
+                                    <th>Fault</th>
+                                    <th>Normal</th>
+                                    <th>Abnormal</th>
+                                    <th>Fault</th>
+                                    <th>Normal</th>
+                                    <th>Abnormal</th>
+                                    <th>Fault</th> --}}
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    {{-- <tr>
+                                    <td>Januari</td>
+                                    <td>12</td>
+                                    <td>21</td>
+                                    <td>21</td>
+                                    <td>12</td>
+                                    <td>21</td>
+                                    <td>12</td>
+                                    <td>12</td>
+                                    <td>21</td>
+                                    <td>12</td>
+                                </tr>
+                                <tr>
+                                    <td>Februari</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>1</td>
+                                    <td>3</td>
+                                    <td>3</td>
+                                    <td>1</td>
+                                    <td>12</td>
+                                    <td>21</td>
+                                    <td>12</td>
+                                </tr> --}}
+                                    <!-- Add more rows as needed -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </template>
-        </div> --}}
-
-        <div class="row">
+            </div>
             <div class="col-sm-12">
                 <h6 class="mb-0 text-uppercase">Data Asset Fault and Warning</h6>
                 <hr />
                 <div class="card">
                     <div class="card-body">
+                        <div class="mb-4 row g-3 align-items-center">
+                            <div class="col-auto">
+                                <label for="status" class="col-form-label">Filter Status</label>
+                            </div>
+                            <div class="col-auto">
+                                <select name="status" id="status" class="form-select" x-model="status"
+                                    @change="getData">
+                                    <option value="">Semua Status</option>
+                                    <option value="abnormal">Abnormal</option>
+                                    <option value="fault">Fault</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table id="tableAssets" class="table table-striped table-bordered"
                                 style="color: #ffffff; table-layout: fixed">
                                 <colgroup>
-                                    <col style="width: 150px;"> <!-- Lokasi -->
-                                    <col style="width: 120px;"> <!-- Unit -->
-                                    <col style="width: 100px;"> <!-- No Asset -->
-                                    <col style="width: 200px;"> <!-- Nama Asset -->
-                                    <col style="width: 150px;"> <!-- Group Asset -->
-                                    <col style="width: 100px;"> <!-- Status -->
-                                    <col style="width: 120px;"> <!-- No SR -->
-                                    <col style="width: 120px;"> <!-- No WO -->
-                                    <col style="width: 130px;"> <!-- Tgl Identifikasi -->
-                                    <col style="width: 100px;"> <!-- Status WO -->
+                                    <col style="width: 300px;"> <!-- Lokasi -->
+                                    <col style="width: 300px;"> <!-- Unit -->
+                                    <col style="width: 300px;"> <!-- No Asset -->
+                                    <col style="width: 300px;"> <!-- Nama Asset -->
+                                    <col style="width: 300px;"> <!-- Group Asset -->
+                                    <col style="width: 300px;"> <!-- Status -->
+                                    <col style="width: 300px;"> <!-- No SR -->
+                                    <col style="width: 300px;"> <!-- No WO -->
+                                    <col style="width: 300px;"> <!-- Tgl Identifikasi -->
+                                    <col style="width: 300px;"> <!-- Status WO -->
                                     <col style="width: 300px;"> <!-- Kondisi Asset -->
                                     <col style="width: 300px;"> <!-- Action Plan -->
-                                    <col style="width: 130px;"> <!-- Target Selesai -->
-                                    <col style="width: 130px;"> <!-- Progress Saat Ini -->
-                                    <col style="width: 150px;"> <!-- Realisasi Selesai -->
-                                    <col style="width: 180px;"> <!-- Main Issue -->
-                                    <col style="width: 200px;"> <!-- Keterangan -->
+                                    <col style="width: 300px;"> <!-- Target Selesai -->
+                                    <col style="width: 300px;"> <!-- Progress Saat Ini -->
+                                    <col style="width: 300px;"> <!-- Realisasi Selesai -->
+                                    <col style="width: 300px;"> <!-- Main Issue -->
+                                    <col style="width: 300px;"> <!-- Keterangan -->
+                                    {{-- <col style="width: 300px;"> <!-- Keterangan --> --}}
                                 </colgroup>
                             </table>
                         </div>
@@ -111,8 +172,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 @endsection
 
@@ -149,30 +208,115 @@
             Alpine.data('alpineData', () => ({
                 isLoading: true,
                 reports: [],
+                status: '',
                 location_id: '',
                 dataAssets: [],
+                headers: [],
+                data: [],
+                trendLineChartData: [],
 
                 init() {
                     this.getData();
+
                 },
+                renderChart() {
+                    Highcharts.chart('chart10', {
+                        chart: {
+                            type: 'line',
+                            styledMode: true
+                        },
+                        title: {
+                            text: 'Status Asset Health'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        exporting: {
+                            buttons: {
+                                contextButton: {
+                                    enabled: false,
+                                }
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Jumlah Asset'
+                            }
+                        },
+                        xAxis: {
+                            categories: this.trendLineChartData.categories
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle'
+                        },
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: false
+                                },
+                                pointStart: 0
+                            }
+                        },
+                        series: this.trendLineChartData.series, // Data untuk setiap status
+                        colors: ['green', 'yellow', 'red'], // Warna garis
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+                },
+
 
                 async getData() {
                     this.isLoading = true;
                     try {
                         const response = await axios.get('{{ route('getReportData') }}', {
                             params: {
-                                location_id: this.location_id
+                                location_id: this.location_id,
+                                status: this.status
                             }
                         });
                         this.reports = response.data.charts;
                         this.dataAssets = response.data.table;
+                        this.headers = response.data.monthlyReport.headers;
+                        this.data = response.data.monthlyReport.data;
+                        this.trendLineChartData = response.data.trendLineChart;
+                        console.log(this.trendLineChartData);
                         this.isLoading = false;
                         // this.loadCharts()
 
-                        this.$nextTick(() => this.loadCharts());
-                        this.$nextTick(() => {
-                            this.initializeDataTable();
-                        });
+
+
+                        if (this.location_id == '') {
+                            this.$nextTick(() => {
+                                this.loadCharts();
+                                this.initializeDataTableMonthAll();
+                                this.initializeDataTable();
+                                this.renderChart();
+                            });
+                        } else {
+                            // this.loadCharts()
+                            this.$nextTick(() => {
+                                this.loadCharts();
+                                this.initializeDataTableMonth();
+                                this.initializeDataTable();
+                                this.renderChart();
+                            });
+
+                        }
+
                     } catch (error) {
                         console.error("Error fetching data:", error);
                         this.isLoading = false;
@@ -348,7 +492,20 @@
                             },
                             {
                                 data: 'status',
-                                title: 'Status'
+                                title: 'Status',
+                                render: function(data, type, row) {
+                                    let className = '';
+
+                                    if (data === 'normal') {
+                                        className = 'text-success';
+                                    } else if (data === 'abnormal') {
+                                        className = 'text-warning';
+                                    } else if (data === 'fault') {
+                                        className = 'text-danger';
+                                    }
+
+                                    return `<span class="${className} text-uppercase fw-bold">${data}</span>`;
+                                }
                             },
                             {
                                 data: 'detail_reports',
@@ -437,17 +594,203 @@
                                     return data.map(report => report.keterangan).join(
                                         '<hr>');
                                 }
-                            }
+                            },
+                            // {
+                            //     title: 'Aksi',
+                            //     orderable: false,
+                            //     searchable: false,
+                            //     render: function(data, type, row) {
+                            //         return `
+                            //             <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
+                            //                 Lihat Detail
+                            //             </button>
+                            //         `;
+                            //     }
+                            // }
                         ],
                         lengthChange: false,
                         buttons: ['colvis', 'excel'],
                     });
 
+
+
                     // Append buttons to the desired location
                     $('#tableAssets').DataTable().buttons().container()
                         .appendTo('#tableAssets_wrapper .col-md-6:eq(0)');
                 },
+                initializeDataTableMonthAll() {
+                    const headers = this.headers; // Data untuk header lokasi dan kolom
+                    const data = this.data; // Data bulan dengan data untuk setiap lokasi
+
+                    // Function untuk generate table header
+                    function generateTableHeader() {
+                        let header1 = document.getElementById('tableHeader1');
+                        let header2 = document.getElementById('tableHeader2');
+
+                        // Clear konten sebelumnya
+                        header1.innerHTML = '';
+                        header2.innerHTML = '';
+
+                        // Menambahkan baris pertama (judul lokasi)
+                        header1.innerHTML = '<th rowspan="2" width="15%">Bulan</th>';
+                        headers.forEach(header => {
+                            header1.innerHTML +=
+                                `<th colspan="3" class="text-center">${header.location}</th>`;
+                        });
+
+                        // Menambahkan baris kedua (kolom-kolom untuk setiap lokasi)
+                        headers.forEach(header => {
+                            header.columns.forEach(col => {
+                                let className = '';
+
+                                // Check the value of col and assign a class based on its status
+                                if (col === 'Normal') {
+                                    className = 'text-success';
+                                } else if (col === 'Abnormal') {
+                                    className = 'text-warning';
+                                } else if (col === 'Fault') {
+                                    className = 'text-danger';
+                                }
+
+                                // Add the <th> element with the appropriate class
+                                header2.innerHTML +=
+                                    `<th class="${className}">${col}</th>`;
+                            });
+                        });
+
+                    }
+
+                    // Function untuk generate table body
+                    function generateTableBody() {
+                        let tableBody = document.getElementById('tableBody');
+
+                        // Clear baris sebelumnya
+                        tableBody.innerHTML = '';
+
+                        // Menampilkan data dari bawah ke atas
+                        const reversedData = data.reverse(); // Membalikkan urutan data
+
+                        // Menambahkan data untuk setiap bulan
+                        reversedData.forEach(row => {
+                            let tableRow = `<tr><td>${row.month}</td>`;
+
+                            // Menambahkan data untuk setiap lokasi yang ada dalam headers
+                            headers.forEach(header => {
+                                header.columns.forEach((col, index) => {
+                                    // Ambil data berdasarkan nama lokasi dan kolom
+                                    const locationKey = header.location
+                                        .toLowerCase().replace(' ',
+                                            ''
+                                        ); // Mengambil nama lokasi dan memodifikasinya untuk key
+                                    const value = row[locationKey][
+                                        index
+                                    ]; // Mengakses data sesuai dengan lokasi dan kolom
+                                    tableRow += `<td>${value}</td>`;
+                                });
+                            });
+
+                            tableRow += '</tr>';
+                            tableBody.innerHTML += tableRow;
+                        });
+                    }
+
+                    // Generate table
+                    generateTableHeader();
+                    generateTableBody();
+
+                },
+                initializeDataTableMonth() {
+                    const headers = this.headers; // Get headers (locations and columns)
+                    const data = this.data; // Get data for each month (Normal, Abnormal, Fault)
+
+                    // Function to generate the table header
+                    function generateTableHeader() {
+                        let header1 = document.getElementById('tableHeader1');
+                        let header2 = document.getElementById('tableHeader2');
+
+                        // Clear previous content
+                        header1.innerHTML = '';
+                        header2.innerHTML = '';
+
+                        // Add first row (location headers)
+                        header1.innerHTML = '<th rowspan="2" width="15%">Bulan</th>';
+                        headers.forEach(header => {
+                            header1.innerHTML +=
+                                `<th colspan="3" class="text-center">${header.location}</th>`;
+                        });
+
+                        // Menambahkan baris kedua (kolom-kolom untuk setiap lokasi)
+                        headers.forEach(header => {
+                            header.columns.forEach(col => {
+                                let className = '';
+
+                                // Check the value of col and assign a class based on its status
+                                if (col === 'Normal') {
+                                    className = 'text-success';
+                                } else if (col === 'Abnormal') {
+                                    className = 'text-warning';
+                                } else if (col === 'Fault') {
+                                    className = 'text-danger';
+                                }
+
+                                // Add the <th> element with the appropriate class
+                                header2.innerHTML +=
+                                    `<th class="${className}">${col}</th>`;
+                            });
+                        });
+                    }
+
+                    // Function to generate the table body
+                    function generateTableBody() {
+                        let tableBody = document.getElementById('tableBody');
+
+                        // Clear previous rows
+                        tableBody.innerHTML = '';
+
+                        // Reverse the data so the latest month comes first
+                        const reversedData = Object.entries(data)
+                            .reverse(); // Convert the object into an array of [month, data]
+
+                        // Add data for each month
+                        reversedData.forEach(([month, row]) => {
+                            let tableRow = `<tr><td>${month}</td>`;
+
+                            headers.forEach(header => {
+                                header.columns.forEach((col) => {
+                                    // For each location and each column (Normal, Abnormal, Fault), we get the value from the row
+                                    let value =
+                                        '0'; // Default value for missing data
+                                    if (row[col] && row[col][header
+                                            .location
+                                        ]) {
+                                        value = row[col][header
+                                            .location
+                                        ];
+                                    }
+                                    tableRow += `<td>${value}</td>`;
+                                });
+                            });
+
+                            tableRow += '</tr>';
+                            tableBody.innerHTML += tableRow;
+                        });
+
+
+                    }
+
+                    // Generate table
+                    generateTableHeader();
+                    generateTableBody();
+
+                }
+
             }));
         });
+
+        // Fungsi untuk menangani klik tombol 'Lihat Detail'
+        function viewAssetDetails(assetId) {
+            // Arahkan ke halaman detail atau tampilkan modal berdasarkan assetId
+            window.location.href = `/asset-management/assets/detail/${assetId}`; // Contoh mengarahkan ke halaman detail
+        }
     </script>
 @endpush

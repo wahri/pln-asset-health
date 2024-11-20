@@ -102,6 +102,11 @@
                         </div>
                         <div class="top-menu ms-auto">
                             <ul class="gap-1 navbar-nav align-items-center">
+                                
+								<li class="nav-item dark-mode d-none d-sm-flex">
+									<a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-sun'></i>
+									</a>
+								</li>
                                 <li class="nav-item ">
                                     <a class="nav-link position-relative" href="{{ route('login') }}">
                                         <i class='bx bx-log-in-circle'></i>
@@ -165,7 +170,7 @@
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example"
-                                        class="table table-striped table-bordered table-hover table-sm table-dark"
+                                        class="table table-striped table-bordered table-hover table-sm"
                                         style="width:100%">
                                         <thead>
                                             <tr id="tableHeader1">
@@ -236,7 +241,7 @@
                                     </div>
                                 </div>
                                 <div class="table-responsive">
-                                    <table id="tableAssets" class="table table-striped table-bordered"
+                                    <table id="tableAssets" class="table table-striped table-bordered table-hover table-sm"
                                         style="color: #ffffff; table-layout: fixed">
                                         <colgroup>
                                             <col style="width: 300px;"> <!-- Lokasi -->
