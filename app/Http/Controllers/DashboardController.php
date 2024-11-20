@@ -127,7 +127,7 @@ class DashboardController extends Controller
                 'data' => $monthlyData,
             ];
 
-            $month = array_reverse([
+            $month = [
                 '01' => 'Januari',
                 '02' => 'Februari',
                 '03' => 'Maret',
@@ -140,7 +140,7 @@ class DashboardController extends Controller
                 '10' => 'Oktober',
                 '11' => 'November',
                 '12' => 'Desember',
-            ]);
+            ];
 
 
             $chartData = [
@@ -152,7 +152,7 @@ class DashboardController extends Controller
                 ],
             ];
 
-            foreach ($months as $monthCode => $monthName) {
+            foreach ($month as $monthCode => $monthName) {
                 $chartData['series'][0]['data'][] = isset($monthlyData[$monthName]['Normal']) ? array_sum($monthlyData[$monthName]['Normal']) : 0;
                 $chartData['series'][1]['data'][] = isset($monthlyData[$monthName]['Abnormal']) ? array_sum($monthlyData[$monthName]['Abnormal']) : 0;
                 $chartData['series'][2]['data'][] = isset($monthlyData[$monthName]['Fault']) ? array_sum($monthlyData[$monthName]['Fault']) : 0;
