@@ -229,7 +229,7 @@
                                         <label for="status" class="col-form-label">Filter Status</label>
                                     </div>
                                     <div class="col-auto">
-                                        <select name="status" id="status" class="form-select" x-model="status">
+                                        <select name="status" id="status" class="form-select" x-model="status" @change="getData">
                                             <option value="">Semua Status</option>
                                             <option value="abnormal">Abnormal</option>
                                             <option value="fault">Fault</option>
@@ -257,7 +257,7 @@
                                             <col style="width: 300px;"> <!-- Realisasi Selesai -->
                                             <col style="width: 300px;"> <!-- Main Issue -->
                                             <col style="width: 300px;"> <!-- Keterangan -->
-                                            <col style="width: 300px;"> <!-- Keterangan -->
+                                            {{-- <col style="width: 300px;"> <!-- Keterangan --> --}}
                                         </colgroup>
                                     </table>
                                 </div>
@@ -323,7 +323,8 @@
                     try {
                         const response = await axios.get('{{ route('getReportData') }}', {
                             params: {
-                                location_id: this.location_id
+                                location_id: this.location_id,
+                                status: this.status
                             }
                         });
                         this.reports = response.data.charts;
@@ -627,18 +628,18 @@
                                         '<hr>');
                                 }
                             },
-                            {
-                                title: 'Aksi',
-                                orderable: false,
-                                searchable: false,
-                                render: function(data, type, row) {
-                                    return `
-                    <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
-                        Lihat Detail
-                    </button>
-                `;
-                                }
-                            }
+                            // {
+                            //     title: 'Aksi',
+                            //     orderable: false,
+                            //     searchable: false,
+                            //     render: function(data, type, row) {
+                            //         return `
+                            //             <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
+                            //                 Lihat Detail
+                            //             </button>
+                            //         `;
+                            //     }
+                            // }
                         ],
                         lengthChange: false,
                         buttons: ['colvis', 'excel'],

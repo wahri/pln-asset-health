@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('unit_id')->references('id')->on('units')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('asset_group_id')->references('id')->on('asset_groups')->onDelete('cascade')->onUpdate('cascade')->nullable();
-            $table->string('no_asset');
+            $table->foreignId('asset_group_id')->nullable()->references('id')->on('asset_groups')->onDelete('set null');
+            $table->string('no_asset')->nullable();
             $table->string('name');
             $table->enum('status', ['normal', 'abnormal', 'fault'])->default('normal');
             $table->boolean('is_active')->default(true);

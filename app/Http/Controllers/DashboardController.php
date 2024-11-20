@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asset;
 use App\Models\Location;
 use App\Models\ReportAssets;
 use App\Models\Unit;
@@ -55,13 +56,19 @@ class DashboardController extends Controller
                 $faultData[] = $statuses->where('status', 'fault')->sum('asset_count') ?: 0;
             }
 
-            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->where('report_id', $latestReport->id)->where('status', '!=', 'normal')->get();
+            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->where('report_id', $latestReport->id)->where('status', '!=', 'normal');
+
+            if ($request->status) {
+                $reportAsset->where('status', $request->status);
+            }
+
+            $reportAsset = $reportAsset->get();
 
 
 
             // Fetch monthly report data
             $monthlyReportData = DB::table('report_assets')
-            ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+                ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->join('reports', 'report_assets.report_id', '=', 'reports.id')
                 ->where('reports.location_id', $request->location_id)
@@ -134,9 +141,17 @@ class DashboardController extends Controller
                     ]
                 ],
                 'table' => $reportAsset,
-                'monthlyReport' => $monthlyReport 
+                'monthlyReport' => $monthlyReport
             ]);
         } else {
+            $assetsByLocation = DB::table('assets')
+                ->where('assets.is_active', 1)
+                ->join('units', 'assets.unit_id', '=', 'units.id')
+                ->join('locations', 'units.location_id', '=', 'locations.id')
+                ->select('locations.name as location_name', 'assets.status', DB::raw('COUNT(*) as asset_count'))
+                ->groupBy('locations.id', 'assets.status')
+                ->get();
+            // dd($assetsByLocation);
             // Ambil laporan terakhir untuk setiap lokasi
             $latestReports = DB::table('reports as r1')
                 ->join('locations as l', 'r1.location_id', '=', 'l.id')
@@ -146,7 +161,8 @@ class DashboardController extends Controller
 
             // Siapkan data untuk tiap bulan dan lokasi
             // Urutan bulan dimulai dari Desember ke Januari
-            $months = array_reverse(['01' => 'Januari',
+            $months = array_reverse([
+                '01' => 'Januari',
                 '02' => 'Februari',
                 '03' => 'Maret',
                 '04' => 'April',
@@ -177,9 +193,13 @@ class DashboardController extends Controller
             $reportAssetCounts = DB::table('report_assets')
                 ->join('reports', 'report_assets.report_id', '=', 'reports.id')
                 ->join('locations', 'reports.location_id', '=', 'locations.id')
+                ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+                ->where('assets.is_active', 1)
                 ->select('locations.name as location_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'), DB::raw('MONTH(reports.date) as report_month'))
                 ->groupBy('locations.name', 'report_assets.status', 'report_month')
                 ->get();
+
+
 
             // Mengisi data ke dalam $monthlyData sesuai bulan dan status
             foreach ($reportAssetCounts as $report) {
@@ -226,10 +246,29 @@ class DashboardController extends Controller
             // Ambil data report assets berdasarkan status pada report terakhir setiap lokasi
             $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
                 ->whereIn('report_id', $latestReports->pluck('report_id'))
-                ->where('status', '!=', 'normal')
-                ->get();
+                ->where('status', '!=', 'normal');
+
+
+            if ($request->status) {
+                $reportAsset->where('status', $request->status);
+            }
+            $reportAsset = $reportAsset->get();
 
             // Format response untuk Highcharts dan tambahan data bulanan
+
+            $statusCounts = Asset::join('units', 'assets.unit_id', '=', 'units.id')
+            ->join('locations', 'units.location_id', '=', 'locations.id')
+                ->where('assets.is_active', 1)
+                ->select('locations.name as location_name', 'assets.status', DB::raw('COUNT(*) as count'))
+                ->groupBy('units.location_id', 'assets.status')
+                ->get();
+            // dd($statusCounts);
+
+            // $locations = Location::with('units')->with(['units.assets' => function ($query) {
+            //     $query->where('is_active', 1);
+            //     $query->groupBy('status');
+            //     $query->select('status', DB::raw('COUNT(*) as asset_count'));
+            // }])->get();
 
             return response()->json([
                 'charts' => [

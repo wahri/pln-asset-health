@@ -55,7 +55,7 @@ class ReportImport implements ToModel, WithStartRow, WithHeadingRow
                     $units = Unit::where('location_id', $location->id)->get();
 
                     foreach ($units as $unit) {
-                        $assets = Asset::where('unit_id', $unit->id)->get();
+                        $assets = Asset::where('unit_id', $unit->id)->where('is_active', '1')->get();
 
                         foreach ($assets as $asset) {
                             ReportAssets::updateOrCreate(
@@ -90,22 +90,28 @@ class ReportImport implements ToModel, WithStartRow, WithHeadingRow
                 $reportAsset->status = $row['status'];
                 $reportAsset->save();
 
-                $detailReport = DetailReport::create([
-                    'report_asset_id' => $reportAsset->id,
-                    'no_sr' => isset($row['no_sr']) ? $row['no_sr'] : null,
-                    'no_wo' => isset($row['no_wo']) ? $row['no_wo'] : null,
-                    'tanggal_identifikasi' => $row['tgl_identifikasi'] ? $this->convertExcelDate($row['tgl_identifikasi']) : null,
-                    'status_sr' => isset($row['status_saat_ini']) ? $row['status_saat_ini'] : null,
-                    'kondisi_asset' => isset($row['kondisi_asset']) ? $row['kondisi_asset'] : null,
-                    'action_plan' => isset($row['action_plan']) ? $row['action_plan'] : null,
-                    'progress_saat_ini' => isset($row['progress_saat_ini']) ? $row['progress_saat_ini'] : null,
-                    'target_selesai' => isset($row['target_selesai']) ? $row['target_selesai'] : null,
-                    'realisasi_selesai' => isset($row['realisasi_selesai']) ? $row['realisasi_selesai'] : null,
-                    'issue' => isset($row['main_issue']) ? $row['main_issue'] : null,
-                    'keterangan' => isset($row['keterangan']) ? $row['keterangan'] : null,
-                ]);
+                $checkDetailReport = DetailReport::where('report_asset_id', $reportAsset->id)->first();
+                if (!$checkDetailReport) {
+                    $detailReport = DetailReport::create([
+                        'report_asset_id' => $reportAsset->id,
+                        'no_sr' => isset($row['no_sr']) ? $row['no_sr'] : null,
+                        'no_wo' => isset($row['no_wo']) ? $row['no_wo'] : null,
+                        'tanggal_identifikasi' => $row['tgl_identifikasi'] ? $this->convertExcelDate($row['tgl_identifikasi']) : null,
+                        'status_sr' => isset($row['status_saat_ini']) ? $row['status_saat_ini'] : null,
+                        'kondisi_asset' => isset($row['kondisi_asset']) ? $row['kondisi_asset'] : null,
+                        'action_plan' => isset($row['action_plan']) ? $row['action_plan'] : null,
+                        'progress_saat_ini' => isset($row['progress_saat_ini']) ? $row['progress_saat_ini'] : null,
+                        'target_selesai' => isset($row['target_selesai']) ? $row['target_selesai'] : null,
+                        'realisasi_selesai' => isset($row['realisasi_selesai']) ? $row['realisasi_selesai'] : null,
+                        'issue' => isset($row['main_issue']) ? $row['main_issue'] : null,
+                        'keterangan' => isset($row['keterangan']) ? $row['keterangan'] : null,
+                    ]);
+                    return $detailReport;
+                }else{
+                    $detailReport = $checkDetailReport;
+                }
 
-                return $detailReport;
+
             } catch (\Exception $e) {
                 $this->messages[] = "- Baris ke-" . $row['no'] . " error: " . $e->getMessage() . "<br>";
                 return null;

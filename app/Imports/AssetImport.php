@@ -46,9 +46,6 @@ class AssetImport implements ToModel, WithStartRow, WithHeadingRow
                 if (trim($row['no']) == null || trim($row['location']) == null || trim($row['unit']) == null || trim($row['asset_name']) == null) {
                     return null;
                 }
-                if (trim($row['no_asset']) != null) {
-                    $this->assets[] = trim($row['no_asset']);
-                }
 
 
                 // Mencari atau membuat lokasi berdasarkan kolom 'location'
@@ -73,43 +70,33 @@ class AssetImport implements ToModel, WithStartRow, WithHeadingRow
                     );
                 }
 
-                $checkAsset = Asset::where([
-                    'unit_id' => $unit->id,
-                    'no_asset' => trim($row['no_asset']),
-                    'name' => trim($row['asset_name']),
-                    'asset_group_id' => $assetGroup->id ?? null
-                ])->first();
-
-                if ($checkAsset) {
-                    return $checkAsset;
-                }
+                $asset = Asset::where('name', trim($row['asset_name']));
 
                 if (isset($row['no_asset'])) {
-                    $asset = Asset::updateOrCreate(
-                        [
-                            'unit_id' => $unit->id,
-                            'no_asset' => trim($row['no_asset']),
-                        ],
-                        [
-                            'name' => trim($row['asset_name']),
-                            'asset_group_id' => $assetGroup->id ?? null,
-                        ]
-                    );
-                } elseif ($assetGroup) {
-                    $asset = Asset::updateOrCreate(
-                        [
-                            'unit_id' => $unit->id,
-                            'asset_group_id' => $assetGroup->id,
-                            'name' => trim($row['asset_name']),
-                        ],
-                        [
-                            'no_asset' => trim($row['no_asset']),
-                        ]
-                    );
-                } else {
-                    return null;
+                    $asset->where('no_asset', trim($row['no_asset']));
+                } else if ($assetGroup != null) {
+                    $asset->where('asset_group_id', $assetGroup->id);
                 }
+                $asset = $asset->first();
 
+                if ($asset) {
+                    $this->assets[] = $asset->id;
+                    if (isset($row['no_asset'])) {
+                        $asset->no_asset = trim($row['no_asset']);
+                    }
+                    if ($assetGroup != null) {
+                        $asset->asset_group_id = $assetGroup->id;
+                    }
+                    $asset->save();
+                } else {
+                    $asset = Asset::create([
+                        'unit_id' => $unit->id,
+                        'no_asset' => trim($row['no_asset']),
+                        'name' => trim($row['asset_name']),
+                        'asset_group_id' => $assetGroup->id ?? null
+                    ]);
+                    $this->assets[] = $asset->id;
+                }
                 return $asset;
             } catch (\Exception $e) {
                 $this->messages[] = "- Baris ke-" . $row['no'] . " error: " . $e->getMessage() . "<br>";
