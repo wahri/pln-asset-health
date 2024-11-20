@@ -158,7 +158,6 @@ class DashboardController extends Controller
                 $chartData['series'][2]['data'][] = isset($monthlyData[$monthName]['Fault']) ? array_sum($monthlyData[$monthName]['Fault']) : 0;
             }
 
-          
 
 
             // Format response untuk Highcharts
@@ -184,7 +183,7 @@ class DashboardController extends Controller
                 ->select('locations.name as location_name', 'assets.status', DB::raw('COUNT(*) as asset_count'))
                 ->groupBy('locations.id', 'assets.status')
                 ->get();
-            // dd($assetsByLocation);
+          
             // Ambil laporan terakhir untuk setiap lokasi
             $latestReports = DB::table('reports as r1')
                 ->join('locations as l', 'r1.location_id', '=', 'l.id')
@@ -234,6 +233,7 @@ class DashboardController extends Controller
 
 
 
+
             // Mengisi data ke dalam $monthlyData sesuai bulan dan status
             foreach ($reportAssetCounts as $report) {
                 $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
@@ -273,11 +273,19 @@ class DashboardController extends Controller
             $faultData = [];
 
             foreach ($latestReports as $report) {
-                $assets = $reportAssetCounts->where('location_name', $report->location_name);
-                $normalData[] = $assets->where('status', 'normal')->sum('asset_count') ?: 0;
-                $abnormalData[] = $assets->where('status', 'abnormal')->sum('asset_count') ?: 0;
-                $faultData[] = $assets->where('status', 'fault')->sum('asset_count') ?: 0;
+                // Ambil data aset berdasarkan lokasi dan bulan terbaru
+                $latestMonthAssets = $reportAssetCounts
+                ->where('location_name', $report->location_name)
+                ->filter(function ($asset) use ($report) {
+                    return $asset->report_month == $report->report_month;
+                });
+
+                // Hitung jumlah untuk masing-masing status
+                $normalData[] = $latestMonthAssets->where('status', 'normal')->sum('asset_count') ?: 0;
+                $abnormalData[] = $latestMonthAssets->where('status', 'abnormal')->sum('asset_count') ?: 0;
+                $faultData[] = $latestMonthAssets->where('status', 'fault')->sum('asset_count') ?: 0;
             }
+
 
             // Ambil data report assets berdasarkan status pada report terakhir setiap lokasi
             $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
@@ -334,6 +342,8 @@ class DashboardController extends Controller
                 $chartData['series'][1]['data'][] = $abnormalSum; // Data untuk status "Abnormal"
                 $chartData['series'][2]['data'][] = $faultSum;   // Data untuk status "Fault"
             }
+
+            
 
       
 
