@@ -120,6 +120,38 @@ class DashboardController extends Controller
                 'data' => $monthlyData,
             ];
 
+            $month = array_reverse([
+                '01' => 'Januari',
+                '02' => 'Februari',
+                '03' => 'Maret',
+                '04' => 'April',
+                '05' => 'Mei',
+                '06' => 'Juni',
+                '07' => 'Juli',
+                '08' => 'Agustus',
+                '09' => 'September',
+                '10' => 'Oktober',
+                '11' => 'November',
+                '12' => 'Desember',
+            ]);
+
+
+            $chartData = [
+                'categories' => array_values($month), // Bulan sebagai label X
+                'series' => [
+                    ['name' => 'Normal', 'data' => []],
+                    ['name' => 'Abnormal', 'data' => []],
+                    ['name' => 'Fault', 'data' => []],
+                ],
+            ];
+
+            foreach ($months as $monthCode => $monthName) {
+                $chartData['series'][0]['data'][] = isset($monthlyData[$monthName]['Normal']) ? array_sum($monthlyData[$monthName]['Normal']) : 0;
+                $chartData['series'][1]['data'][] = isset($monthlyData[$monthName]['Abnormal']) ? array_sum($monthlyData[$monthName]['Abnormal']) : 0;
+                $chartData['series'][2]['data'][] = isset($monthlyData[$monthName]['Fault']) ? array_sum($monthlyData[$monthName]['Fault']) : 0;
+            }
+
+          
 
 
             // Format response untuk Highcharts
@@ -134,7 +166,8 @@ class DashboardController extends Controller
                     ]
                 ],
                 'table' => $reportAsset,
-                'monthlyReport' => $monthlyReport 
+                'monthlyReport' => $monthlyReport ,
+                'trendLineChart' => $chartData
             ]);
         } else {
             // Ambil laporan terakhir untuk setiap lokasi
@@ -197,6 +230,7 @@ class DashboardController extends Controller
 
             // Persiapkan data untuk monthlyReport sesuai dengan struktur yang diinginkan
             $monthlyReportData = [];
+            $chartData =  [];
             foreach ($monthlyData as $month => $locationsData) {
                 $dataRow = ['month' => $month];
                 foreach ($locations as $location) {
@@ -206,6 +240,8 @@ class DashboardController extends Controller
                         $locationsData[$location]['Fault'],
                     ];
                 }
+                $chartDataRow = ['month' => $month];
+                
                 $monthlyReportData[] = $dataRow;
             }
 
@@ -231,6 +267,51 @@ class DashboardController extends Controller
 
             // Format response untuk Highcharts dan tambahan data bulanan
 
+
+            // trend line chart data
+
+            $month =[
+                '01' => 'Januari',
+                '02' => 'Februari',
+                '03' => 'Maret',
+                '04' => 'April',
+                '05' => 'Mei',
+                '06' => 'Juni',
+                '07' => 'Juli',
+                '08' => 'Agustus',
+                '09' => 'September',
+                '10' => 'Oktober',
+                '11' => 'November',
+                '12' => 'Desember',
+            ];
+
+            $chartData = [
+                'categories' => array_values($month), // Bulan sebagai label X
+                'series' => [
+                    ['name' => 'Normal', 'data' => []],
+                    ['name' => 'Abnormal', 'data' => []],
+                    ['name' => 'Fault', 'data' => []],
+                ],
+            ];
+
+            foreach ($month as $monthName) {
+                $normalSum = 0;
+                $abnormalSum = 0;
+                $faultSum = 0;
+
+                foreach ($locations as $location) {
+                    $normalSum += $monthlyData[$monthName][$location]['Normal'];
+                    $abnormalSum += $monthlyData[$monthName][$location]['Abnormal'];
+                    $faultSum += $monthlyData[$monthName][$location]['Fault'];
+                }
+
+                $chartData['series'][0]['data'][] = $normalSum;   // Data untuk status "Normal"
+                $chartData['series'][1]['data'][] = $abnormalSum; // Data untuk status "Abnormal"
+                $chartData['series'][2]['data'][] = $faultSum;   // Data untuk status "Fault"
+            }
+
+      
+
             return response()->json([
                 'charts' => [
                     'categories' => $locations,
@@ -255,9 +336,15 @@ class DashboardController extends Controller
                         ];
                     }, $locations),
                     'data' => $monthlyReportData,
+                   
                 ],
+                'trendLineChart' => $chartData
             ]);
         }
+    }
+
+    public function chartAsset($locationId){
+        return 1;
     }
 
     public function getDataChart(Request $request)

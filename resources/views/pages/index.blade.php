@@ -150,6 +150,19 @@
                     <div class="col-sm-6">
                         <div class="card">
                             <div class="card-body">
+                                <div id="chart10"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example"
                                         class="table table-striped table-bordered table-hover table-sm table-dark"
@@ -205,20 +218,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                {{-- <div class="row">
-                    <template x-for="(report, index) in reports" :key="report.location_id">
-                        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div :id="'chart-' + report.location_id"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div> --}}
-
-                <div class="row">
                     <div class="col-sm-12">
                         <h6 class="mb-0 text-uppercase">Data Asset Fault and Warning</h6>
                         <hr />
@@ -303,6 +302,7 @@
     <script src="{{ asset('assets-horizontal/js/app.js') }}"></script>
 
 
+
     <script defer>
         document.addEventListener('alpine:init', () => {
             Alpine.data('alpineData', () => ({
@@ -313,10 +313,71 @@
                 dataAssets: [],
                 headers: [],
                 data: [],
+                trendLineChartData: [],
 
                 init() {
                     this.getData();
+
                 },
+                renderChart() {
+                    Highcharts.chart('chart10', {
+                        chart: {
+                            type: 'line',
+                            styledMode: true
+                        },
+                        title: {
+                            text: 'Status Asset Health'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        exporting: {
+                            buttons: {
+                                contextButton: {
+                                    enabled: false,
+                                }
+                            }
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Jumlah Asset'
+                            }
+                        },
+                        xAxis: {
+                            categories: this.trendLineChartData.categories
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'middle'
+                        },
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: false
+                                },
+                                pointStart: 0
+                            }
+                        },
+                        series: this.trendLineChartData.series, // Data untuk setiap status
+                        colors: ['green', 'yellow', 'red'], // Warna garis
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+                    });
+                },
+
 
                 async getData() {
                     this.isLoading = true;
@@ -330,14 +391,19 @@
                         this.dataAssets = response.data.table;
                         this.headers = response.data.monthlyReport.headers;
                         this.data = response.data.monthlyReport.data;
+                        this.trendLineChartData = response.data.trendLineChart;
+                        console.log(this.trendLineChartData);
                         this.isLoading = false;
                         // this.loadCharts()
+
+
 
                         if (this.location_id == '') {
                             this.$nextTick(() => {
                                 this.loadCharts();
                                 this.initializeDataTableMonthAll();
                                 this.initializeDataTable();
+                                this.renderChart();
                             });
                         } else {
                             // this.loadCharts()
@@ -345,6 +411,7 @@
                                 this.loadCharts();
                                 this.initializeDataTableMonth();
                                 this.initializeDataTable();
+                                this.renderChart();
                             });
 
                         }
@@ -544,7 +611,7 @@
                                 title: 'No SR',
                                 render: function(data, type, row) {
                                     return data.map(report => report.no_sr).join(
-                                    '<hr>');
+                                        '<hr>');
                                 }
                             },
                             {
@@ -552,7 +619,7 @@
                                 title: 'No WO',
                                 render: function(data, type, row) {
                                     return data.map(report => report.no_wo).join(
-                                    '<hr>');
+                                        '<hr>');
                                 }
                             },
                             {
@@ -616,7 +683,7 @@
                                 title: 'Main Issue',
                                 render: function(data, type, row) {
                                     return data.map(report => report.issue).join(
-                                    '<hr>');
+                                        '<hr>');
                                 }
                             },
                             {
