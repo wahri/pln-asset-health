@@ -1,152 +1,152 @@
 @extends('layouts.main')
 @section('content')
-    @push('css')
-        <link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
-    @endpush
-    <div class="page-content">
-        <!--breadcrumb-->
-        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Asset Health Report</div>
-            <div class="ps-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
-                                    class="bx bx-home-alt"></i></a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Data Table {{ $locationName }}</li>
-                    </ol>
-                </nav>
-            </div>
-
+@push('css')
+<link href="{{ asset('assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+@endpush
+<div class="page-content">
+    <!--breadcrumb-->
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div class="breadcrumb-title pe-3">Assets Wellness Monitoring System</div>
+        <div class="ps-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 p-0">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
+                                class="bx bx-home-alt"></i></a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Data Table {{ $locationName }}</li>
+                </ol>
+            </nav>
         </div>
-        <!--end breadcrumb-->
 
-        <hr />
-        <div class="card">
-            <div class="card-body">
-                <div class="card-title">
-                    @include('components.alert')
-                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addReportDate">Add
-                        Report Date</button>
+    </div>
+    <!--end breadcrumb-->
 
-                    <!-- Modal -->
-                    <div class="modal fade" id="addReportDate" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form action="{{ route('assetHealthReport.addReportDate') }}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="location" value="{{ $locationName }}">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="addLocationUnit">Add Report Date</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+    <hr />
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">
+                @include('components.alert')
+                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addReportDate">Add
+                    Report Date</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="addReportDate" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{{ route('assetHealthReport.addReportDate') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="location" value="{{ $locationName }}">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="addLocationUnit">Add Report Date</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="locationUnit" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="date" name="date"
+                                            value="{{ date('Y-m-d') }}">
+
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="locationUnit" class="form-label">Date</label>
-                                            <input type="date" class="form-control" id="date" name="date"
-                                                value="{{ date('Y-m-d') }}">
 
-                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Add Report</button>
+                                </div>
+                            </form>
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Add Report</button>
-                                    </div>
-                                </form>
-
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="table-responsive">
-                    <table id="example2" class="table table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Unit</th>
-                                <th>group</th>
-                                <th>No Asset</th>
-                                <th>Asset Name</th>
-                                <th>Action</th>
+            <div class="table-responsive">
+                <table id="example2" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Unit</th>
+                            <th>group</th>
+                            <th>No Asset</th>
+                            <th>Asset Name</th>
+                            <th>Action</th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($reportAssets as $ra)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $ra->asset->unit->name }}</td>
-                                 <td>{{ $ra->asset->assetGroup->name }}</td>
-                                <td>{{ $ra->asset->no_asset }}</td>
-                                <td>{{ $ra->asset->name }}</td>
-                                <td>
-                                    <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                        <a href="{{ route('assetHealthReport.reportAssets.detail', $ra->id) }}" class="btn btn-primary"><i class='bx bx-log-in-circle'></i></a>
-                                    </div>
-                                </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($reportAssets as $ra)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $ra->asset->unit->name }}</td>
+                            <td>{{ $ra->asset->assetGroup->name }}</td>
+                            <td>{{ $ra->asset->no_asset }}</td>
+                            <td>{{ $ra->asset->name }}</td>
+                            <td>
+                                <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+                                    <a href="{{ route('assetHealthReport.reportAssets.detail', $ra->id) }}" class="btn btn-primary"><i class='bx bx-log-in-circle'></i></a>
+                                </div>
+                            </td>
 
-                            </tr>
-                            @endforeach
+                        </tr>
+                        @endforeach
 
 
 
-                        </tbody>
+                    </tbody>
 
-                    </table>
-                </div>
+                </table>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 
 @push('script')
-    <!-- Load jQuery and DataTables -->
-    <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
+<!-- Load jQuery and DataTables -->
+<script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
 
-    <!-- Initialize DataTables -->
-    <script>
-        $(document).ready(function() {
-            $('#example').DataTable();
+<!-- Initialize DataTables -->
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable();
+    });
+
+    $(document).ready(function() {
+        var table = $('#example2').DataTable();
+
+        table.buttons().container()
+            .appendTo('#example2_wrapper .col-md-6:eq(0)');
+    });
+</script>
+
+<script>
+    function deleteConfirm(event, id) {
+        event.preventDefault(); // Mencegah submit form secara default
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#delete-form_' + id).submit(); // Kirim form setelah konfirmasi
+            } else {
+                Swal.fire(
+                    'Cancelled',
+                    'Your data is safe :)',
+                    'error'
+                );
+            }
         });
-
-        $(document).ready(function() {
-            var table = $('#example2').DataTable();
-
-            table.buttons().container()
-                .appendTo('#example2_wrapper .col-md-6:eq(0)');
-        });
-    </script>
-
-    <script>
-        function deleteConfirm(event, id) {
-            event.preventDefault(); // Mencegah submit form secara default
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#delete-form_' + id).submit(); // Kirim form setelah konfirmasi
-                } else {
-                    Swal.fire(
-                        'Cancelled',
-                        'Your data is safe :)',
-                        'error'
-                    );
-                }
-            });
-        }
-    </script>
+    }
+</script>
 @endpush

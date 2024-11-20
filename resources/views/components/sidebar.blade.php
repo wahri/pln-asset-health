@@ -24,7 +24,7 @@
                   <div class="parent-icon">
                       <i class="bx bx-briefcase-alt-2"></i>
                   </div>
-                  <div class="menu-title">Asset Health Report</div>
+                  <div class="menu-title">Assets Wellness Monitoring System</div>
               </a>
           </li> --}}
 
