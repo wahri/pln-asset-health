@@ -172,7 +172,9 @@ class AssetHealthReportController extends Controller
     public function detail($id_report_asset)
     {
 
+
         $reportAsset = ReportAssets::findOrFail($id_report_asset);
+        
 
         $locationName = $reportAsset->asset->unit->location->name;
         $month = date('F Y', strtotime($reportAsset->report->date));

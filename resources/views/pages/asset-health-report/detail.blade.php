@@ -5,6 +5,17 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
         <link rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+        <style>
+            /* Untuk membungkus teks di semua kolom tabel */
+            #tableAssets th,
+            #tableAssets td {
+                white-space: normal;
+                /* Membuat teks membungkus di dalam kolom */
+                word-wrap: break-word;
+                /* Menambah pembungkus kata */
+            }
+        </style>
     @endpush
     <div class="page-content">
         <!--breadcrumb-->
@@ -170,8 +181,8 @@
 
                                                 <div class="col-md-3">
                                                     <label for="inputNoSR" class="form-label">No SR</label>
-                                                    <input type="text" class="form-control" id="inputNoSR" name="no_sr"
-                                                        placeholder="Enter No SR">
+                                                    <input type="text" class="form-control" id="inputNoSR"
+                                                        name="no_sr" placeholder="Enter No SR">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="inputNoWO" class="form-label">No WO</label>
@@ -215,18 +226,17 @@
                                                         name="targetSelesai" placeholder="Enter Target Selesai">
                                                 </div>
 
-                                                 <div class="col-md-4">
+                                                <div class="col-md-4">
                                                     <label for="progresSaatIni" class="form-label">Progres Saat
                                                         Ini</label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control"
-                                                           name="progresSaatIni" id="progresSaatIni" placeholder="Enter Progres Saat Ini"
-                                                          >                                                    
+                                                        <input type="text" class="form-control" name="progresSaatIni"
+                                                            id="progresSaatIni" placeholder="Enter Progres Saat Ini">
                                                     </div>
                                                 </div>
-                                               
-                                               
-                                                 <div class="col-md-4">
+
+
+                                                <div class="col-md-4">
                                                     <label for="realisasiSelesai" class="form-label">Realisasi
                                                         Selesai</label>
                                                     <div class="input-group">
@@ -258,8 +268,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="">
-                    <table class="table mb-0">
+                <div class="table-responsive">
+                    <table id="tableAssets" class="table mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th>No SR</th>
@@ -385,30 +395,28 @@
                                                                         </div>
 
 
-                                                                       
+
 
                                                                         <div class="col-md-4">
                                                                             <label for="targetSelesai"
                                                                                 class="form-label">Target Selesai</label>
                                                                             <input type="text" class="form-control"
                                                                                 id="targetSelesai" name="targetSelesai"
-                                                                               
                                                                                 placeholder="Enter Target Selesai"
                                                                                 value="{{ $dr->target_selesai }}">
                                                                         </div>
 
-                                                                         <div class="col-md-4">
+                                                                        <div class="col-md-4">
                                                                             <label for="progresSaatIni"
                                                                                 class="form-label">Progres Saat
                                                                                 Ini</label>
                                                                             <div class="input-group">
                                                                                 <input type="text" class="form-control"
-                                                                                  name="progresSaatIni"
-                                                                                id="progresSaatIni"
+                                                                                    name="progresSaatIni"
+                                                                                    id="progresSaatIni"
                                                                                     placeholder="Enter Progres Saat Ini"
-                                                                                   
                                                                                     value="{{ $dr->progress_saat_ini }}">
-                                                                               
+
                                                                             </div>
                                                                         </div>
 
@@ -418,7 +426,8 @@
                                                                                 Selesai</label>
                                                                             <div class="input-group">
                                                                                 <input type="number" class="form-control"
-                                                                                   name="realisasiSelesai" id="realisasiSelesai"
+                                                                                    name="realisasiSelesai"
+                                                                                    id="realisasiSelesai"
                                                                                     placeholder="Enter Realisasi Selesai"
                                                                                     min="0" max="100"
                                                                                     value="{{ $dr->realisasi_selesai }}">
@@ -482,6 +491,8 @@
     <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
 
 
     <script>
@@ -622,5 +633,14 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#tableAssets').DataTable({
+                buttons: ['pageLength', 'colvis', 'excel'],
+                dom: 'Bfrtip' // untuk menampilkan tombol di atas tabel
+            });
+        });
     </script>
 @endpush

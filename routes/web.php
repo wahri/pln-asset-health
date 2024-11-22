@@ -4,17 +4,25 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetHealthReportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportDataController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ImportDataController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UnitController;
+use App\Models\DetailReport;
 use App\Models\Location;
+use App\Models\ReportAssets;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $locations = Location::all();
-    return view('pages.index', compact('locations'));
-});
+
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('/detail-assets/{report_assets_id}', [HomeController::class, 'detailAssets'])->name('home.detailAssets');
+
+
+
+
+
+
 
 Route::get('/getReportData', [DashboardController::class, 'getReportData'])->name('getReportData');
 

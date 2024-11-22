@@ -261,7 +261,7 @@
                                             <col style="width: 300px;"> <!-- Realisasi Selesai -->
                                             <col style="width: 300px;"> <!-- Main Issue -->
                                             <col style="width: 300px;"> <!-- Keterangan -->
-                                            {{-- <col style="width: 300px;"> <!-- Keterangan --> --}}
+                                            <col style="width: 300px;"> <!-- Keterangan -->
                                         </colgroup>
                                     </table>
                                 </div>
@@ -700,18 +700,18 @@
                                         '<hr>');
                                 }
                             },
-                            // {
-                            //     title: 'Aksi',
-                            //     orderable: false,
-                            //     searchable: false,
-                            //     render: function(data, type, row) {
-                            //         return `
-                            //             <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
-                            //                 Lihat Detail
-                            //             </button>
-                            //         `;
-                            //     }
-                            // }
+                            {
+                                title: 'Aksi',
+                                orderable: false,
+                                searchable: false,
+                                render: function(data, type, row) {
+                                    return `
+                                        <button onclick="viewAssetDetails('${row.id}')" class="btn btn-info btn-sm">
+                                            Lihat Detail
+                                        </button>
+                                    `;
+                                }
+                            }
                         ],
                         lengthChange: false,
                         buttons: ['colvis', 'excel'],
@@ -895,7 +895,7 @@
         // Fungsi untuk menangani klik tombol 'Lihat Detail'
         function viewAssetDetails(assetId) {
             // Arahkan ke halaman detail atau tampilkan modal berdasarkan assetId
-            window.location.href = `/asset-management/assets/detail/${assetId}`; // Contoh mengarahkan ke halaman detail
+            window.location.href = `/detail-assets/${assetId}`; // Contoh mengarahkan ke halaman detail
         }
     </script>
 
