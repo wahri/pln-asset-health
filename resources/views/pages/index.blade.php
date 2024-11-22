@@ -102,11 +102,11 @@
                         </div>
                         <div class="top-menu ms-auto">
                             <ul class="gap-1 navbar-nav align-items-center">
-                                
-								<li class="nav-item dark-mode d-none d-sm-flex">
-									<a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-sun'></i>
-									</a>
-								</li>
+
+                                <li class="nav-item dark-mode d-none d-sm-flex">
+                                    <a class="nav-link dark-mode-icon" href="javascript:;"><i class='bx bx-sun'></i>
+                                    </a>
+                                </li>
                                 <li class="nav-item ">
                                     <a class="nav-link position-relative" href="{{ route('login') }}">
                                         <i class='bx bx-log-in-circle'></i>
@@ -145,17 +145,24 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="card">
                             <div class="card-body">
                                 <div id="col-chart"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="card">
                             <div class="card-body">
                                 <div id="chart10"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="chart11"></div>
                             </div>
                         </div>
                     </div>
@@ -233,7 +240,8 @@
                                         <label for="status" class="col-form-label">Filter Status</label>
                                     </div>
                                     <div class="col-auto">
-                                        <select name="status" id="status" class="form-select" x-model="status" @change="getData">
+                                        <select name="status" id="status" class="form-select" x-model="status"
+                                            @change="getData">
                                             <option value="">Semua Status</option>
                                             <option value="abnormal">Abnormal</option>
                                             <option value="fault">Fault</option>
@@ -241,7 +249,8 @@
                                     </div>
                                 </div>
                                 <div class="table-responsive">
-                                    <table id="tableAssets" class="table table-striped table-bordered table-hover table-sm"
+                                    <table id="tableAssets"
+                                        class="table table-striped table-bordered table-hover table-sm"
                                         style="color: #ffffff; table-layout: fixed">
                                         <colgroup>
                                             <col style="width: 300px;"> <!-- Lokasi -->
@@ -321,7 +330,10 @@
                 trendLineChartData: [],
 
                 init() {
+                    console.log(this.trendLineChartData);
+                   
                     this.getData();
+                  
 
                 },
                 renderChart() {
@@ -382,6 +394,97 @@
                         }
                     });
                 },
+                renderPieChart() {
+                    // Hitung total data untuk setiap status
+                    const totalNormal = this.trendLineChartData.series[0].data.reduce((sum, value) => sum +
+                        value, 0);
+                    const totalAbnormal = this.trendLineChartData.series[1].data.reduce((sum, value) => sum +
+                        value, 0);
+                    const totalFault = this.trendLineChartData.series[2].data.reduce((sum, value) => sum +
+                        value, 0);
+
+                    // Hitung total keseluruhan
+                    const grandTotal = totalNormal + totalAbnormal + totalFault;
+
+                    // Hitung persentase untuk setiap status
+                    const dataForPieChart = [{
+                            name: 'Normal',
+                            y: (totalNormal / grandTotal) * 100
+                        },
+                        {
+                            name: 'Abnormal',
+                            y: (totalAbnormal / grandTotal) * 100
+                        },
+                        {
+                            name: 'Fault',
+                            y: (totalFault / grandTotal) * 100
+                        }
+                    ];
+
+                    // Render pie chart menggunakan Highcharts
+                    Highcharts.chart('chart11', {
+                        chart: {
+                            height: 400,
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie',
+                            styledMode: true
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        title: {
+                            text: 'Status Asset Distribution'
+                        },
+                        subtitle: {
+                            text: 'Percentage of asset status'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                        },
+                        accessibility: {
+                            point: {
+                                valueSuffix: '%'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                innerSize: 20,
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                },
+                                showInLegend: true
+                            }
+                        },
+                        series: [{
+                            name: 'Status',
+                            colorByPoint: true,
+                            data: dataForPieChart
+                        }],
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500
+                                },
+                                chartOptions: {
+                                    plotOptions: {
+                                        pie: {
+                                            innerSize: 140,
+                                            dataLabels: {
+                                                enabled: false
+                                            }
+                                        }
+                                    }
+                                }
+                            }]
+                        }
+                    });
+
+                },
 
 
                 async getData() {
@@ -410,6 +513,7 @@
                                 this.initializeDataTableMonthAll();
                                 this.initializeDataTable();
                                 this.renderChart();
+                                  this.renderPieChart();
                             });
                         } else {
                             // this.loadCharts()
@@ -418,6 +522,7 @@
                                 this.initializeDataTableMonth();
                                 this.initializeDataTable();
                                 this.renderChart();
+                                  this.renderPieChart();
                             });
 
                         }
