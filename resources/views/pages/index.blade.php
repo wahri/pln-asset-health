@@ -330,7 +330,6 @@
                 trendLineChartData: [],
 
                 init() {
-                    console.log(this.trendLineChartData);
                    
                     this.getData();
                   
@@ -501,7 +500,6 @@
                         this.headers = response.data.monthlyReport.headers;
                         this.data = response.data.monthlyReport.data;
                         this.trendLineChartData = response.data.trendLineChart;
-                        console.log(this.trendLineChartData);
                         this.isLoading = false;
                         // this.loadCharts()
 
