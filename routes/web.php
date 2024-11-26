@@ -13,7 +13,7 @@ use App\Models\DetailReport;
 use App\Models\Location;
 use App\Models\ReportAssets;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ManajemenUsersController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/detail-assets/{report_assets_id}', [HomeController::class, 'detailAssets'])->name('home.detailAssets');
@@ -113,6 +113,13 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/settings')->name('settings.')->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::post('/update-account', [SettingsController::class, 'updateAccount'])->name('updateAccount');
+    });
+    Route::prefix('/manajemen-user')->name('manajemenUser.')->group(function () {
+        Route::get('/', [ManajemenUsersController::class, 'index'])->name('index');
+        Route::post('/store', [ManajemenUsersController::class, 'store'])->name('store');
+        Route::put('/update/{id}', [ManajemenUsersController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [ManajemenUsersController::class, 'destroy'])->name('destroy');
+
     });
 
     Route::prefix('/export')->name('export.')->group(function () {
