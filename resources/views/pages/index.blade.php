@@ -253,16 +253,16 @@
                                         class="table table-striped table-bordered table-hover table-sm"
                                         style="color: #ffffff; table-layout: fixed">
                                         <colgroup>
-                                            <col style="width: 300px;"> <!-- Lokasi -->
-                                            <col style="width: 300px;"> <!-- Unit -->
-                                            <col style="width: 300px;"> <!-- No Asset -->
-                                            <col style="width: 300px;"> <!-- Nama Asset -->
-                                            <col style="width: 300px;"> <!-- Group Asset -->
-                                            <col style="width: 300px;"> <!-- Status -->
-                                            <col style="width: 300px;"> <!-- No SR -->
-                                            <col style="width: 300px;"> <!-- No WO -->
-                                            <col style="width: 300px;"> <!-- Tgl Identifikasi -->
-                                            <col style="width: 300px;"> <!-- Status WO -->
+                                            <col style="width: 100px;"> <!-- Lokasi -->
+                                            <col style="width: 100px;"> <!-- Unit -->
+                                            <col style="width: 150px;"> <!-- No Asset -->
+                                            <col style="width: 150px;"> <!-- Nama Asset -->
+                                            <col style="width: 150px;"> <!-- Group Asset -->
+                                            <col style="width: 100px;"> <!-- Status -->
+                                            <col style="width: 120px;"> <!-- No SR -->
+                                            <col style="width: 120px;"> <!-- No WO -->
+                                            <col style="width: 120px;"> <!-- Tgl Identifikasi -->
+                                            <col style="width: 120px;"> <!-- Status WO -->
                                             <col style="width: 300px;"> <!-- Kondisi Asset -->
                                             <col style="width: 300px;"> <!-- Action Plan -->
                                             <col style="width: 300px;"> <!-- Target Selesai -->

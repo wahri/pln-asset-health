@@ -123,7 +123,7 @@ class AssetHealthReportController extends Controller
                 $units = Unit::where('location_id', $location->id)->get();
 
                 foreach ($units as $unit) {
-                    $assets = Asset::where('unit_id', $unit->id)->get();
+                    $assets = Asset::where('unit_id', $unit->id)->where('is_active', '1')->get();
 
                     foreach ($assets as $asset) {
                         ReportAssets::updateOrCreate(
