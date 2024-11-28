@@ -65,6 +65,13 @@
               </a>
           </li>
 
+           <li class="{{ request()->routeIs('manajemenUser.*') ? 'mm-active' : '' }}">
+              <a href="{{ route('manajemenUser.index') }}" class="">
+                  <div class="parent-icon"><i class='bx bxs-user-account'></i></div>
+                  <div class="menu-title">Manajemen Users</div>
+              </a>
+          </li>
+
 
           <li {{ request()->routeIs('settings.*') ? 'mm-active' : '' }}>
               <a href="{{ route('settings.index') }}">

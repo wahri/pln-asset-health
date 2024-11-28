@@ -40,7 +40,7 @@ class DashboardController extends Controller
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->where('report_assets.report_id', $latestReport->id)
                 ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'))
-                ->groupBy('units.id', 'report_assets.status')
+                ->groupBy('units.id','units.name', 'report_assets.status')
                 ->get();
 
             // Strukturkan data untuk format Highcharts
@@ -73,7 +73,7 @@ class DashboardController extends Controller
                 ->join('reports', 'report_assets.report_id', '=', 'reports.id')
                 ->where('reports.location_id', $request->location_id)
                 ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'), DB::raw('MONTH(reports.date) as report_month'))
-                ->groupBy('units.id', 'report_assets.status', 'report_month')
+                ->groupBy('units.id', 'units.name', 'report_assets.status', 'report_month')
                 ->get();
 
             // Initialize the monthly data structure with zeroes
@@ -181,7 +181,7 @@ class DashboardController extends Controller
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->join('locations', 'units.location_id', '=', 'locations.id')
                 ->select('locations.name as location_name', 'assets.status', DB::raw('COUNT(*) as asset_count'))
-                ->groupBy('locations.id', 'assets.status')
+                ->groupBy('locations.id','locations.name', 'assets.status')
                 ->get();
           
             // Ambil laporan terakhir untuk setiap lokasi
