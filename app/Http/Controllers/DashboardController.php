@@ -181,7 +181,7 @@ class DashboardController extends Controller
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->join('locations', 'units.location_id', '=', 'locations.id')
                 ->select('locations.name as location_name', 'assets.status', DB::raw('COUNT(*) as asset_count'))
-                ->groupBy('locations.id', 'assets.status')
+                ->groupBy('locations.id','locations.name', 'assets.status')
                 ->get();
           
             // Ambil laporan terakhir untuk setiap lokasi
