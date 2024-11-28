@@ -330,9 +330,9 @@
                 trendLineChartData: [],
 
                 init() {
-                   
+
                     this.getData();
-                  
+
 
                 },
                 renderChart() {
@@ -395,11 +395,14 @@
                 },
                 renderPieChart() {
                     // Hitung total data untuk setiap status
-                    const totalNormal = this.trendLineChartData.series[0].data.reduce((sum, value) => sum +
+                    const totalNormal = this.trendLineChartData.series[0].data.reduce((sum, value) =>
+                        sum +
                         value, 0);
-                    const totalAbnormal = this.trendLineChartData.series[1].data.reduce((sum, value) => sum +
+                    const totalAbnormal = this.trendLineChartData.series[1].data.reduce((sum, value) =>
+                        sum +
                         value, 0);
-                    const totalFault = this.trendLineChartData.series[2].data.reduce((sum, value) => sum +
+                    const totalFault = this.trendLineChartData.series[2].data.reduce((sum, value) =>
+                        sum +
                         value, 0);
 
                     // Hitung total keseluruhan
@@ -454,7 +457,8 @@
                                 innerSize: 20,
                                 dataLabels: {
                                     enabled: true,
-                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                    distance: -50,
                                 },
                                 showInLegend: true
                             }
@@ -473,9 +477,7 @@
                                     plotOptions: {
                                         pie: {
                                             innerSize: 140,
-                                            dataLabels: {
-                                                enabled: false
-                                            }
+                                            format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
                                         }
                                     }
                                 }
@@ -511,7 +513,7 @@
                                 this.initializeDataTableMonthAll();
                                 this.initializeDataTable();
                                 this.renderChart();
-                                  this.renderPieChart();
+                                this.renderPieChart();
                             });
                         } else {
                             // this.loadCharts()
@@ -520,7 +522,7 @@
                                 this.initializeDataTableMonth();
                                 this.initializeDataTable();
                                 this.renderChart();
-                                  this.renderPieChart();
+                                this.renderPieChart();
                             });
 
                         }

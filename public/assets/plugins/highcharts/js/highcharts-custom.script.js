@@ -220,6 +220,7 @@ $(function () {
 			pie: {
 				allowPointSelect: true,
 				cursor: 'pointer',
+				innerSize: 20,
 				colors: pieColors,
 				dataLabels: {
 					enabled: true,
