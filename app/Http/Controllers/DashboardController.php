@@ -73,7 +73,7 @@ class DashboardController extends Controller
                 ->join('reports', 'report_assets.report_id', '=', 'reports.id')
                 ->where('reports.location_id', $request->location_id)
                 ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'), DB::raw('MONTH(reports.date) as report_month'))
-                ->groupBy('units.id', 'report_assets.status', 'report_month')
+                ->groupBy('units.id', 'units.name', 'report_assets.status', 'report_month')
                 ->get();
 
             // Initialize the monthly data structure with zeroes
