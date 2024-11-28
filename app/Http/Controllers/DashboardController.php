@@ -40,7 +40,7 @@ class DashboardController extends Controller
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->where('report_assets.report_id', $latestReport->id)
                 ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'))
-                ->groupBy('units.id', 'report_assets.status')
+                ->groupBy('units.id','units.name', 'report_assets.status')
                 ->get();
 
             // Strukturkan data untuk format Highcharts
