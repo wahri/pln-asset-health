@@ -9,6 +9,8 @@ use App\Models\Unit;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,11 +21,26 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        $superadmin =  User::factory()->create([
             'name' => 'superadmin',
             'email' => 'superadmin@gmail.com',
             'password' => bcrypt('password'),
         ]);
+
+        $admin =  User::factory()->create([
+            'name' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $roleSuperadmin = Role::create(['name' => 'superadmin']);
+        $superadmin->assignRole([$roleSuperadmin->name]);
+
+
+
+        $roleAdmin = Role::create(['name' => 'admin']);
+        $admin->assignRole([$roleAdmin->name]);
+      
 
         // $location = Location::create([
         //     'name' => 'Duri',

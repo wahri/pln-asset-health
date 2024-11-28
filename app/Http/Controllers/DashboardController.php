@@ -6,14 +6,20 @@ use App\Models\Asset;
 use App\Models\Location;
 use App\Models\ReportAssets;
 use App\Models\Unit;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 class DashboardController extends Controller
 {
     public function index()
     {
+    
+
+
         $locations = Location::all();
 
         return view('pages.dashboard.index', compact('locations'));

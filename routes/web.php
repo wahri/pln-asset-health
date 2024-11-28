@@ -14,6 +14,7 @@ use App\Models\Location;
 use App\Models\ReportAssets;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ManajemenUsersController;
+use App\Http\Middleware\RoleMiddleware;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/detail-assets/{report_assets_id}', [HomeController::class, 'detailAssets'])->name('home.detailAssets');
@@ -114,7 +115,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::post('/update-account', [SettingsController::class, 'updateAccount'])->name('updateAccount');
     });
-    Route::prefix('/manajemen-user')->name('manajemenUser.')->group(function () {
+    
+    Route::prefix('/manajemen-user')->middleware(RoleMiddleware::class)->name('manajemenUser.')->group(function () {
         Route::get('/', [ManajemenUsersController::class, 'index'])->name('index');
         Route::post('/store', [ManajemenUsersController::class, 'store'])->name('store');
         Route::put('/update/{id}', [ManajemenUsersController::class, 'update'])->name('update');

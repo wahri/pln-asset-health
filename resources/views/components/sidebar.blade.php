@@ -65,12 +65,19 @@
               </a>
           </li>
 
-           <li class="{{ request()->routeIs('manajemenUser.*') ? 'mm-active' : '' }}">
-              <a href="{{ route('manajemenUser.index') }}" class="">
-                  <div class="parent-icon"><i class='bx bxs-user-account'></i></div>
-                  <div class="menu-title">Manajemen Users</div>
-              </a>
-          </li>
+
+          @php
+              $user = App\Models\User::findOrFail(Auth::id());
+          @endphp
+
+          @if ($user->hasRole('superadmin'))
+              <li class="{{ request()->routeIs('manajemenUser.*') ? 'mm-active' : '' }}">
+                  <a href="{{ route('manajemenUser.index') }}" class="">
+                      <div class="parent-icon"><i class='bx bxs-user-account'></i></div>
+                      <div class="menu-title">Manajemen Users</div>
+                  </a>
+              </li>
+          @endif
 
 
           <li {{ request()->routeIs('settings.*') ? 'mm-active' : '' }}>
