@@ -141,6 +141,8 @@ class AssetHealthReportController extends Controller
                 foreach ($reportFirstLast->reportAssets as $reportAsset) {
                     $newReportAsset = $report->reportAssets()->create([
                         'asset_id' => $reportAsset->asset_id,
+                        'unit_id' => $reportAsset->unit_id,
+                        'report_id' => $reportAsset->report_id,
                         'status' => $reportAsset->status,
                     ]);
 
@@ -174,7 +176,7 @@ class AssetHealthReportController extends Controller
 
 
         $reportAsset = ReportAssets::findOrFail($id_report_asset);
-        
+
 
         $locationName = $reportAsset->asset->unit->location->name;
         $month = date('F Y', strtotime($reportAsset->report->date));

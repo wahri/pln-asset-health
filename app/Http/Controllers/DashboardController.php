@@ -90,7 +90,7 @@ class DashboardController extends Controller
                 '10' => 'Oktober',
                 '11' => 'November',
                 '12' => 'Desember',
-            ]);
+            ], true);
 
             $monthlyData = [];
             foreach ($months as $monthCode => $monthName) {
@@ -206,7 +206,7 @@ class DashboardController extends Controller
                 '10' => 'Oktober',
                 '11' => 'November',
                 '12' => 'Desember',
-            ]);
+            ], true);
             $locations = $latestReports->pluck('location_name')->unique()->toArray();
             $monthlyData = [];
 
@@ -237,6 +237,8 @@ class DashboardController extends Controller
             // Mengisi data ke dalam $monthlyData sesuai bulan dan status
             foreach ($reportAssetCounts as $report) {
                 $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
+                
+                
                 $location = $report->location_name;
 
                 if ($report->status == 'normal') {
