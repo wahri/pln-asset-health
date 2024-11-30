@@ -23,12 +23,14 @@ class DatabaseSeeder extends Seeder
 
         $superadmin =  User::factory()->create([
             'name' => 'superadmin',
+            'username' => 'superadmin',
             'email' => 'superadmin@gmail.com',
             'password' => bcrypt('password'),
         ]);
 
         $admin =  User::factory()->create([
             'name' => 'admin',
+            'username' => 'admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
         ]);
@@ -40,7 +42,7 @@ class DatabaseSeeder extends Seeder
 
         $roleAdmin = Role::create(['name' => 'admin']);
         $admin->assignRole([$roleAdmin->name]);
-      
+
 
         // $location = Location::create([
         //     'name' => 'Duri',

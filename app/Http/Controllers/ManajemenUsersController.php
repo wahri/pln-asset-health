@@ -11,7 +11,7 @@ class ManajemenUsersController extends Controller
     {
         $users = User::all();
 
-        
+
 
         return view('pages.manajemen-users.index', compact('users'));
     }
@@ -22,8 +22,10 @@ class ManajemenUsersController extends Controller
 
             User::create([
                 'name' => $request->name,
+                'username' => $request->username,
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
+                'role' => 'admin'
             ]);
             return back()->with('success', 'Data has been created successfully!');
         } catch (\Throwable $th) {
@@ -38,13 +40,13 @@ class ManajemenUsersController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
 
-            if($request->password) {
+            if ($request->password) {
                 $user->password = bcrypt($request->password);
             }
 
             $user->save();
-            
-          
+
+
             return back()->with('success', 'Data has been updated successfully!');
         } catch (\Throwable $th) {
             return back()->with('error', 'Something went wrong!');
