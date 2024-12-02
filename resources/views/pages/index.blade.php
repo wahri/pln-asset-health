@@ -65,7 +65,7 @@
         /* Untuk membungkus teks di semua kolom tabel */
         #tableAssets th,
         #tableAssets td {
-            white-space: normal;
+            white-space: pre-line;
             /* Membuat teks membungkus di dalam kolom */
             word-wrap: break-word;
             /* Menambah pembungkus kata */
@@ -265,9 +265,9 @@
                                             <col style="width: 120px;"> <!-- Status WO -->
                                             <col style="width: 300px;"> <!-- Kondisi Asset -->
                                             <col style="width: 300px;"> <!-- Action Plan -->
-                                            <col style="width: 300px;"> <!-- Target Selesai -->
-                                            <col style="width: 300px;"> <!-- Progress Saat Ini -->
-                                            <col style="width: 300px;"> <!-- Realisasi Selesai -->
+                                            <col style="width: 100px;"> <!-- Target Selesai -->
+                                            <col style="width: 100px;"> <!-- Progress Saat Ini -->
+                                            <col style="width: 100px;"> <!-- Realisasi Selesai -->
                                             <col style="width: 300px;"> <!-- Main Issue -->
                                             <col style="width: 300px;"> <!-- Keterangan -->
                                             <col style="width: 300px;"> <!-- Keterangan -->
@@ -809,9 +809,7 @@
                                 searchable: false,
                                 render: function(data, type, row) {
                                     return `
-                                        <button onclick="viewAssetDetails('${row.id}')" class="btn btn-info btn-sm">
-                                            Lihat Detail
-                                        </button>
+                                        <button onclick="viewAssetDetails('${row.id}')" class="btn btn-info btn-sm">Lihat Detail</button>
                                     `;
                                 }
                             }
