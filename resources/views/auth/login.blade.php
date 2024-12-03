@@ -44,10 +44,10 @@
                                         <form method="POST" action="{{ route('login') }}" class="row g-3">
                                               @csrf
                                             <div class="col-12">
-                                                <label for="inputEmailAddress" class="form-label">Akun Pengguna
-                                                    (Email)</label>
-                                                <input type="email" class="form-control" id="inputEmailAddress" name="email"
-                                                    placeholder="Email Address"  />
+                                                <label for="inputUsernameAddress" class="form-label">Akun Pengguna
+                                                    (Username)</label>
+                                                <input type="text" class="form-control" id="inputUsernameAddress" name="username"
+                                                    placeholder="Username Address"  />
                                             </div>
                                             <div class="col-12">
                                                 <label for="inputChoosePassword" class="form-label">Password</label>

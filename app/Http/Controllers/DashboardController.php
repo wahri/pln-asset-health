@@ -6,14 +6,20 @@ use App\Models\Asset;
 use App\Models\Location;
 use App\Models\ReportAssets;
 use App\Models\Unit;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 class DashboardController extends Controller
 {
     public function index()
     {
+    
+
+
         $locations = Location::all();
 
         return view('pages.dashboard.index', compact('locations'));
@@ -90,7 +96,7 @@ class DashboardController extends Controller
                 '10' => 'Oktober',
                 '11' => 'November',
                 '12' => 'Desember',
-            ]);
+            ], true);
 
             $monthlyData = [];
             foreach ($months as $monthCode => $monthName) {
@@ -206,7 +212,7 @@ class DashboardController extends Controller
                 '10' => 'Oktober',
                 '11' => 'November',
                 '12' => 'Desember',
-            ]);
+            ], true);
             $locations = $latestReports->pluck('location_name')->unique()->toArray();
             $monthlyData = [];
 
@@ -237,6 +243,8 @@ class DashboardController extends Controller
             // Mengisi data ke dalam $monthlyData sesuai bulan dan status
             foreach ($reportAssetCounts as $report) {
                 $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
+                
+                
                 $location = $report->location_name;
 
                 if ($report->status == 'normal') {
