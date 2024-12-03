@@ -65,7 +65,7 @@
                             <tr>
                                 <th width="10px">#</th>
                                 <th width="100px">Action</th>
-                                <th width="60px">Status</th>
+                                <th width="75px">Status</th>
                                 <th width="250px">System</th>
                                 <th width="250px">Asset</th>
                                 <th width="100px">No SR</th>
