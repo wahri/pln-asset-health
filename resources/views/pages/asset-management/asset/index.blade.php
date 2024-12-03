@@ -104,7 +104,10 @@
 
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive"  x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false" >
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>

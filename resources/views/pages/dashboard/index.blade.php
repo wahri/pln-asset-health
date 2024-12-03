@@ -9,7 +9,7 @@
         /* Untuk membungkus teks di semua kolom tabel */
         #tableAssets th,
         #tableAssets td {
-            white-space: normal;
+            white-space: pre-line;
             /* Membuat teks membungkus di dalam kolom */
             word-wrap: break-word;
             /* Menambah pembungkus kata */
@@ -97,7 +97,10 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
                             <table id="example" class="table table-striped table-bordered table-hover table-sm"
                                 style="width:100%">
                                 <thead>
@@ -199,24 +202,24 @@
                             <table id="tableAssets" class="table table-striped table-bordered"
                                 style="color: #ffffff; table-layout: fixed">
                                 <colgroup>
-                                    <col style="width: 300px;"> <!-- Lokasi -->
-                                    <col style="width: 300px;"> <!-- Unit -->
-                                    <col style="width: 300px;"> <!-- No Asset -->
-                                    <col style="width: 300px;"> <!-- Nama Asset -->
-                                    <col style="width: 300px;"> <!-- Group Asset -->
-                                    <col style="width: 300px;"> <!-- Status -->
-                                    <col style="width: 300px;"> <!-- No SR -->
-                                    <col style="width: 300px;"> <!-- No WO -->
-                                    <col style="width: 300px;"> <!-- Tgl Identifikasi -->
-                                    <col style="width: 300px;"> <!-- Status WO -->
-                                    <col style="width: 300px;"> <!-- Kondisi Asset -->
-                                    <col style="width: 300px;"> <!-- Action Plan -->
-                                    <col style="width: 300px;"> <!-- Target Selesai -->
-                                    <col style="width: 300px;"> <!-- Progress Saat Ini -->
-                                    <col style="width: 300px;"> <!-- Realisasi Selesai -->
-                                    <col style="width: 300px;"> <!-- Main Issue -->
-                                    <col style="width: 300px;"> <!-- Keterangan -->
-                                    {{-- <col style="width: 300px;"> <!-- Keterangan --> --}}
+                                     <col style="width: 100px;"> <!-- Lokasi -->
+                                            <col style="width: 100px;"> <!-- Unit -->
+                                            <col style="width: 150px;"> <!-- No Asset -->
+                                            <col style="width: 150px;"> <!-- Nama Asset -->
+                                            <col style="width: 150px;"> <!-- Group Asset -->
+                                            <col style="width: 100px;"> <!-- Status -->
+                                            <col style="width: 120px;"> <!-- No SR -->
+                                            <col style="width: 120px;"> <!-- No WO -->
+                                            <col style="width: 120px;"> <!-- Tgl Identifikasi -->
+                                            <col style="width: 120px;"> <!-- Status WO -->
+                                            <col style="width: 300px;"> <!-- Kondisi Asset -->
+                                            <col style="width: 300px;"> <!-- Action Plan -->
+                                            <col style="width: 100px;"> <!-- Target Selesai -->
+                                            <col style="width: 100px;"> <!-- Progress Saat Ini -->
+                                            <col style="width: 100px;"> <!-- Realisasi Selesai -->
+                                            <col style="width: 300px;"> <!-- Main Issue -->
+                                            <col style="width: 300px;"> <!-- Keterangan -->
+                                            {{-- <col style="width: 300px;"> <!-- Keterangan --> --}}
                                 </colgroup>
                             </table>
                         </div>

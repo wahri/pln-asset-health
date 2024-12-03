@@ -194,7 +194,10 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="table-responsive">
+                                <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
                                     <table id="example"
                                         class="table table-striped table-bordered table-hover table-sm"
                                         style="width:100%">

@@ -58,7 +58,10 @@
                     @include('components.alert')
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive"  x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false" >
                     <table id="tableAssets" class="table table-striped table-bordered"
                     style="color: #ffffff; table-layout: fixed">
                         <thead>
@@ -68,15 +71,15 @@
                                 <th width="75px">Status</th>
                                 <th width="250px">System</th>
                                 <th width="250px">Asset</th>
-                                <th width="100px">No SR</th>
-                                <th width="100px">No WO</th>
-                                <th width="100px">Tanggal Identifikasi</th>
+                                <th width="50px">No SR</th>
+                                <th width="50px">No WO</th>
+                                <th width="80px">Tanggal Identifikasi</th>
                                 <th width="100px">Status WO</th>
                                 <th width="300px">Kondisi Asset</th>
                                 <th width="300px">Action Plan</th>
-                                <th width="100px">Target Selesai</th>
+                                <th width="50px">Target Selesai</th>
                                 <th width="100px">Progres Saat Ini</th>
-                                <th width="100px">Realisasi Selesai</th>
+                                <th width="65px">Realisasi Selesai</th>
                                 <th width="200px">Main Issue</th>
                                 <th width="200px">Keterangan</th>
 
