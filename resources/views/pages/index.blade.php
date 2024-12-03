@@ -31,6 +31,10 @@
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/semi-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets-horizontal/css/header-colors.css') }}" />
 
+
+
+  
+
     <title>Asset Wellness Monitoring System</title>
 
     <style>
@@ -80,6 +84,22 @@
             display: none;
         }
     </style>
+
+
+<style>
+  .table-responsive {
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      cursor: grab;
+  }
+
+  .table-responsive:active {
+      cursor: grabbing;
+  }
+  
+</style>
+
 </head>
 
 <body>
@@ -235,45 +255,56 @@
                         <hr />
                         <div class="card">
                             <div class="card-body">
-                                <div class="mb-4 row g-3 align-items-center">
-                                    <div class="col-auto">
-                                        <label for="status" class="col-form-label">Filter Status</label>
+
+                                <template x-if="location_id">
+                                    <div class="mb-4 row g-3 align-items-center">
+                                        <div class="col-auto">
+                                            <label for="status" class="col-form-label">Filter Status</label>
+                                        </div>
+                                        <div class="col-auto">
+                                            <select name="status" id="status" class="form-select"
+                                                x-model="status" @change="getData">
+                                                <option value="">Semua Status</option>
+                                                <option value="abnormal">Abnormal</option>
+                                                <option value="fault">Fault</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="col-auto">
-                                        <select name="status" id="status" class="form-select" x-model="status"
-                                            @change="getData">
-                                            <option value="">Semua Status</option>
-                                            <option value="abnormal">Abnormal</option>
-                                            <option value="fault">Fault</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table id="tableAssets"
-                                        class="table table-striped table-bordered table-hover table-sm"
-                                        style="color: #ffffff; table-layout: fixed">
-                                        <colgroup>
-                                            <col style="width: 100px;"> <!-- Lokasi -->
-                                            <col style="width: 100px;"> <!-- Unit -->
-                                            <col style="width: 150px;"> <!-- No Asset -->
-                                            <col style="width: 150px;"> <!-- Nama Asset -->
-                                            <col style="width: 150px;"> <!-- Group Asset -->
-                                            <col style="width: 100px;"> <!-- Status -->
-                                            <col style="width: 120px;"> <!-- No SR -->
-                                            <col style="width: 120px;"> <!-- No WO -->
-                                            <col style="width: 120px;"> <!-- Tgl Identifikasi -->
-                                            <col style="width: 120px;"> <!-- Status WO -->
-                                            <col style="width: 300px;"> <!-- Kondisi Asset -->
-                                            <col style="width: 300px;"> <!-- Action Plan -->
-                                            <col style="width: 100px;"> <!-- Target Selesai -->
-                                            <col style="width: 100px;"> <!-- Progress Saat Ini -->
-                                            <col style="width: 100px;"> <!-- Realisasi Selesai -->
-                                            <col style="width: 300px;"> <!-- Main Issue -->
-                                            <col style="width: 300px;"> <!-- Keterangan -->
-                                            <col style="width: 300px;"> <!-- Keterangan -->
-                                        </colgroup>
-                                    </table>
-                                </div>
+                                </template>
+
+                                <div 
+    class="table-responsive" 
+    x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }" 
+    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft" 
+    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }" 
+    x-on:mouseup="isDragging = false" 
+    x-on:mouseleave="isDragging = false">
+    <table id="tableAssets"
+        class="table table-striped table-bordered table-hover table-sm"
+        style="color: #ffffff; table-layout: fixed">
+        <colgroup>
+            <col style="width: 100px;"> <!-- Lokasi -->
+            <col style="width: 100px;"> <!-- Unit -->
+            <col style="width: 150px;"> <!-- No Asset -->
+            <col style="width: 150px;"> <!-- Nama Asset -->
+            <col style="width: 150px;"> <!-- Group Asset -->
+            <col style="width: 100px;"> <!-- Status -->
+            <col style="width: 120px;"> <!-- No SR -->
+            <col style="width: 120px;"> <!-- No WO -->
+            <col style="width: 120px;"> <!-- Tgl Identifikasi -->
+            <col style="width: 120px;"> <!-- Status WO -->
+            <col style="width: 300px;"> <!-- Kondisi Asset -->
+            <col style="width: 300px;"> <!-- Action Plan -->
+            <col style="width: 100px;"> <!-- Target Selesai -->
+            <col style="width: 100px;"> <!-- Progress Saat Ini -->
+            <col style="width: 100px;"> <!-- Realisasi Selesai -->
+            <col style="width: 300px;"> <!-- Main Issue -->
+            <col style="width: 300px;"> <!-- Keterangan -->
+            <col style="width: 300px;"> <!-- Keterangan -->
+        </colgroup>
+    </table>
+</div>
+
                             </div>
                         </div>
                     </div>
@@ -678,7 +709,7 @@
                     }
 
                     // Initialize the DataTable with the new data
-                    $('#tableAssets').DataTable({
+                     $('#tableAssets').DataTable({
                         data: this.dataAssets,
                         columns: [{
                                 data: 'unit.location.name',
@@ -825,6 +856,10 @@
                     // Append buttons to the desired location
                     $('#tableAssets').DataTable().buttons().container()
                         .appendTo('#tableAssets_wrapper .col-md-6:eq(0)');
+
+
+
+                
                 },
                 initializeDataTableMonthAll() {
                     const headers = this.headers; // Data untuk header lokasi dan kolom

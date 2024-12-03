@@ -23,6 +23,20 @@
             color: inherit;
         }
     </style>
+
+
+    <style>
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            cursor: grab;
+        }
+
+        .table-responsive:active {
+            cursor: grabbing;
+        }
+    </style>
 @endpush
 
 
@@ -47,6 +61,11 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
         <div class="row">
             <div class="col-sm-4">
                 <div class="card">
@@ -62,13 +81,13 @@
                     </div>
                 </div>
             </div>
-              <div class="col-sm-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div id="chart11"></div>
-                            </div>
-                        </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="chart11"></div>
                     </div>
+                </div>
+            </div>
 
         </div>
 
@@ -137,20 +156,28 @@
                 <hr />
                 <div class="card">
                     <div class="card-body">
-                        <div class="mb-4 row g-3 align-items-center">
-                            <div class="col-auto">
-                                <label for="status" class="col-form-label">Filter Status</label>
+
+
+                        <template x-if="location_id">
+                            <div class="mb-4 row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label for="status" class="col-form-label">Filter Status</label>
+                                </div>
+                                <div class="col-auto">
+                                    <select name="status" id="status" class="form-select" x-model="status"
+                                        @change="getData">
+                                        <option value="">Semua Status</option>
+                                        <option value="abnormal">Abnormal</option>
+                                        <option value="fault">Fault</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-auto">
-                                <select name="status" id="status" class="form-select" x-model="status"
-                                    @change="getData">
-                                    <option value="">Semua Status</option>
-                                    <option value="abnormal">Abnormal</option>
-                                    <option value="fault">Fault</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
+                        </template>
+
+                        <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
                             <table id="tableAssets" class="table table-striped table-bordered"
                                 style="color: #ffffff; table-layout: fixed">
                                 <colgroup>
@@ -284,13 +311,16 @@
                         }
                     });
                 },
-                  renderPieChart() {
+                renderPieChart() {
                     // Hitung total data untuk setiap status
-                    const totalNormal = this.trendLineChartData.series[0].data.reduce((sum, value) => sum +
+                    const totalNormal = this.trendLineChartData.series[0].data.reduce((sum, value) =>
+                        sum +
                         value, 0);
-                    const totalAbnormal = this.trendLineChartData.series[1].data.reduce((sum, value) => sum +
+                    const totalAbnormal = this.trendLineChartData.series[1].data.reduce((sum, value) =>
+                        sum +
                         value, 0);
-                    const totalFault = this.trendLineChartData.series[2].data.reduce((sum, value) => sum +
+                    const totalFault = this.trendLineChartData.series[2].data.reduce((sum, value) =>
+                        sum +
                         value, 0);
 
                     // Hitung total keseluruhan
@@ -403,7 +433,7 @@
                                 this.initializeDataTableMonthAll();
                                 this.initializeDataTable();
                                 this.renderChart();
-                                   this.renderPieChart();
+                                this.renderPieChart();
                             });
                         } else {
                             // this.loadCharts()
@@ -412,7 +442,7 @@
                                 this.initializeDataTableMonth();
                                 this.initializeDataTable();
                                 this.renderChart();
-                                   this.renderPieChart();
+                                this.renderPieChart();
                             });
 
                         }
@@ -701,10 +731,10 @@
                             //     searchable: false,
                             //     render: function(data, type, row) {
                             //         return `
-                            //             <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
-                            //                 Lihat Detail
-                            //             </button>
-                            //         `;
+                        //             <button onclick="viewAssetDetails('${row.asset.id}')" class="btn btn-info btn-sm">
+                        //                 Lihat Detail
+                        //             </button>
+                        //         `;
                             //     }
                             // }
                         ],
