@@ -33,7 +33,7 @@
 
 
 
-  
+
 
     <title>Asset Wellness Monitoring System</title>
 
@@ -86,19 +86,18 @@
     </style>
 
 
-<style>
-  .table-responsive {
-      overflow-x: auto;
-      overflow-y: hidden;
-      white-space: nowrap;
-      cursor: grab;
-  }
+    <style>
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            cursor: grab;
+        }
 
-  .table-responsive:active {
-      cursor: grabbing;
-  }
-  
-</style>
+        .table-responsive:active {
+            cursor: grabbing;
+        }
+    </style>
 
 </head>
 
@@ -256,54 +255,65 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <template x-if="location_id">
-                                    <div class="mb-4 row g-3 align-items-center">
-                                        <div class="col-auto">
-                                            <label for="status" class="col-form-label">Filter Status</label>
-                                        </div>
-                                        <div class="col-auto">
-                                            <select name="status" id="status" class="form-select"
-                                                x-model="status" @change="getData">
-                                                <option value="">Semua Status</option>
-                                                <option value="abnormal">Abnormal</option>
-                                                <option value="fault">Fault</option>
-                                            </select>
-                                        </div>
+                                <div class="container px-4 mb-4">
+                            <div class="row g-3">
+                                <!-- Status Filter -->
+                                <div class="col-md-6 col-lg-4">
+                                    <label for="" class="form-label">Filter Status</label>
+                                    <select name="status" id="status" class="form-select" x-model="status"
+                                        @change="getData">
+                                        <option value="">Semua Status</option>
+                                        <option value="abnormal">Abnormal</option>
+                                        <option value="fault">Fault</option>
+                                    </select>
+                                </div>
+
+                                <!-- Unit Filter (only visible if location_id is not empty) -->
+                                <template x-if="location_id !== ''">
+                                    <div class="col-md-6 col-lg-4">
+                                        <label for="" class="form-label">Filter Unit</label>
+
+                                        <select name="unit_id" id="unit_id" class="form-select" x-model="unit_id"
+                                            @change="getData">
+                                            <option value="">Semua Unit</option>
+                                            <template x-for="(unit, index) in units" :key="index">
+                                                <option :value="unit" x-text="unit"></option>
+                                            </template>
+                                        </select>
                                     </div>
                                 </template>
+                            </div>
+                        </div>
 
-                                <div 
-    class="table-responsive" 
-    x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }" 
-    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft" 
-    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }" 
-    x-on:mouseup="isDragging = false" 
-    x-on:mouseleave="isDragging = false">
-    <table id="tableAssets"
-        class="table table-striped table-bordered table-hover table-sm"
-        style="color: #ffffff; table-layout: fixed">
-        <colgroup>
-            <col style="width: 100px;"> <!-- Lokasi -->
-            <col style="width: 100px;"> <!-- Unit -->
-            <col style="width: 150px;"> <!-- No Asset -->
-            <col style="width: 150px;"> <!-- Nama Asset -->
-            <col style="width: 150px;"> <!-- Group Asset -->
-            <col style="width: 100px;"> <!-- Status -->
-            <col style="width: 120px;"> <!-- No SR -->
-            <col style="width: 120px;"> <!-- No WO -->
-            <col style="width: 120px;"> <!-- Tgl Identifikasi -->
-            <col style="width: 120px;"> <!-- Status WO -->
-            <col style="width: 300px;"> <!-- Kondisi Asset -->
-            <col style="width: 300px;"> <!-- Action Plan -->
-            <col style="width: 100px;"> <!-- Target Selesai -->
-            <col style="width: 100px;"> <!-- Progress Saat Ini -->
-            <col style="width: 100px;"> <!-- Realisasi Selesai -->
-            <col style="width: 300px;"> <!-- Main Issue -->
-            <col style="width: 300px;"> <!-- Keterangan -->
-            <col style="width: 300px;"> <!-- Keterangan -->
-        </colgroup>
-    </table>
-</div>
+                                <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                                    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                                    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                                    x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
+                                    <table id="tableAssets"
+                                        class="table table-striped table-bordered table-hover table-sm"
+                                        style="color: #ffffff; table-layout: fixed">
+                                        <colgroup>
+                                            <col style="width: 100px;"> <!-- Lokasi -->
+                                            <col style="width: 100px;"> <!-- Unit -->
+                                            <col style="width: 150px;"> <!-- No Asset -->
+                                            <col style="width: 150px;"> <!-- Nama Asset -->
+                                            <col style="width: 150px;"> <!-- Group Asset -->
+                                            <col style="width: 100px;"> <!-- Status -->
+                                            <col style="width: 120px;"> <!-- No SR -->
+                                            <col style="width: 120px;"> <!-- No WO -->
+                                            <col style="width: 120px;"> <!-- Tgl Identifikasi -->
+                                            <col style="width: 120px;"> <!-- Status WO -->
+                                            <col style="width: 300px;"> <!-- Kondisi Asset -->
+                                            <col style="width: 300px;"> <!-- Action Plan -->
+                                            <col style="width: 100px;"> <!-- Target Selesai -->
+                                            <col style="width: 100px;"> <!-- Progress Saat Ini -->
+                                            <col style="width: 100px;"> <!-- Realisasi Selesai -->
+                                            <col style="width: 300px;"> <!-- Main Issue -->
+                                            <col style="width: 300px;"> <!-- Keterangan -->
+                                            <col style="width: 300px;"> <!-- Keterangan -->
+                                        </colgroup>
+                                    </table>
+                                </div>
 
                             </div>
                         </div>
@@ -358,6 +368,8 @@
                 dataAssets: [],
                 headers: [],
                 data: [],
+                 units: [],
+                unit_id: '',
                 trendLineChartData: [],
 
                 init() {
@@ -525,7 +537,8 @@
                         const response = await axios.get('{{ route('getReportData') }}', {
                             params: {
                                 location_id: this.location_id,
-                                status: this.status
+                                status: this.status,
+                                 unit: this.unit_id
                             }
                         });
                         this.reports = response.data.charts;
@@ -536,7 +549,16 @@
                         this.isLoading = false;
                         // this.loadCharts()
 
+                        
+                        if (this.location_id) {
+                            this.units = [];
 
+                            response.data.monthlyReport.headers.forEach((header, index) => {
+                                this.units.push(header.location);
+
+
+                            });
+                        }
 
                         if (this.location_id == '') {
                             this.$nextTick(() => {
@@ -709,7 +731,7 @@
                     }
 
                     // Initialize the DataTable with the new data
-                     $('#tableAssets').DataTable({
+                    $('#tableAssets').DataTable({
                         data: this.dataAssets,
                         columns: [{
                                 data: 'unit.location.name',
@@ -859,7 +881,7 @@
 
 
 
-                
+
                 },
                 initializeDataTableMonthAll() {
                     const headers = this.headers; // Data untuk header lokasi dan kolom

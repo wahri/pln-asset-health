@@ -158,12 +158,11 @@
                     <div class="card-body">
 
 
-                        <template x-if="location_id">
-                            <div class="mb-4 row g-3 align-items-center">
-                                <div class="col-auto">
-                                    <label for="status" class="col-form-label">Filter Status</label>
-                                </div>
-                                <div class="col-auto">
+                        <div class="container px-4 mb-4">
+                            <div class="row g-3">
+                                <!-- Status Filter -->
+                                <div class="col-md-6 col-lg-4">
+                                    <label for="" class="form-label">Filter Status</label>
                                     <select name="status" id="status" class="form-select" x-model="status"
                                         @change="getData">
                                         <option value="">Semua Status</option>
@@ -171,8 +170,27 @@
                                         <option value="fault">Fault</option>
                                     </select>
                                 </div>
+
+                                <!-- Unit Filter (only visible if location_id is not empty) -->
+                                <template x-if="location_id !== ''">
+                                    <div class="col-md-6 col-lg-4">
+                                        <label for="" class="form-label">Filter Unit</label>
+
+                                        <select name="unit_id" id="unit_id" class="form-select" x-model="unit_id"
+                                            @change="getData">
+                                            <option value="">Semua Unit</option>
+                                            <template x-for="(unit, index) in units" :key="index">
+                                                <option :value="unit" x-text="unit"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </template>
                             </div>
-                        </template>
+                        </div>
+
+
+
+
 
                         <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                             x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
@@ -247,6 +265,8 @@
                 dataAssets: [],
                 headers: [],
                 data: [],
+                units: [],
+                unit_id: '',
                 trendLineChartData: [],
 
                 init() {
@@ -408,12 +428,16 @@
 
 
                 async getData() {
+
+
+
                     this.isLoading = true;
                     try {
                         const response = await axios.get('{{ route('getReportData') }}', {
                             params: {
                                 location_id: this.location_id,
-                                status: this.status
+                                status: this.status,
+                                unit: this.unit_id
                             }
                         });
                         this.reports = response.data.charts;
@@ -421,10 +445,18 @@
                         this.headers = response.data.monthlyReport.headers;
                         this.data = response.data.monthlyReport.data;
                         this.trendLineChartData = response.data.trendLineChart;
-                        console.log(this.trendLineChartData);
                         this.isLoading = false;
                         // this.loadCharts()
 
+                        if (this.location_id) {
+                            this.units = [];
+
+                            response.data.monthlyReport.headers.forEach((header, index) => {
+                                this.units.push(header.location);
+
+
+                            });
+                        }
 
 
                         if (this.location_id == '') {

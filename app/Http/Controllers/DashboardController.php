@@ -27,6 +27,8 @@ class DashboardController extends Controller
 
     public function getReportData(Request $request)
     {
+
+
         if ($request->location_id) {
             $latestReport = DB::table('reports')
                 ->where('location_id', $request->location_id)
@@ -66,6 +68,12 @@ class DashboardController extends Controller
 
             if ($request->status) {
                 $reportAsset->where('status', $request->status);
+            }
+
+            if($request->unit){
+                 $reportAsset->wherehas('unit', function ($query) use ($request) {
+                     $query->where('name', $request->unit);
+                 });
             }
 
             $reportAsset = $reportAsset->get();
