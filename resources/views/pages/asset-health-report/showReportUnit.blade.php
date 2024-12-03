@@ -9,7 +9,7 @@
         /* Untuk membungkus teks di semua kolom tabel */
         #tableAssets th,
         #tableAssets td {
-            white-space: normal;
+            white-space: pre-line;
             /* Membuat teks membungkus di dalam kolom */
             word-wrap: break-word;
             /* Menambah pembungkus kata */
@@ -65,15 +65,15 @@
                             <tr>
                                 <th width="10px">#</th>
                                 <th width="100px">Action</th>
-                                <th width="100px">Status</th>
-                                <th width="100px">System</th>
-                                <th width="100px">Asset</th>
+                                <th width="60px">Status</th>
+                                <th width="250px">System</th>
+                                <th width="250px">Asset</th>
                                 <th width="100px">No SR</th>
                                 <th width="100px">No WO</th>
                                 <th width="100px">Tanggal Identifikasi</th>
                                 <th width="100px">Status WO</th>
-                                <th width="250px">Kondisi Asset</th>
-                                <th width="250px">Action Plan</th>
+                                <th width="300px">Kondisi Asset</th>
+                                <th width="300px">Action Plan</th>
                                 <th width="100px">Target Selesai</th>
                                 <th width="100px">Progres Saat Ini</th>
                                 <th width="100px">Realisasi Selesai</th>
@@ -86,13 +86,11 @@
                         <tbody>
                             @foreach ($assets as $ra)
                                 @if ($ra->reportAssets->isEmpty())
-                                    <tr>
+                                    <tr class="align-middle">
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
-                                                class="btn btn-primary btn-sm">
-                                                <i class="bx bx-plus-circle"></i> Report
-                                            </a>
+                                                class="btn btn-primary btn-sm"><i class="bx bx-plus-circle"></i> Report</a>
                                         </td>
                                         <td class="text-center">
                                             <span class="badge bg-{{ $ra->status_class }}">
@@ -122,9 +120,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <a href="{{ route('assetHealthReport.detailReportAsset', $reportAsset->id) }}"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="bx bx-plus-circle"></i> Report
-                                                    </a>
+                                                        class="btn btn-primary btn-sm"><i class="bx bx-plus-circle"></i> Report</a>
                                                 </td>
                                                 <td class="text-center">
                                                     <span class="badge bg-{{ $reportAsset->status_class }}">
@@ -152,9 +148,7 @@
                                                 <td>{{ $loop->parent->iteration }}</td>
                                                 <td class="text-center">
                                                     <a href="{{ route('assetHealthReport.detailReportAsset', $reportAsset->id) }}"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="bx bx-plus-circle"></i> Report
-                                                    </a>
+                                                        class="btn btn-primary btn-sm"><i class="bx bx-plus-circle"></i> Report</a>
                                                 </td>
                                                 <td class="text-center">
                                                     <span class="badge bg-{{ $reportAsset->status_class }}">

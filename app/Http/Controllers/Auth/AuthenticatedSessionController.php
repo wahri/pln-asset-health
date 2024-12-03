@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('assetHealthReport.index', absolute: false));
+        return redirect()->intended(route('dashboard.index', absolute: false));
     }
 
     /**

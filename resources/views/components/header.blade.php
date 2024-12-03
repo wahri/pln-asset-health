@@ -16,7 +16,6 @@
                       <img src="{{ asset('assets/images/avatars/avatar-2.png')}} "class="user-img" alt="user avatar" />
                       <div class="user-info ps-3">
                           <p class="mb-0 user-name">{{ Auth::user()->name ?? 'Login' }}</p>
-                          <p class="mb-0 designattion">IT Support</p>
                       </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
