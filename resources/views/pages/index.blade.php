@@ -195,9 +195,9 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
-                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
-                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
-                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
+                                    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                                    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                                    x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
                                     <table id="example"
                                         class="table table-striped table-bordered table-hover table-sm"
                                         style="width:100%">
@@ -259,34 +259,34 @@
                             <div class="card-body">
 
                                 <div class="mb-4">
-                            <div class="row g-3">
-                                <!-- Status Filter -->
-                                <div class="col-md-6 col-lg-4">
-                                    <label for="" class="form-label">Filter Status</label>
-                                    <select name="status" id="status" class="form-select" x-model="status"
-                                        @change="getData">
-                                        <option value="">Semua Status</option>
-                                        <option value="abnormal">Abnormal</option>
-                                        <option value="fault">Fault</option>
-                                    </select>
-                                </div>
+                                    <div class="row g-3">
+                                        <!-- Status Filter -->
+                                        <div class="col-md-6 col-lg-4">
+                                            <label for="" class="form-label">Filter Status</label>
+                                            <select name="status" id="status" class="form-select"
+                                                x-model="status" @change="getData">
+                                                <option value="">Semua Status</option>
+                                                <option value="abnormal">Abnormal</option>
+                                                <option value="fault">Fault</option>
+                                            </select>
+                                        </div>
 
-                                <!-- Unit Filter (only visible if location_id is not empty) -->
-                                <template x-if="location_id !== ''">
-                                    <div class="col-md-6 col-lg-4">
-                                        <label for="" class="form-label">Filter Unit</label>
+                                        <!-- Unit Filter (only visible if location_id is not empty) -->
+                                        <template x-if="location_id !== ''">
+                                            <div class="col-md-6 col-lg-4">
+                                                <label for="" class="form-label">Filter Unit</label>
 
-                                        <select name="unit_id" id="unit_id" class="form-select" x-model="unit_id"
-                                            @change="getData">
-                                            <option value="">Semua Unit</option>
-                                            <template x-for="(unit, index) in units" :key="index">
-                                                <option :value="unit" x-text="unit"></option>
-                                            </template>
-                                        </select>
+                                                <select name="unit_id" id="unit_id" class="form-select"
+                                                    x-model="unit_id" @change="getData">
+                                                    <option value="">Semua Unit</option>
+                                                    <template x-for="(unit, index) in units" :key="index">
+                                                        <option :value="unit" x-text="unit"></option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </template>
                                     </div>
-                                </template>
-                            </div>
-                        </div>
+                                </div>
 
                                 <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
@@ -371,9 +371,11 @@
                 dataAssets: [],
                 headers: [],
                 data: [],
-                 units: [],
+                units: [],
                 unit_id: '',
                 trendLineChartData: [],
+                pieChartData: [],
+
 
                 init() {
 
@@ -440,96 +442,142 @@
                     });
                 },
                 renderPieChart() {
-                    // Hitung total data untuk setiap status
-                    const totalNormal = this.trendLineChartData.series[0].data.reduce((sum, value) =>
-                        sum +
-                        value, 0);
-                    const totalAbnormal = this.trendLineChartData.series[1].data.reduce((sum, value) =>
-                        sum +
-                        value, 0);
-                    const totalFault = this.trendLineChartData.series[2].data.reduce((sum, value) =>
-                        sum +
-                        value, 0);
+
+                    const abnormalAssets = [];
+                    const faultAssets = [];
+                    let totalNormal = 0,
+                        totalAbnormal = 0,
+                        totalFault = 0;
+
+                    this.pieChartData.series[1].data.forEach((value, index) => {
+                        totalNormal += this.pieChartData.series[0].data[index] || 0;
+
+                        if (value > 0) {
+                            totalAbnormal += value;
+
+                            // Gabungkan data aset abnormal tanpa duplikat
+                            const assets = this.pieChartData.series[1].assets[index];
+                            if (Array.isArray(assets)) {
+                                abnormalAssets.push(...assets);
+                            }
+                        }
+
+                        const faultValue = this.pieChartData.series[2].data[index];
+                        if (faultValue > 0) {
+                            totalFault += faultValue;
+
+                            // Gabungkan data aset fault tanpa duplikat
+                            const assets = this.pieChartData.series[2].assets[index];
+                            if (Array.isArray(assets)) {
+                                faultAssets.push(...assets);
+                            }
+                        }
+                    });
+
+                    // Buat daftar aset unik
+                    const uniqueAbnormalAssets = Array.from(new Set(abnormalAssets)); // Hapus duplikat
+                    const uniqueFaultAssets = Array.from(new Set(faultAssets)); // Hapus duplikat
 
                     // Hitung total keseluruhan
                     const grandTotal = totalNormal + totalAbnormal + totalFault;
 
+                    // Format data untuk tooltip
+                    const formatAssetTooltip = (assetNames) => {
+                        const uniqueAssets = Array.isArray(assetNames) ? Array.from(new Set(
+                            assetNames)) : []; // Validasi array
+                        return uniqueAssets.join(', ') ||
+                            'Tidak ada data'; // Gabungkan aset menjadi string
+                    };
+
                     // Hitung persentase untuk setiap status
                     const dataForPieChart = [{
                             name: 'Normal',
-                            y: (totalNormal / grandTotal) * 100
+                            y: (totalNormal / grandTotal) * 100,
                         },
                         {
                             name: 'Abnormal',
-                            y: (totalAbnormal / grandTotal) * 100
+                            y: (totalAbnormal / grandTotal) * 100,
+                            tooltipData: formatAssetTooltip(
+                                uniqueAbnormalAssets
+                                ), // Tampilkan semua aset abnormal (tanpa duplikat)
                         },
                         {
                             name: 'Fault',
-                            y: (totalFault / grandTotal) * 100
-                        }
+                            y: (totalFault / grandTotal) * 100,
+                            tooltipData: formatAssetTooltip(
+                                uniqueFaultAssets), // Tampilkan semua aset fault (tanpa duplikat)
+                        },
                     ];
 
-                    // Render pie chart menggunakan Highcharts
-                    Highcharts.chart('chart11', {
-                        chart: {
-                            height: 400,
-                            plotBackgroundColor: null,
-                            plotBorderWidth: null,
-                            plotShadow: false,
-                            type: 'pie',
-                            styledMode: true
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        title: {
-                            text: 'Status Asset Distribution'
-                        },
-                        subtitle: {
-                            text: 'Percentage of asset status'
-                        },
-                        tooltip: {
-                            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                        },
-                        accessibility: {
-                            point: {
-                                valueSuffix: '%'
-                            }
-                        },
-                        plotOptions: {
-                            pie: {
-                                allowPointSelect: true,
-                                cursor: 'pointer',
-                                innerSize: 20,
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                                    distance: -50,
-                                },
-                                showInLegend: true
-                            }
-                        },
-                        series: [{
-                            name: 'Status',
-                            colorByPoint: true,
-                            data: dataForPieChart
-                        }],
-                        responsive: {
-                            rules: [{
-                                condition: {
-                                    maxWidth: 500
-                                },
-                                chartOptions: {
-                                    plotOptions: {
-                                        pie: {
-                                            innerSize: 140,
-                                            format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
+
+                    setTimeout(() => {
+                        // Render pie chart menggunakan Highcharts
+                        Highcharts.chart('chart11', {
+                            chart: {
+                                height: 400,
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false,
+                                type: 'pie',
+                                styledMode: true
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: 'Status Asset Distribution'
+                            },
+                            subtitle: {
+                                text: 'Percentage of asset status'
+                            },
+                            tooltip: {
+                                pointFormatter: function() {
+                                    return `<b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br><b>Assets:</b> ${this.tooltipData || 'Kondisi Baik'}`;
+                                }
+                            },
+
+                            accessibility: {
+                                point: {
+                                    valueSuffix: '%'
+                                }
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    innerSize: 20,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                    },
+                                    showInLegend: true
+                                }
+                            },
+                            series: [{
+                                name: 'Status',
+                                colorByPoint: true,
+                                data: dataForPieChart
+                            }],
+                            responsive: {
+                                rules: [{
+                                    condition: {
+                                        maxWidth: 500
+                                    },
+                                    chartOptions: {
+                                        plotOptions: {
+                                            pie: {
+                                                innerSize: 140,
+                                                dataLabels: {
+                                                    enabled: false
+                                                }
+                                            }
                                         }
                                     }
-                                }
-                            }]
-                        }
-                    });
+                                }]
+                            }
+                        });
+                    }, 0);
+
 
                 },
 
@@ -541,7 +589,7 @@
                             params: {
                                 location_id: this.location_id,
                                 status: this.status,
-                                 unit: this.unit_id
+                                unit: this.unit_id
                             }
                         });
                         this.reports = response.data.charts;
@@ -549,10 +597,11 @@
                         this.headers = response.data.monthlyReport.headers;
                         this.data = response.data.monthlyReport.data;
                         this.trendLineChartData = response.data.trendLineChart;
+                        this.pieChartData = response.data.pieChartData;
                         this.isLoading = false;
                         // this.loadCharts()
 
-                        
+
                         if (this.location_id) {
                             this.units = [];
 
