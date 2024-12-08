@@ -17,7 +17,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-    
+
 
 
         $locations = Location::all();
@@ -48,7 +48,7 @@ class DashboardController extends Controller
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->where('report_assets.report_id', $latestReport->id)
                 ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'))
-                ->groupBy('units.id','units.name', 'report_assets.status')
+                ->groupBy('units.id', 'units.name', 'report_assets.status')
                 ->get();
 
             // Strukturkan data untuk format Highcharts
@@ -70,10 +70,10 @@ class DashboardController extends Controller
                 $reportAsset->where('status', $request->status);
             }
 
-            if($request->unit){
-                 $reportAsset->wherehas('unit', function ($query) use ($request) {
-                     $query->where('name', $request->unit);
-                 });
+            if ($request->unit) {
+                $reportAsset->wherehas('unit', function ($query) use ($request) {
+                    $query->where('name', $request->unit);
+                });
             }
 
             $reportAsset = $reportAsset->get();
@@ -173,6 +173,11 @@ class DashboardController extends Controller
             }
 
 
+            // pieChartData
+            $pieChartData = $this->getPieDataByLocation($request, $latestReport);
+
+
+
 
             // Format response untuk Highcharts
             return response()->json([
@@ -186,8 +191,9 @@ class DashboardController extends Controller
                     ]
                 ],
                 'table' => $reportAsset,
-                'monthlyReport' => $monthlyReport ,
-                'trendLineChart' => $chartData
+                'monthlyReport' => $monthlyReport,
+                'trendLineChart' => $chartData,
+                'pieChartData' => $pieChartData
             ]);
         } else {
             $assetsByLocation = DB::table('assets')
@@ -195,9 +201,9 @@ class DashboardController extends Controller
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->join('locations', 'units.location_id', '=', 'locations.id')
                 ->select('locations.name as location_name', 'assets.status', DB::raw('COUNT(*) as asset_count'))
-                ->groupBy('locations.id','locations.name', 'assets.status')
+                ->groupBy('locations.id', 'locations.name', 'assets.status')
                 ->get();
-          
+
             // Ambil laporan terakhir untuk setiap lokasi
             $latestReports = DB::table('reports as r1')
                 ->join('locations as l', 'r1.location_id', '=', 'l.id')
@@ -251,8 +257,8 @@ class DashboardController extends Controller
             // Mengisi data ke dalam $monthlyData sesuai bulan dan status
             foreach ($reportAssetCounts as $report) {
                 $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
-                
-                
+
+
                 $location = $report->location_name;
 
                 if ($report->status == 'normal') {
@@ -277,7 +283,7 @@ class DashboardController extends Controller
                     ];
                 }
                 $chartDataRow = ['month' => $month];
-                
+
                 $monthlyReportData[] = $dataRow;
             }
 
@@ -291,10 +297,10 @@ class DashboardController extends Controller
             foreach ($latestReports as $report) {
                 // Ambil data aset berdasarkan lokasi dan bulan terbaru
                 $latestMonthAssets = $reportAssetCounts
-                ->where('location_name', $report->location_name)
-                ->filter(function ($asset) use ($report) {
-                    return $asset->report_month == $report->report_month;
-                });
+                    ->where('location_name', $report->location_name)
+                    ->filter(function ($asset) use ($report) {
+                        return $asset->report_month == $report->report_month;
+                    });
 
                 // Hitung jumlah untuk masing-masing status
                 $normalData[] = $latestMonthAssets->where('status', 'normal')->sum('asset_count') ?: 0;
@@ -319,7 +325,7 @@ class DashboardController extends Controller
 
             // trend line chart data
 
-            $month =[
+            $month = [
                 '01' => 'Januari',
                 '02' => 'Februari',
                 '03' => 'Maret',
@@ -359,9 +365,13 @@ class DashboardController extends Controller
                 $chartData['series'][2]['data'][] = $faultSum;   // Data untuk status "Fault"
             }
 
-            
 
-      
+            // pieChartData
+            $pieChartData = $this->getPieData($request);
+
+
+
+
 
             return response()->json([
                 'charts' => [
@@ -374,10 +384,10 @@ class DashboardController extends Controller
                 ],
 
                 'table' => $reportAsset, // Menyediakan data untuk tabel yang lama
-                // 'monthlyReport' => [
-                //     'categories' => $locations,
-                //     'series' => $monthlyData
-                // ],
+                'monthlyReport' => [
+                    'categories' => $locations,
+                    'series' => $monthlyData
+                ],
 
                 'monthlyReport' => [
                     'headers' => array_map(function ($location) {
@@ -387,16 +397,18 @@ class DashboardController extends Controller
                         ];
                     }, $locations),
                     'data' => $monthlyReportData,
-                   
+
                 ],
-                'trendLineChart' => $chartData
+                // 'monthlyReport' =>$pieChartData,
+                // 'trendLineChart' => $chartData,
+                'trendLineChart' => $chartData,
+
+                'pieChartData' => $pieChartData
             ]);
         }
     }
 
-    public function chartAsset($locationId){
-        return 1;
-    }
+
 
     public function getDataChart(Request $request)
     {
@@ -515,4 +527,319 @@ class DashboardController extends Controller
             return response()->json($finalData);
         }
     }
+
+    public function getPieData($request)
+    {
+
+        $assetsByLocation = DB::table('assets')
+            ->where('assets.is_active', 1)
+            ->join('units', 'assets.unit_id', '=', 'units.id')
+            ->join('locations', 'units.location_id', '=', 'locations.id')
+            ->select('locations.name as location_name', 'assets.status', DB::raw('COUNT(*) as asset_count'))
+            ->groupBy('locations.id', 'locations.name', 'assets.status')
+            ->get();
+
+        // Ambil laporan terakhir untuk setiap lokasi
+        $latestReports = DB::table('reports as r1')
+            ->join('locations as l', 'r1.location_id', '=', 'l.id')
+            ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name', DB::raw('MONTH(r1.date) as report_month'))
+            ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
+            ->get();
+
+        // Siapkan data untuk tiap bulan dan lokasi
+        // Urutan bulan dimulai dari Desember ke Januari
+        $months = array_reverse([
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ], true);
+        $locations = $latestReports->pluck('location_name')->unique()->toArray();
+        $monthlyData = [];
+
+        // Inisialisasi data untuk tiap bulan dan lokasi
+        foreach ($months as $month => $monthName) {
+            $monthlyData[$monthName] = [];
+            foreach ($locations as $location) {
+                $monthlyData[$monthName][$location] = [
+                    'Normal' => ['asset_count' => 0, 'asset_names' => []],
+                    'Abnormal' => ['asset_count' => 0, 'asset_names' => []],
+                    'Fault' => ['asset_count' => 0, 'asset_names' => []],
+                ];
+            }
+        }
+        // Ambil data report assets berdasarkan status dan lokasi
+        $reportAssetCounts = DB::table('report_assets')
+            ->join('reports', 'report_assets.report_id', '=', 'reports.id')
+            ->join('locations', 'reports.location_id', '=', 'locations.id')
+            ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+            ->where('assets.is_active', 1)
+            ->select(
+                'locations.name as location_name',
+                'report_assets.status',
+                DB::raw('COUNT(DISTINCT assets.id) as asset_count'), // Hanya hitung aset unik
+                DB::raw('MONTH(reports.date) as report_month'),
+                DB::raw('GROUP_CONCAT(DISTINCT assets.name) as asset_names') // Gabungkan nama aset unik
+            )
+            ->groupBy('locations.name', 'report_assets.status', 'report_month')
+            ->get();
+
+
+
+        // Mengubah hasil asset_names dari string menjadi array
+        $reportAssetCounts->transform(function ($item) {
+            $item->asset_names = explode(',', $item->asset_names); // Ubah string menjadi array
+            return $item;
+        });
+
+
+        // Mengisi data ke dalam $monthlyData sesuai bulan dan status
+        foreach ($reportAssetCounts as $report) {
+            $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
+
+
+            $location = $report->location_name;
+
+            if ($report->status == 'normal') {
+                $monthlyData[$monthName][$location]['Normal']['asset_count'] = $report->asset_count;
+                $monthlyData[$monthName][$location]['Normal']['asset_names'] = $report->asset_names;
+            } elseif ($report->status == 'abnormal') {
+                $monthlyData[$monthName][$location]['Abnormal']['asset_count'] = $report->asset_count;
+                $monthlyData[$monthName][$location]['Abnormal']['asset_names'] = $report->asset_names;
+            } elseif ($report->status == 'fault') {
+                $monthlyData[$monthName][$location]['Fault']['asset_count'] = $report->asset_count;
+                $monthlyData[$monthName][$location]['Fault']['asset_names'] = $report->asset_names;
+            }
+        }
+
+        // Persiapkan data untuk monthlyReport sesuai dengan struktur yang diinginkan
+        $monthlyReportData = [];
+        $chartData =  [];
+        foreach ($monthlyData as $month => $locationsData) {
+            $dataRow = ['month' => $month];
+            foreach ($locations as $location) {
+                $dataRow[strtolower(str_replace(' ', '', $location))] = [
+                    $locationsData[$location]['Normal'],
+                    $locationsData[$location]['Abnormal'],
+                    $locationsData[$location]['Fault'],
+                ];
+            }
+            $chartDataRow = ['month' => $month];
+
+            $monthlyReportData[] = $dataRow;
+        }
+
+
+
+        // Persiapkan data untuk Highcharts
+        $normalData = [];
+        $abnormalData = [];
+        $faultData = [];
+
+        foreach ($latestReports as $report) {
+            // Ambil data aset berdasarkan lokasi dan bulan terbaru
+            $latestMonthAssets = $reportAssetCounts
+                ->where('location_name', $report->location_name)
+                ->filter(function ($asset) use ($report) {
+                    return $asset->report_month == $report->report_month;
+                });
+
+            // Hitung jumlah untuk masing-masing status
+            $normalData[] = $latestMonthAssets->where('status', 'normal')->sum('asset_count') ?: 0;
+            $abnormalData[] = $latestMonthAssets->where('status', 'abnormal')->sum('asset_count') ?: 0;
+            $faultData[] = $latestMonthAssets->where('status', 'fault')->sum('asset_count') ?: 0;
+        }
+
+
+        // Ambil data report assets berdasarkan status pada report terakhir setiap lokasi
+        $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
+            ->whereIn('report_id', $latestReports->pluck('report_id'))
+            ->where('status', '!=', 'normal');
+
+
+        if ($request->status) {
+            $reportAsset->where('status', $request->status);
+        }
+        $reportAsset = $reportAsset->get();
+
+        // Format response untuk Highcharts dan tambahan data bulanan
+
+
+        // trend line chart data
+
+        $month = [
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ];
+
+        $chartData = [
+            'categories' => array_values($month), // Bulan sebagai label X
+            'series' => [
+                [
+                    'name' => 'Normal',
+                    'data' => [],
+                    'assets' => [],
+                ],
+                [
+                    'name' => 'Abnormal',
+                    'data' => [],
+                    'assets' => [],
+                ],
+                [
+                    'name' => 'Fault',
+                    'data' => [],
+                    'assets' => [],
+                ],
+            ],
+        ];
+
+        foreach ($month as $monthName) {
+            $normalSum = 0;
+            $abnormalSum = 0;
+            $faultSum = 0;
+
+            $normalAssets = [];
+            $abnormalAssets = [];
+            $faultAssets = [];
+
+            foreach ($locations as $location) {
+
+                // Perhitungan jumlah dan pengumpulan aset untuk "Normal"
+                if (isset($monthlyData[$monthName][$location]['Normal'])) {
+                    $normalSum += $monthlyData[$monthName][$location]['Normal']['asset_count'] ?? 0;
+                    $normalAssets = array_merge(
+                        $normalAssets,
+                        $monthlyData[$monthName][$location]['Normal']['asset_names'] ?? []
+                    );
+                }
+
+                // Perhitungan jumlah dan pengumpulan aset untuk "Abnormal"
+                if (isset($monthlyData[$monthName][$location]['Abnormal'])) {
+                    $abnormalSum += $monthlyData[$monthName][$location]['Abnormal']['asset_count'] ?? 0;
+                    $abnormalAssets = array_merge(
+                        $abnormalAssets,
+                        $monthlyData[$monthName][$location]['Abnormal']['asset_names'] ?? []
+                    );
+                }
+                // Perhitungan jumlah dan pengumpulan aset untuk "Fault"
+                if (isset($monthlyData[$monthName][$location]['Fault'])) {
+                    $faultSum += $monthlyData[$monthName][$location]['Fault']['asset_count'] ?? 0;
+                    $faultAssets = array_merge(
+                        $faultAssets,
+                        $monthlyData[$monthName][$location]['Fault']['asset_names'] ?? []
+                    );
+                }
+            }
+
+            $chartData['series'][0]['data'][] = $normalSum;   // Data untuk status "Normal"
+            $chartData['series'][0]['assets'][] = array_unique($normalAssets); // Nama aset "Normal"
+
+            $chartData['series'][1]['data'][] = $abnormalSum; // Data untuk status "Abnormal"
+            $chartData['series'][1]['assets'][] = array_unique($abnormalAssets); // Nama aset "Abnormal"
+
+            $chartData['series'][2]['data'][] = $faultSum;   // Data untuk status "Fault"
+            $chartData['series'][2]['assets'][] = array_unique($faultAssets); // Nama aset "Fault"
+        }
+
+
+        return $chartData;
+    }
+    public function getPieDataByLocation($request, $latestReport)
+    {
+        $months = array_reverse([
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
+        ], true);
+
+        // Fetch monthly report data
+        $monthlyReportData = DB::table('report_assets')
+            ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+            ->join('units', 'assets.unit_id', '=', 'units.id')
+            ->join('reports', 'report_assets.report_id', '=', 'reports.id')
+            ->where('reports.location_id', $request->location_id)
+            ->select(
+                'units.name as unit_name',
+                'report_assets.status',
+                DB::raw('COUNT(DISTINCT assets.id) as asset_count'), // Hanya hitung aset unik
+                DB::raw('MONTH(reports.date) as report_month'),
+                DB::raw('GROUP_CONCAT(DISTINCT assets.name) as asset_names') // Gabungkan nama aset unik
+            )
+            ->groupBy('units.id', 'units.name', 'report_assets.status', 'report_month')
+            ->get()
+            ->transform(function ($item) {
+                $item->asset_names = array_unique(explode(',', $item->asset_names)); // Ubah string menjadi array unik
+                return $item;
+            });
+
+        // Inisialisasi struktur data bulanan
+        $monthlyData = [];
+        $chartData = [
+            'categories' => array_values($months), // Bulan sebagai label X
+            'series' => [
+                ['name' => 'Normal', 'data' => [], 'assets' => []],
+                ['name' => 'Abnormal', 'data' => [], 'assets' => []],
+                ['name' => 'Fault', 'data' => [], 'assets' => []],
+            ],
+        ];
+
+        // Inisialisasi dengan nilai 0 untuk semua bulan
+        foreach ($months as $monthName) {
+            $monthlyData[$monthName] = [
+                'Normal' => ['count' => 0, 'assets' => []],
+                'Abnormal' => ['count' => 0, 'assets' => []],
+                'Fault' => ['count' => 0, 'assets' => []],
+            ];
+        }
+
+        // Populasi data bulanan
+        foreach ($monthlyReportData as $report) {
+            $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
+            $statusKey = ucfirst($report->status);
+
+            $monthlyData[$monthName][$statusKey]['count'] += $report->asset_count;
+            $monthlyData[$monthName][$statusKey]['assets'] = array_unique(array_merge(
+                $monthlyData[$monthName][$statusKey]['assets'],
+                $report->asset_names
+            ));
+        }
+
+        // Hitung data untuk chart
+        foreach ($months as $monthName) {
+            foreach (['Normal', 'Abnormal', 'Fault'] as $index => $status) {
+                $chartData['series'][$index]['data'][] = $monthlyData[$monthName][$status]['count'];
+                $chartData['series'][$index]['assets'][] = array_values($monthlyData[$monthName][$status]['assets']);
+            }
+        }
+
+        return $chartData;
+    }
+
 }

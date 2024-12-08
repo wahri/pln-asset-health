@@ -202,24 +202,24 @@
                             <table id="tableAssets" class="table table-striped table-bordered"
                                 style="color: #ffffff; table-layout: fixed">
                                 <colgroup>
-                                     <col style="width: 100px;"> <!-- Lokasi -->
-                                            <col style="width: 100px;"> <!-- Unit -->
-                                            <col style="width: 150px;"> <!-- No Asset -->
-                                            <col style="width: 150px;"> <!-- Nama Asset -->
-                                            <col style="width: 150px;"> <!-- Group Asset -->
-                                            <col style="width: 100px;"> <!-- Status -->
-                                            <col style="width: 120px;"> <!-- No SR -->
-                                            <col style="width: 120px;"> <!-- No WO -->
-                                            <col style="width: 120px;"> <!-- Tgl Identifikasi -->
-                                            <col style="width: 120px;"> <!-- Status WO -->
-                                            <col style="width: 300px;"> <!-- Kondisi Asset -->
-                                            <col style="width: 300px;"> <!-- Action Plan -->
-                                            <col style="width: 100px;"> <!-- Target Selesai -->
-                                            <col style="width: 100px;"> <!-- Progress Saat Ini -->
-                                            <col style="width: 100px;"> <!-- Realisasi Selesai -->
-                                            <col style="width: 300px;"> <!-- Main Issue -->
-                                            <col style="width: 300px;"> <!-- Keterangan -->
-                                            {{-- <col style="width: 300px;"> <!-- Keterangan --> --}}
+                                    <col style="width: 100px;"> <!-- Lokasi -->
+                                    <col style="width: 100px;"> <!-- Unit -->
+                                    <col style="width: 150px;"> <!-- No Asset -->
+                                    <col style="width: 150px;"> <!-- Nama Asset -->
+                                    <col style="width: 150px;"> <!-- Group Asset -->
+                                    <col style="width: 100px;"> <!-- Status -->
+                                    <col style="width: 120px;"> <!-- No SR -->
+                                    <col style="width: 120px;"> <!-- No WO -->
+                                    <col style="width: 120px;"> <!-- Tgl Identifikasi -->
+                                    <col style="width: 120px;"> <!-- Status WO -->
+                                    <col style="width: 300px;"> <!-- Kondisi Asset -->
+                                    <col style="width: 300px;"> <!-- Action Plan -->
+                                    <col style="width: 100px;"> <!-- Target Selesai -->
+                                    <col style="width: 100px;"> <!-- Progress Saat Ini -->
+                                    <col style="width: 100px;"> <!-- Realisasi Selesai -->
+                                    <col style="width: 300px;"> <!-- Main Issue -->
+                                    <col style="width: 300px;"> <!-- Keterangan -->
+                                    {{-- <col style="width: 300px;"> <!-- Keterangan --> --}}
                                 </colgroup>
                             </table>
                         </div>
@@ -271,6 +271,7 @@
                 units: [],
                 unit_id: '',
                 trendLineChartData: [],
+                pieChartData: [],
 
                 init() {
                     this.getData();
@@ -335,97 +336,141 @@
                     });
                 },
                 renderPieChart() {
-                    // Hitung total data untuk setiap status
-                    const totalNormal = this.trendLineChartData.series[0].data.reduce((sum, value) =>
-                        sum +
-                        value, 0);
-                    const totalAbnormal = this.trendLineChartData.series[1].data.reduce((sum, value) =>
-                        sum +
-                        value, 0);
-                    const totalFault = this.trendLineChartData.series[2].data.reduce((sum, value) =>
-                        sum +
-                        value, 0);
+
+                    const abnormalAssets = [];
+                    const faultAssets = [];
+                    let totalNormal = 0,
+                        totalAbnormal = 0,
+                        totalFault = 0;
+
+                    this.pieChartData.series[1].data.forEach((value, index) => {
+                        totalNormal += this.pieChartData.series[0].data[index] || 0;
+
+                        if (value > 0) {
+                            totalAbnormal += value;
+
+                            // Gabungkan data aset abnormal tanpa duplikat
+                            const assets = this.pieChartData.series[1].assets[index];
+                            if (Array.isArray(assets)) {
+                                abnormalAssets.push(...assets);
+                            }
+                        }
+
+                        const faultValue = this.pieChartData.series[2].data[index];
+                        if (faultValue > 0) {
+                            totalFault += faultValue;
+
+                            // Gabungkan data aset fault tanpa duplikat
+                            const assets = this.pieChartData.series[2].assets[index];
+                            if (Array.isArray(assets)) {
+                                faultAssets.push(...assets);
+                            }
+                        }
+                    });
+
+                    // Buat daftar aset unik
+                    const uniqueAbnormalAssets = Array.from(new Set(abnormalAssets)); // Hapus duplikat
+                    const uniqueFaultAssets = Array.from(new Set(faultAssets)); // Hapus duplikat
 
                     // Hitung total keseluruhan
                     const grandTotal = totalNormal + totalAbnormal + totalFault;
 
+                    // Format data untuk tooltip
+                    const formatAssetTooltip = (assetNames) => {
+                        const uniqueAssets = Array.isArray(assetNames) ? Array.from(new Set(
+                            assetNames)) : []; // Validasi array
+                        return uniqueAssets.join(', ') ||
+                        'Tidak ada data'; // Gabungkan aset menjadi string
+                    };
+
                     // Hitung persentase untuk setiap status
                     const dataForPieChart = [{
                             name: 'Normal',
-                            y: (totalNormal / grandTotal) * 100
+                            y: (totalNormal / grandTotal) * 100,
                         },
                         {
                             name: 'Abnormal',
-                            y: (totalAbnormal / grandTotal) * 100
+                            y: (totalAbnormal / grandTotal) * 100,
+                            tooltipData: formatAssetTooltip(
+                            uniqueAbnormalAssets), // Tampilkan semua aset abnormal (tanpa duplikat)
                         },
                         {
                             name: 'Fault',
-                            y: (totalFault / grandTotal) * 100
-                        }
+                            y: (totalFault / grandTotal) * 100,
+                            tooltipData: formatAssetTooltip(
+                            uniqueFaultAssets), // Tampilkan semua aset fault (tanpa duplikat)
+                        },
                     ];
 
-                    // Render pie chart menggunakan Highcharts
-                    Highcharts.chart('chart11', {
-                        chart: {
-                            height: 400,
-                            plotBackgroundColor: null,
-                            plotBorderWidth: null,
-                            plotShadow: false,
-                            type: 'pie',
-                            styledMode: true
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        title: {
-                            text: 'Status Asset Distribution'
-                        },
-                        subtitle: {
-                            text: 'Percentage of asset status'
-                        },
-                        tooltip: {
-                            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                        },
-                        accessibility: {
-                            point: {
-                                valueSuffix: '%'
-                            }
-                        },
-                        plotOptions: {
-                            pie: {
-                                allowPointSelect: true,
-                                cursor: 'pointer',
-                                innerSize: 20,
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                                },
-                                showInLegend: true
-                            }
-                        },
-                        series: [{
-                            name: 'Status',
-                            colorByPoint: true,
-                            data: dataForPieChart
-                        }],
-                        responsive: {
-                            rules: [{
-                                condition: {
-                                    maxWidth: 500
-                                },
-                                chartOptions: {
-                                    plotOptions: {
-                                        pie: {
-                                            innerSize: 140,
-                                            dataLabels: {
-                                                enabled: false
+
+                    setTimeout(() => {
+                        // Render pie chart menggunakan Highcharts
+                        Highcharts.chart('chart11', {
+                            chart: {
+                                height: 400,
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false,
+                                type: 'pie',
+                                styledMode: true
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: 'Status Asset Distribution'
+                            },
+                            subtitle: {
+                                text: 'Percentage of asset status'
+                            },
+                            tooltip: {
+                                pointFormatter: function() {
+                                    return `<b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br><b>Assets:</b> ${this.tooltipData || 'Kondisi Baik'}`;
+                                }
+                            },
+
+                            accessibility: {
+                                point: {
+                                    valueSuffix: '%'
+                                }
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    innerSize: 20,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                    },
+                                    showInLegend: true
+                                }
+                            },
+                            series: [{
+                                name: 'Status',
+                                colorByPoint: true,
+                                data: dataForPieChart
+                            }],
+                            responsive: {
+                                rules: [{
+                                    condition: {
+                                        maxWidth: 500
+                                    },
+                                    chartOptions: {
+                                        plotOptions: {
+                                            pie: {
+                                                innerSize: 140,
+                                                dataLabels: {
+                                                    enabled: false
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            }]
-                        }
-                    });
+                                }]
+                            }
+                        });
+                    }, 0);
+
 
                 },
 
@@ -448,6 +493,7 @@
                         this.headers = response.data.monthlyReport.headers;
                         this.data = response.data.monthlyReport.data;
                         this.trendLineChartData = response.data.trendLineChart;
+                        this.pieChartData = response.data.pieChartData;
                         this.isLoading = false;
                         // this.loadCharts()
 
