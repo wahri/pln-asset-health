@@ -530,11 +530,32 @@
                             subtitle: {
                                 text: 'Percentage of asset status'
                             },
-                            tooltip: {
+                          tooltip: {
+                                useHTML: true, // Aktifkan rendering HTML
                                 pointFormatter: function() {
-                                    return `<b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br><b>Assets:</b> ${this.tooltipData || 'Kondisi Baik'}`;
-                                }
+                                    const assets = this.tooltipData ?
+                                        this.tooltipData
+                                        .split(',')
+                                        .map(asset => asset
+                                    .trim()) // Hapus spasi ekstra
+                                        .filter(asset => isNaN(
+                                        asset)) // Hanya ambil string, abaikan angka
+                                        .map(asset =>
+                                        `<li>${asset}</li>`) // Bungkus dalam <li>
+                                        .join('') // Gabungkan semua elemen
+                                        :
+                                        '<li>Tidak ada data</li>';
+
+                                    return `
+        <b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br>
+        <b>Assets:</b><br>
+        <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+            ${assets}
+        </ul>
+        `;
+                                },
                             },
+
 
                             accessibility: {
                                 point: {

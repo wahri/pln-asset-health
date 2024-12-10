@@ -380,7 +380,7 @@
                         const uniqueAssets = Array.isArray(assetNames) ? Array.from(new Set(
                             assetNames)) : []; // Validasi array
                         return uniqueAssets.join(', ') ||
-                        'Tidak ada data'; // Gabungkan aset menjadi string
+                            'Tidak ada data'; // Gabungkan aset menjadi string
                     };
 
                     // Hitung persentase untuk setiap status
@@ -392,13 +392,14 @@
                             name: 'Abnormal',
                             y: (totalAbnormal / grandTotal) * 100,
                             tooltipData: formatAssetTooltip(
-                            uniqueAbnormalAssets), // Tampilkan semua aset abnormal (tanpa duplikat)
+                                uniqueAbnormalAssets
+                            ), // Tampilkan semua aset abnormal (tanpa duplikat)
                         },
                         {
                             name: 'Fault',
                             y: (totalFault / grandTotal) * 100,
                             tooltipData: formatAssetTooltip(
-                            uniqueFaultAssets), // Tampilkan semua aset fault (tanpa duplikat)
+                                uniqueFaultAssets), // Tampilkan semua aset fault (tanpa duplikat)
                         },
                     ];
 
@@ -424,10 +425,31 @@
                                 text: 'Percentage of asset status'
                             },
                             tooltip: {
+                                useHTML: true, // Aktifkan rendering HTML
                                 pointFormatter: function() {
-                                    return `<b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br><b>Assets:</b> ${this.tooltipData || 'Kondisi Baik'}`;
-                                }
+                                    const assets = this.tooltipData ?
+                                        this.tooltipData
+                                        .split(',')
+                                        .map(asset => asset
+                                    .trim()) // Hapus spasi ekstra
+                                        .filter(asset => isNaN(
+                                        asset)) // Hanya ambil string, abaikan angka
+                                        .map(asset =>
+                                        `<li>${asset}</li>`) // Bungkus dalam <li>
+                                        .join('') // Gabungkan semua elemen
+                                        :
+                                        '<li>Tidak ada data</li>';
+
+                                    return `
+        <b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br>
+        <b>Assets:</b><br>
+        <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+            ${assets}
+        </ul>
+        `;
+                                },
                             },
+
 
                             accessibility: {
                                 point: {
