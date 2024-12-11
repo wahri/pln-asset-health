@@ -542,26 +542,48 @@ class DashboardController extends Controller
         // Ambil laporan terakhir untuk setiap lokasi
         $latestReports = DB::table('reports as r1')
             ->join('locations as l', 'r1.location_id', '=', 'l.id')
-            ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name', DB::raw('MONTH(r1.date) as report_month'))
+            ->select(
+                'r1.location_id',
+                'r1.id as report_id',
+                'l.name as location_name',
+                DB::raw('MONTH(r1.date) as report_month')
+            )
             ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
             ->get();
 
-        // Siapkan data untuk tiap bulan dan lokasi
-        // Urutan bulan dimulai dari Desember ke Januari
+        $monthsNow = [];
+
+        // Ubah bulan laporan menjadi nama bulan dalam bahasa Indonesia dan simpan ke dalam array $monthsNow
+        $latestReports->map(function ($report) use (&$monthsNow) {
+            // Format bulan menjadi dua digit (misal 1 menjadi 01, 9 menjadi 09)
+            $monthFormatted = str_pad($report->report_month, 2, '0', STR_PAD_LEFT);
+
+            // Gunakan Carbon untuk mengubah bulan menjadi nama bulan dalam bahasa Indonesia
+            $monthName = Carbon::createFromFormat('m', $monthFormatted)->locale('id')->monthName; // Nama bulan dalam bahasa Indonesia
+            $report->report_month_name = ucfirst($monthName); // Tambahkan nama bulan ke objek report
+
+            // Cek jika bulan belum ada di array $monthsNow
+            if (!in_array($monthFormatted, array_column($monthsNow, 'nomor'))) {
+                // Masukkan bulan ke dalam array $monthsNow jika belum ada
+                $monthsNow[] = [
+                    'nomor' => $monthFormatted, // Nomor bulan dengan format dua digit
+                    'bulan' => $report->report_month_name // Nama bulan dalam bahasa Indonesia
+                ];
+            }
+
+            return $report;
+        });
+
+
+        // Debugging untuk melihat hasil
+
         $months = array_reverse([
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember',
+
+            $monthsNow[0]['nomor'] => $monthsNow[0]['bulan']
+
         ], true);
+
+
         $locations = $latestReports->pluck('location_name')->unique()->toArray();
         $monthlyData = [];
 
@@ -576,29 +598,37 @@ class DashboardController extends Controller
                 ];
             }
         }
-        // Ambil data report assets berdasarkan status dan lokasi
         $reportAssetCounts = DB::table('report_assets')
             ->join('reports', 'report_assets.report_id', '=', 'reports.id')
             ->join('locations', 'reports.location_id', '=', 'locations.id')
             ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
             ->where('assets.is_active', 1)
+            ->whereRaw('reports.date IN (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = reports.location_id)')
             ->select(
                 'locations.name as location_name',
                 'report_assets.status',
-                DB::raw('COUNT(DISTINCT assets.id) as asset_count'), // Hanya hitung aset unik
+                DB::raw('COUNT(DISTINCT assets.id) as asset_count'), // Hitung aset unik
                 DB::raw('MONTH(reports.date) as report_month'),
-                DB::raw('GROUP_CONCAT(DISTINCT assets.name) as asset_names') // Gabungkan nama aset unik
+                DB::raw('GROUP_CONCAT(DISTINCT CONCAT(assets.name, "|") ORDER BY assets.name ASC) as asset_names') // Gabungkan nama aset unik dengan pipe
             )
             ->groupBy('locations.name', 'report_assets.status', 'report_month')
             ->get();
 
-
-
-        // Mengubah hasil asset_names dari string menjadi array
+        // Mengubah hasil asset_names dari string menjadi array dan hilangkan pipe di akhir
         $reportAssetCounts->transform(function ($item) {
-            $item->asset_names = explode(',', $item->asset_names); // Ubah string menjadi array
+            // Menghapus pemisah terakhir yang tidak diinginkan (| atau koma)
+            if ($item->asset_names) {
+                $item->asset_names = rtrim($item->asset_names, '|'); // Menghapus pipe di akhir
+                // Pisahkan dengan pemisah pipe (|) yang ada di antara nama aset
+                $item->asset_names = explode('|', $item->asset_names);
+            } else {
+                $item->asset_names = [];
+            }
             return $item;
         });
+
+
+
 
 
         // Mengisi data ke dalam $monthlyData sesuai bulan dan status
@@ -676,18 +706,8 @@ class DashboardController extends Controller
         // trend line chart data
 
         $month = [
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember',
+
+            $monthsNow[0]['nomor'] => $monthsNow[0]['bulan']
         ];
 
         $chartData = [
@@ -764,40 +784,71 @@ class DashboardController extends Controller
     }
     public function getPieDataByLocation($request, $latestReport)
     {
-        $months = array_reverse([
-            '01' => 'Januari',
-            '02' => 'Februari',
-            '03' => 'Maret',
-            '04' => 'April',
-            '05' => 'Mei',
-            '06' => 'Juni',
-            '07' => 'Juli',
-            '08' => 'Agustus',
-            '09' => 'September',
-            '10' => 'Oktober',
-            '11' => 'November',
-            '12' => 'Desember',
-        ], true);
+
 
         // Fetch monthly report data
         $monthlyReportData = DB::table('report_assets')
-            ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
-            ->join('units', 'assets.unit_id', '=', 'units.id')
-            ->join('reports', 'report_assets.report_id', '=', 'reports.id')
-            ->where('reports.location_id', $request->location_id)
+        ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+        ->join('units', 'assets.unit_id', '=', 'units.id')
+        ->join('reports', 'report_assets.report_id', '=', 'reports.id')
+        ->where('reports.location_id', $request->location_id)
+            // Menambahkan filter agar hanya mengambil laporan terbaru berdasarkan tanggal
+            ->whereRaw('reports.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = reports.location_id)')
             ->select(
                 'units.name as unit_name',
                 'report_assets.status',
                 DB::raw('COUNT(DISTINCT assets.id) as asset_count'), // Hanya hitung aset unik
                 DB::raw('MONTH(reports.date) as report_month'),
-                DB::raw('GROUP_CONCAT(DISTINCT assets.name) as asset_names') // Gabungkan nama aset unik
+                DB::raw('GROUP_CONCAT(DISTINCT CONCAT(assets.name, "|") ORDER BY assets.name ASC) as asset_names') // Gabungkan nama aset unik dengan pipe
             )
             ->groupBy('units.id', 'units.name', 'report_assets.status', 'report_month')
             ->get()
             ->transform(function ($item) {
-                $item->asset_names = array_unique(explode(',', $item->asset_names)); // Ubah string menjadi array unik
+                if ($item->asset_names) {
+                    $item->asset_names = rtrim($item->asset_names, '|'); // Menghapus pipe di akhir
+                    // Pisahkan dengan pemisah pipe (|) yang ada di antara nama aset
+                    $item->asset_names = explode('|', $item->asset_names);
+                } else {
+                    $item->asset_names = [];
+                }
                 return $item;
             });
+
+        // Ambil bulan laporan yang terakhir
+        $monthsNow = [];
+
+        // Ubah bulan laporan menjadi nama bulan dalam bahasa Indonesia dan simpan ke dalam array $monthsNow
+        $monthlyReportData->map(function ($report) use (&$monthsNow) {
+            // Format bulan menjadi dua digit (misal 1 menjadi 01, 9 menjadi 09)
+            $monthFormatted = str_pad($report->report_month, 2, '0', STR_PAD_LEFT);
+
+            // Gunakan Carbon untuk mengubah bulan menjadi nama bulan dalam bahasa Indonesia
+            $monthName = Carbon::createFromFormat('m', $monthFormatted)->locale('id')->monthName; // Nama bulan dalam bahasa Indonesia
+            $report->report_month_name = ucfirst($monthName); // Tambahkan nama bulan ke objek report
+
+            // Cek jika bulan belum ada di array $monthsNow
+            if (!in_array($monthFormatted, array_column($monthsNow, 'nomor'))) {
+                // Masukkan bulan ke dalam array $monthsNow jika belum ada
+                $monthsNow[] = [
+                    'nomor' => $monthFormatted, // Nomor bulan dengan format dua digit
+                    'bulan' => $report->report_month_name // Nama bulan dalam bahasa Indonesia
+                ];
+            }
+
+            return $report;
+        });
+
+        // Debugging untuk melihat hasil
+
+
+      
+
+        $months = array_reverse([
+            $monthsNow[0]['nomor'] => $monthsNow[0]['bulan']
+
+        ], true);
+
+
 
         // Inisialisasi struktur data bulanan
         $monthlyData = [];
@@ -839,7 +890,7 @@ class DashboardController extends Controller
             }
         }
 
+
         return $chartData;
     }
-
 }

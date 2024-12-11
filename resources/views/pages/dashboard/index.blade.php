@@ -337,6 +337,7 @@
                 },
                 renderPieChart() {
 
+
                     const abnormalAssets = [];
                     const faultAssets = [];
                     let totalNormal = 0,
@@ -379,7 +380,7 @@
                     const formatAssetTooltip = (assetNames) => {
                         const uniqueAssets = Array.isArray(assetNames) ? Array.from(new Set(
                             assetNames)) : []; // Validasi array
-                        return uniqueAssets.join(', ') ||
+                        return uniqueAssets.join('| ') ||
                             'Tidak ada data'; // Gabungkan aset menjadi string
                     };
 
@@ -402,6 +403,7 @@
                                 uniqueFaultAssets), // Tampilkan semua aset fault (tanpa duplikat)
                         },
                     ];
+
 
 
                     setTimeout(() => {
@@ -429,7 +431,7 @@
                                 pointFormatter: function() {
                                     const assets = this.tooltipData ?
                                         this.tooltipData
-                                        .split(',')
+                                        .split('|')
                                         .map(asset => asset
                                     .trim()) // Hapus spasi ekstra
                                         .filter(asset => isNaN(
