@@ -65,6 +65,11 @@
             fill: #ffffff;
         }
 
+        .highcharts-tooltip-box {
+            stroke-width: 1px;
+            fill: #363636;
+            fill-opacity: 0.85;
+        }
 
         /* Untuk membungkus teks di semua kolom tabel */
         #tableAssets th,
@@ -499,7 +504,7 @@
                             y: (totalAbnormal / grandTotal) * 100,
                             tooltipData: formatAssetTooltip(
                                 uniqueAbnormalAssets
-                                ), // Tampilkan semua aset abnormal (tanpa duplikat)
+                            ), // Tampilkan semua aset abnormal (tanpa duplikat)
                         },
                         {
                             name: 'Fault',
@@ -530,18 +535,20 @@
                             subtitle: {
                                 text: 'Percentage of asset status'
                             },
-                          tooltip: {
+                            tooltip: {
                                 useHTML: true, // Aktifkan rendering HTML
                                 pointFormatter: function() {
                                     const assets = this.tooltipData ?
                                         this.tooltipData
                                         .split(',')
                                         .map(asset => asset
-                                    .trim()) // Hapus spasi ekstra
+                                            .trim()) // Hapus spasi ekstra
                                         .filter(asset => isNaN(
-                                        asset)) // Hanya ambil string, abaikan angka
+                                            asset
+                                            )) // Hanya ambil string, abaikan angka
                                         .map(asset =>
-                                        `<li>${asset}</li>`) // Bungkus dalam <li>
+                                            `<li>${asset}</li>`
+                                            ) // Bungkus dalam <li>
                                         .join('') // Gabungkan semua elemen
                                         :
                                         '<li>Tidak ada data</li>';
