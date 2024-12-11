@@ -437,7 +437,7 @@
                                         .filter(asset => isNaN(
                                         asset)) // Hanya ambil string, abaikan angka
                                         .map(asset =>
-                                        `<li>${asset}</li>`) // Bungkus dalam <li>
+                                        `<li>${asset.replace(/^,/, '')}</li>`) // Bungkus dalam <li>
                                         .join('') // Gabungkan semua elemen
                                         :
                                         '<li>Tidak ada data</li>';

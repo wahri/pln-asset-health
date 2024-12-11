@@ -547,7 +547,7 @@
                                             asset
                                             )) // Hanya ambil string, abaikan angka
                                         .map(asset =>
-                                            `<li>${asset}</li>`
+                                            `<li>${asset.replace(/^,/, '')}</li>`
                                             ) // Bungkus dalam <li>
                                         .join('') // Gabungkan semua elemen
                                         :
