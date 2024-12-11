@@ -42,6 +42,8 @@ class DashboardController extends Controller
                 ]);
             }
 
+            // dd($latestReport);
+
             // Ambil jumlah asset berdasarkan status per unit di lokasi dan report terakhir
             $reportAssetCounts = DB::table('report_assets')
                 ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
@@ -210,6 +212,7 @@ class DashboardController extends Controller
                 ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name', DB::raw('MONTH(r1.date) as report_month'))
                 ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
                 ->get();
+                // dd($latestReports);
 
             // Siapkan data untuk tiap bulan dan lokasi
             // Urutan bulan dimulai dari Desember ke Januari
@@ -368,7 +371,6 @@ class DashboardController extends Controller
 
             // pieChartData
             $pieChartData = $this->getPieData($request);
-
 
 
 
@@ -575,14 +577,46 @@ class DashboardController extends Controller
         });
 
 
+
         // Debugging untuk melihat hasil
 
+        // Urutkan array $monthsNow berdasarkan nomor bulan secara descending
+        usort($monthsNow, function ($a, $b) {
+            return $b['nomor'] <=> $a['nomor'];
+        });
+
+        // Ambil bulan terakhir
+        $monthsLast = reset($monthsNow); // Ambil elemen pertama dari array terurut (bulan terbesar)
+
+        // Debugging untuk melihat hasil
+
+
+
+
+        // $months = array_reverse([
+
+        //     $monthsLast['nomor'] => $monthsLast['bulan']
+        // ], true);
+
+
         $months = array_reverse([
-
-            $monthsNow[0]['nomor'] => $monthsNow[0]['bulan']
-
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
         ], true);
 
+
+
+       
 
         $locations = $latestReports->pluck('location_name')->unique()->toArray();
         $monthlyData = [];
@@ -598,6 +632,7 @@ class DashboardController extends Controller
                 ];
             }
         }
+
         $reportAssetCounts = DB::table('report_assets')
             ->join('reports', 'report_assets.report_id', '=', 'reports.id')
             ->join('locations', 'reports.location_id', '=', 'locations.id')
@@ -634,6 +669,7 @@ class DashboardController extends Controller
         // Mengisi data ke dalam $monthlyData sesuai bulan dan status
         foreach ($reportAssetCounts as $report) {
             $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
+            
 
 
             $location = $report->location_name;
@@ -707,7 +743,18 @@ class DashboardController extends Controller
 
         $month = [
 
-            $monthsNow[0]['nomor'] => $monthsNow[0]['bulan']
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember',
         ];
 
         $chartData = [
