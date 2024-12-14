@@ -200,7 +200,7 @@
                             x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                             x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
                             <table id="tableAssets" class="table table-striped table-bordered"
-                                style="color: #ffffff; table-layout: fixed">
+                                style="color: #ffffff; table-layout: fixed;font-size: 11px">
                                 <colgroup>
                                     <col style="width: 100px;"> <!-- Lokasi -->
                                     <col style="width: 100px;"> <!-- Unit -->
