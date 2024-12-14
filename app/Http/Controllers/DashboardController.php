@@ -29,6 +29,7 @@ class DashboardController extends Controller
     {
 
 
+
         if ($request->location_id) {
             $latestReport = DB::table('reports')
                 ->where('location_id', $request->location_id)
@@ -78,7 +79,13 @@ class DashboardController extends Controller
                 });
             }
 
-            $reportAsset = $reportAsset->get();
+            if ($request->search) {
+                $reportAsset->whereHas('asset', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            $reportAsset = $reportAsset->paginate($request->limit ?? 10);
 
 
 
@@ -312,6 +319,8 @@ class DashboardController extends Controller
             }
 
 
+            
+
             // Ambil data report assets berdasarkan status pada report terakhir setiap lokasi
             $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
                 ->whereIn('report_id', $latestReports->pluck('report_id'))
@@ -321,7 +330,15 @@ class DashboardController extends Controller
             if ($request->status) {
                 $reportAsset->where('status', $request->status);
             }
-            $reportAsset = $reportAsset->get();
+
+            if ($request->search) {
+                $reportAsset->whereHas('asset', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            $reportAsset = $reportAsset->paginate($request->limit ?? 10);
+            
 
             // Format response untuk Highcharts dan tambahan data bulanan
 

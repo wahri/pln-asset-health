@@ -79,6 +79,14 @@
             word-wrap: break-word;
             /* Menambah pembungkus kata */
         }
+
+        #tableAssetsNew th,
+        #tableAssetsNew td {
+            white-space: pre-line;
+            /* Membuat teks membungkus di dalam kolom */
+            word-wrap: break-word;
+            /* Menambah pembungkus kata */
+        }
     </style>
 
 
@@ -156,7 +164,7 @@
                                 <form action="">
                                     <div class="form-group">
                                         <label for="" class="form-label">Pilih Lokasi</label>
-                                        <select class="form-select" x-model="location_id" @change="getData">
+                                        <select class="form-select" x-model="location_id" @change="applyFilter">
                                             <option value="">Semua Lokasi</option>
                                             @foreach ($locations as $location)
                                                 <option value="{{ $location->id }}">{{ $location->name }}</option>
@@ -269,7 +277,7 @@
                                         <div class="col-md-6 col-lg-4">
                                             <label for="" class="form-label">Filter Status</label>
                                             <select name="status" id="status" class="form-select"
-                                                x-model="status" @change="getData">
+                                                x-model="status" @change="applyFilter">
                                                 <option value="">Semua Status</option>
                                                 <option value="abnormal">Abnormal</option>
                                                 <option value="fault">Fault</option>
@@ -282,7 +290,7 @@
                                                 <label for="" class="form-label">Filter Unit</label>
 
                                                 <select name="unit_id" id="unit_id" class="form-select"
-                                                    x-model="unit_id" @change="getData">
+                                                    x-model="unit_id" @change="applyFilter">
                                                     <option value="">Semua Unit</option>
                                                     <template x-for="(unit, index) in units" :key="index">
                                                         <option :value="unit" x-text="unit"></option>
@@ -293,7 +301,7 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                                {{-- <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                                     x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                                     x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
@@ -321,7 +329,145 @@
                                             <col style="width: 300px;"> <!-- Keterangan -->
                                         </colgroup>
                                     </table>
+                                </div> --}}
+
+                                <div class="text-start">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Dropdown button
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                                    <li><a class="dropdown-item" href="#">Another action</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item" href="#">Something else
+                                                            here</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+
+                                        </div>
+                                        <div class="col">
+                                            <div class="input-group flex-nowrap">
+                                                <span class="input-group-text" id="addon-wrapping">Search</span>
+                                                <input x-model="search" type="search" @input.debounce="getData()"
+                                                    class="form-control" placeholder="Search" aria-label="search"
+                                                    aria-describedby="addon-wrapping">
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <div class="table-responsive mt-4" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                                    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                                    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                                    x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
+                                    <table id="tableAssetsNew"
+                                        class="table table-striped table-bordered table-hover table-sm"
+                                        style="color: #ffffff;font-size: 11px">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Lokasi</th>
+                                                <th scope="col">Unit</th>
+                                                <th scope="col">No Asset</th>
+                                                <th scope="col">Nama Asset</th>
+                                                <th scope="col">Group Asset</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">No SR</th>
+                                                <th scope="col">No WO</th>
+                                                <th scope="col">Tanggal Identifikasi</th>
+                                                <th scope="col">Status WO</th>
+                                                <th scope="col">Kondisi Asset</th>
+                                                <th scope="col">Action Plan</th>
+                                                <th scope="col">Target Selesai</th>
+                                                <th scope="col">Progress Saat Ini</th>
+                                                <th scope="col">Realisasi Selesai</th>
+                                                <th scope="col">Main Issue</th>
+                                                <th scope="col">Keterangan</th>
+                                                <th scope="col">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template x-for="(dataAsset, index) in dataAssets.data"
+                                                :key="index">
+                                                <template x-for="(detail, detailIndex) in dataAsset.detail_reports"
+                                                    :key="detailIndex">
+                                                    <tr>
+                                                        <!-- Main Asset Data (rowspan applied only once for the first row) -->
+                                                        <th x-text="dataAsset.unit.location.name" scope="row"
+                                                            :rowspan="dataAsset.detail_reports.length"
+                                                            x-show="detailIndex === 0"></th>
+                                                        <td x-text="dataAsset.unit.name"
+                                                            :rowspan="dataAsset.detail_reports.length"
+                                                            x-show="detailIndex === 0"></td>
+                                                        <td x-text="dataAsset.asset.no_asset"
+                                                            :rowspan="dataAsset.detail_reports.length"
+                                                            x-show="detailIndex === 0"></td>
+                                                        <td x-text="dataAsset.asset.name"
+                                                            :rowspan="dataAsset.detail_reports.length"
+                                                            x-show="detailIndex === 0"></td>
+                                                        <td x-text="dataAsset.asset.asset_group.name"
+                                                            :rowspan="dataAsset.detail_reports.length"
+                                                            x-show="detailIndex === 0"></td>
+                                                        <template
+                                                            x-if="['normal', 'abnormal', 'fault'].includes(dataAsset.status)">
+                                                            <td :class="{
+                                                                'text-success': dataAsset.status === 'normal',
+                                                                'text-warning': dataAsset.status === 'abnormal',
+                                                                'text-danger': dataAsset.status === 'fault'
+                                                            }"
+                                                                class="text-uppercase fw-bold"
+                                                                x-text="dataAsset.status"
+                                                                :rowspan="dataAsset.detail_reports.length"
+                                                                x-show="detailIndex === 0">
+                                                            </td>
+                                                        </template>
+
+
+                                                        <!-- Detail Data (displayed for each detail report) -->
+                                                        <td x-text="detail.no_sr"></td>
+                                                        <td x-text="detail.no_wo"></td>
+                                                        <td x-text="detail.tanggal_identifikasi"></td>
+                                                        <td x-text="detail.status_wo"></td>
+                                                        <td x-text="detail.kondisi_asset"></td>
+                                                        <td x-text="detail.action_plan"></td>
+                                                        <td x-text="detail.target_selesai"></td>
+                                                        <td x-text="detail.progress"></td>
+                                                        <td x-text="detail.realisasi_selesai"></td>
+                                                        <td x-text="detail.main_issue"></td>
+                                                        <td x-text="detail.keterangan"></td>
+                                                        <td>
+                                                            <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
+                                                                class="btn btn-info btn-sm">Lihat Detail</a>
+                                                        </td>
+
+                                                    </tr>
+                                                </template>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <nav class="mt-3">
+                                    <ul class="pagination justify-content-center">
+                                        <template x-for="(row, index) in dataAssets?.links" :key="index">
+                                            <li class="page-item" :class="row.active ? 'active' : ''">
+                                                <a class="page-link" href="#"
+                                                    @click.prevent="getData(row.url)">
+                                                    <span x-html="row.label"></span>
+                                                </a>
+                                            </li>
+
+                                        </template>
+                                    </ul>
+                                </nav>
+
+
+
 
                             </div>
                         </div>
@@ -369,7 +515,7 @@
     <script defer>
         document.addEventListener('alpine:init', () => {
             Alpine.data('alpineData', () => ({
-                isLoading: true,
+                isLoading: false,
                 reports: [],
                 status: '',
                 location_id: '',
@@ -380,11 +526,23 @@
                 unit_id: '',
                 trendLineChartData: [],
                 pieChartData: [],
+                limit: 10,
+                search: '',
+                toggleLoader() {
+                    if (this.isLoading) {
+                        $('.loader').removeClass("animate__fadeOut d-none");
+                    } else {
+                        $('.loader').addClass("animate__fadeOut d-none");
+                    }
+                },
 
 
                 init() {
 
                     this.getData();
+                    this.$watch('isLoading', () => {
+                        this.toggleLoader();
+                    });
 
 
                 },
@@ -545,10 +703,10 @@
                                             .trim()) // Hapus spasi ekstra
                                         .filter(asset => isNaN(
                                             asset
-                                            )) // Hanya ambil string, abaikan angka
+                                        )) // Hanya ambil string, abaikan angka
                                         .map(asset =>
                                             `<li>${asset.replace(/^,/, '')}</li>`
-                                            ) // Bungkus dalam <li>
+                                        ) // Bungkus dalam <li>
                                         .join('') // Gabungkan semua elemen
                                         :
                                         '<li>Tidak ada data</li>';
@@ -608,16 +766,25 @@
 
 
                 },
+                async applyFilter() {
+                    const url =
+                        '{{ route('getReportData') }}'; // Pastikan ini mengarah ke endpoint yang benar
+                    await this.getData(url);
+                },
 
 
-                async getData() {
-                    this.isLoading = true;
+                async getData(url = '{{ route('getReportData') }}') {
                     try {
-                        const response = await axios.get('{{ route('getReportData') }}', {
+                        this.isLoading = true;
+                        const response = await axios.get(url, {
                             params: {
+                                limit: this.limit,
+
                                 location_id: this.location_id,
                                 status: this.status,
-                                unit: this.unit_id
+                                unit: this.unit_id,
+                                search: this.search,
+
                             }
                         });
                         this.reports = response.data.charts;
@@ -805,6 +972,7 @@
                 },
 
                 initializeDataTable() {
+                    console.log(this.dataAssets);
                     // Check if DataTable is already initialized and destroy it if necessary
                     if ($.fn.DataTable.isDataTable('#tableAssets')) {
                         $('#tableAssets').DataTable().clear().destroy();
