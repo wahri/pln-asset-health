@@ -334,19 +334,111 @@
                                 <div class="text-start">
                                     <div class="row align-items-center">
                                         <div class="col">
-                                            <div class="dropdown">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                                    Dropdown button
+                                            <div class="btn-group">
+                                                <button class="btn btn-secondary btn-sm dropdown-toggle"
+                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Column Visibility
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                                    <li><a class="dropdown-item" href="#">Another action</a>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('lokasi') ? 'active' : ''"
+                                                            @click="toggleColumn('lokasi')">Lokasi</button>
                                                     </li>
-                                                    <li><a class="dropdown-item" href="#">Something else
-                                                            here</a></li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('unit') ? 'active' : ''"
+                                                            @click="toggleColumn('unit')">Unit</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('No Asset') ? 'active' : ''"
+                                                            @click="toggleColumn('No Asset')">No Asset</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Nama Asset') ? 'active' : ''"
+                                                            @click="toggleColumn('Nama Asset')">Nama Asset</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Group Asset') ? 'active' : ''"
+                                                            @click="toggleColumn('Group Asset')">Group Asset</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Status') ? 'active' : ''"
+                                                            @click="toggleColumn('Status')">Status</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('No SR') ? 'active' : ''"
+                                                            @click="toggleColumn('No SR')">No SR</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('No WO') ? 'active' : ''"
+                                                            @click="toggleColumn('No WO')">No WO</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Tgl Identifikasi') ? 'active' : ''"
+                                                            @click="toggleColumn('Tgl Identifikasi')">Tgl
+                                                            Identifikasi</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Status Wo') ? 'active' : ''"
+                                                            @click="toggleColumn('Status Wo')">Status Wo</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Kondisi Asset') ? 'active' : ''"
+                                                            @click="toggleColumn('Kondisi Asset')">Kondisi
+                                                            Asset</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Action Plan') ? 'active' : ''"
+                                                            @click="toggleColumn('Action Plan')">Action Plan</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Target Selesai') ? 'active' : ''"
+                                                            @click="toggleColumn('Target Selesai')">Target
+                                                            Selesai</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Progres Saat ini') ? 'active' : ''"
+                                                            @click="toggleColumn('Progres Saat ini')">Progres Saat
+                                                            ini</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Realisasi selesai') ? 'active' : ''"
+                                                            @click="toggleColumn('Realisasi selesai')">Realisasi
+                                                            selesai</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Main Issue') ? 'active' : ''"
+                                                            @click="toggleColumn('Main Issue')">Main Issue</button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Keterangan') ? 'active' : ''"
+                                                            @click="toggleColumn('Keterangan')">Keterangan</button>
+                                                    </li>
+                                                     <li>
+                                                        <button class="btn btn-sm dropdown-item"
+                                                            :class="!isColumnHidden('Aksi') ? 'active' : ''"
+                                                            @click="toggleColumn('Aksi')">Aksi</button>
+                                                    </li>
                                                 </ul>
                                             </div>
+
+
                                         </div>
                                         <div class="col">
 
@@ -371,24 +463,42 @@
                                         style="color: #ffffff;font-size: 11px">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Lokasi</th>
-                                                <th scope="col">Unit</th>
-                                                <th scope="col">No Asset</th>
-                                                <th scope="col">Nama Asset</th>
-                                                <th scope="col">Group Asset</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">No SR</th>
-                                                <th scope="col">No WO</th>
-                                                <th scope="col">Tanggal Identifikasi</th>
-                                                <th scope="col">Status WO</th>
-                                                <th scope="col">Kondisi Asset</th>
-                                                <th scope="col">Action Plan</th>
-                                                <th scope="col">Target Selesai</th>
-                                                <th scope="col">Progress Saat Ini</th>
-                                                <th scope="col">Realisasi Selesai</th>
-                                                <th scope="col">Main Issue</th>
-                                                <th scope="col">Keterangan</th>
-                                                <th scope="col">Aksi</th>
+                                                <th scope="col" id="lokasiHeader"
+                                                    x-show="!isColumnHidden('lokasi')">Lokasi
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('unit')">Unit</th>
+                                                <th scope="col" x-show="!isColumnHidden('No Asset')">No Asset</th>
+                                                <th scope="col" x-show="!isColumnHidden('Nama Asset')">Nama Asset
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Group Asset')">Group Asset
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Status')">Status</th>
+                                                <th scope="col" x-show="!isColumnHidden('No SR')">No SR</th>
+                                                <th scope="col" x-show="!isColumnHidden('No WO')">No WO</th>
+                                                <th scope="col" x-show="!isColumnHidden('Tgl Identifikasi')">
+                                                    Tanggal
+                                                    Identifikasi</th>
+                                                <th scope="col" x-show="!isColumnHidden('Status Wo')">Status WO
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Kondisi Asset')">Kondisi
+                                                    Asset</th>
+                                                <th scope="col" x-show="!isColumnHidden('Action Plan')">Action Plan
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Target Selesai')">Target
+                                                    Selesai</th>
+                                                <th scope="col" x-show="!isColumnHidden('Progres Saat ini')">
+                                                    Progres Saat Ini
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Realisasi selesai')">
+                                                    Realisasi Selesai
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Main Issue')">Main Issue
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Keterangan')">Keterangan
+                                                </th>
+                                                <th scope="col" x-show="!isColumnHidden('Aksi')">Aksi
+                                                </th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -400,19 +510,24 @@
                                                         <!-- Main Asset Data (rowspan applied only once for the first row) -->
                                                         <th x-text="dataAsset.unit.location.name" scope="row"
                                                             :rowspan="dataAsset.detail_reports.length"
-                                                            x-show="detailIndex === 0"></th>
+                                                            x-show="detailIndex === 0 && !isColumnHidden('lokasi')">
+                                                        </th>
                                                         <td x-text="dataAsset.unit.name"
                                                             :rowspan="dataAsset.detail_reports.length"
-                                                            x-show="detailIndex === 0"></td>
+                                                            x-show="detailIndex === 0 && !isColumnHidden('unit')">
+                                                        </td>
                                                         <td x-text="dataAsset.asset.no_asset"
                                                             :rowspan="dataAsset.detail_reports.length"
-                                                            x-show="detailIndex === 0"></td>
+                                                            x-show="detailIndex === 0 && !isColumnHidden('No Asset')">
+                                                        </td>
                                                         <td x-text="dataAsset.asset.name"
                                                             :rowspan="dataAsset.detail_reports.length"
-                                                            x-show="detailIndex === 0"></td>
+                                                            x-show="detailIndex === 0 && !isColumnHidden('Nama Asset')">
+                                                        </td>
                                                         <td x-text="dataAsset.asset.asset_group.name"
                                                             :rowspan="dataAsset.detail_reports.length"
-                                                            x-show="detailIndex === 0"></td>
+                                                            x-show="detailIndex === 0 && !isColumnHidden('Group Asset')">
+                                                        </td>
                                                         <template
                                                             x-if="['normal', 'abnormal', 'fault'].includes(dataAsset.status)">
                                                             <td :class="{
@@ -423,24 +538,39 @@
                                                                 class="text-uppercase fw-bold"
                                                                 x-text="dataAsset.status"
                                                                 :rowspan="dataAsset.detail_reports.length"
-                                                                x-show="detailIndex === 0">
+                                                                x-show="detailIndex === 0 && !isColumnHidden('Status')">
                                                             </td>
                                                         </template>
 
 
                                                         <!-- Detail Data (displayed for each detail report) -->
-                                                        <td x-text="detail.no_sr"></td>
-                                                        <td x-text="detail.no_wo"></td>
-                                                        <td x-text="detail.tanggal_identifikasi"></td>
-                                                        <td x-text="detail.status_wo"></td>
-                                                        <td x-text="detail.kondisi_asset"></td>
-                                                        <td x-text="detail.action_plan"></td>
-                                                        <td x-text="detail.target_selesai"></td>
-                                                        <td x-text="detail.progress"></td>
-                                                        <td x-text="detail.realisasi_selesai"></td>
-                                                        <td x-text="detail.main_issue"></td>
-                                                        <td x-text="detail.keterangan"></td>
-                                                        <td>
+                                                        <td x-text="detail.no_sr" x-show="!isColumnHidden('No SR')">
+                                                        </td>
+                                                        <td x-text="detail.no_wo" x-show="!isColumnHidden('No WO')">
+                                                        </td>
+                                                        <td x-text="detail.tanggal_identifikasi"
+                                                            x-show="!isColumnHidden('Tgl Identifikasi')"></td>
+                                                        <td x-text="detail.status_wo"
+                                                            x-show="!isColumnHidden('Status Wo')"></td>
+                                                        <td x-text="detail.kondisi_asset"
+                                                            x-show="!isColumnHidden('Kondisi Asset')"></td>
+                                                        <td x-text="detail.action_plan"
+                                                            x-show="!isColumnHidden('Action Plan')">
+                                                        </td>
+                                                        <td x-text="detail.target_selesai"
+                                                            x-show="!isColumnHidden('Target Selesai')"></td>
+                                                        <td x-text="detail.progress"
+                                                            x-show="!isColumnHidden('Progres Saat ini')">
+                                                        </td>
+                                                        <td x-text="detail.realisasi_selesai"
+                                                            x-show="!isColumnHidden('Realisasi selesai')"></td>
+                                                        <td x-text="detail.main_issue"
+                                                            x-show="!isColumnHidden('Main Issue')">
+                                                        </td>
+                                                        <td x-text="detail.keterangan"
+                                                            x-show="!isColumnHidden('Keterangan')">
+                                                        </td>
+                                                        <td x-show="!isColumnHidden('Aksi')">
                                                             <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
                                                                 class="btn btn-info btn-sm">Lihat Detail</a>
                                                         </td>
@@ -528,6 +658,14 @@
                 pieChartData: [],
                 limit: 10,
                 search: '',
+                hiddenColumns: {},
+                toggleColumn(column) {
+                    this.hiddenColumns[column] = !this.hiddenColumns[column];
+                },
+                isColumnHidden(column) {
+                    return this.hiddenColumns[column];
+                },
+
                 toggleLoader() {
                     if (this.isLoading) {
                         $('.loader').removeClass("animate__fadeOut d-none");
