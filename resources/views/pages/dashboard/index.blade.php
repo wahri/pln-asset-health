@@ -198,6 +198,7 @@
                                 </template>
                             </div>
                         </div>
+                        
 
 
 
@@ -206,7 +207,7 @@
                                 <div class="col">
                                     <div class="btn-group">
                                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                                             Column Visibility
                                         </button>
                                         <ul class="dropdown-menu">
