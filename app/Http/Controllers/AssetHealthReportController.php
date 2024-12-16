@@ -13,6 +13,9 @@ use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Pest\Plugins\Retry;
 use Carbon\Carbon;
+use App\Exports\AssetsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class AssetHealthReportController extends Controller
 {
@@ -78,7 +81,7 @@ class AssetHealthReportController extends Controller
             'assetGroup',
             'unit'
         ])
-        ->where('unit_id', $unit->id);
+            ->where('unit_id', $unit->id);
 
         // Jika ada pencarian, tambahkan kondisi pencarian untuk nama asset, status, dan assetGroup
         if ($request->search) {
@@ -105,6 +108,29 @@ class AssetHealthReportController extends Controller
 
         return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'assets', 'assetsGrup'));
     }
+    public function exportExcel($locationId, $reportId, $unitId)
+    {
+        // Validasi dan ambil data terkait
+        $location = Location::findOrFail($locationId);
+        $unit = Unit::findOrFail($unitId);
+        $report = Report::findOrFail($reportId);
+
+        // Format nama file berdasarkan data yang ada
+        $date = date('F Y', strtotime($report->date));
+        $fileName = sprintf(
+            'Assets Report-%s-%s-%s.xlsx',
+            $date,
+            $location->name,
+            $unit->name
+        );
+
+        // Download file Excel
+        return Excel::download(
+            new AssetsExport($report->id, $unit->id),
+            $fileName
+        );
+    }
+
 
 
 

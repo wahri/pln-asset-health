@@ -23,8 +23,6 @@ Route::get('/detail-assets/{report_assets_id}', [HomeController::class, 'detailA
 
 
 
-
-
 Route::get('/getReportData', [DashboardController::class, 'getReportData'])->name('getReportData');
 
 Route::prefix('/dashboard')->middleware('auth')->name('dashboard.')->group(function () {
@@ -47,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Menampilkan unit dalam laporan berdasarkan lokasi, report ID, dan unit ID
         Route::get('/location/{location}/report/{report}/unit/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
+        Route::get('/export-assets/{location}/{report}/{unit}', [AssetHealthReportController::class, 'exportExcel'])->name('exportExcel');
+
 
         // Mengupdate asset dalam laporan berdasarkan ID
         Route::put('/report/unit/update/{id_reportAssets}', [AssetHealthReportController::class, 'updateReportAssets'])->name('updateReportAssets');
