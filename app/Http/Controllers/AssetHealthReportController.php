@@ -67,8 +67,11 @@ class AssetHealthReportController extends Controller
         return view('pages.asset-health-report.showReport', compact('location', 'report', 'units'));
     }
 
-    public function showReportUnit(Location $location, Report $report, Unit $unit)
+    public function showReportUnit(Location $location, Report $report, Unit $unit, Request $request)
     {
+
+
+
         // Ambil data assets yang berkaitan dengan unit dan report yang spesifik
         $assets = Asset::with([
             'reportAssets' => function ($query) use ($report) {
@@ -81,6 +84,30 @@ class AssetHealthReportController extends Controller
             ->where('unit_id', $unit->id)
             ->get();
 
+        if ($request->search) {
+            $assets = Asset::with([
+                'reportAssets' => function ($query) use ($report) {
+                    $query->where('report_id', $report->id)
+                        ->with('detailReports');
+                },
+                'assetGroup',
+                'unit'
+            ])
+                ->where('unit_id', $unit->id)
+                ->where('name', 'like', '%' . $request->search . '%')
+                ->get();
+        } else {
+            $assets = Asset::with([
+                'reportAssets' => function ($query) use ($report) {
+                    $query->where('report_id', $report->id)
+                        ->with('detailReports');
+                },
+                'assetGroup',
+                'unit'
+            ])
+                ->where('unit_id', $unit->id)
+                ->get();
+        }
 
 
         // Ambil semua grup asset jika diperlukan
