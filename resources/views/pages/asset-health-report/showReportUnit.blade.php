@@ -161,7 +161,7 @@
                                 @csrf
                             <div class="input-group flex-nowrap">
                                 <input x-model="search" type="search" name="search" class="form-control"
-                                    placeholder="Search" aria-label="search" aria-describedby="addon-wrapping">
+                                    placeholder="Search Asset" aria-label="search" aria-describedby="addon-wrapping">
                                 <button type="submit" class="btn btn-sm btn-primary">Search</button>
                             </div>
                             </form>
