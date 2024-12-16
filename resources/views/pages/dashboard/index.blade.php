@@ -5,6 +5,8 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link href="{{ asset('assets-horizontal/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
     <style>
         /* Untuk membungkus teks di semua kolom tabel */
         #tableAssets th,
@@ -198,7 +200,7 @@
                                 </template>
                             </div>
                         </div>
-                        
+
 
 
 
@@ -297,6 +299,7 @@
                                                     @click="toggleColumn('Keterangan')">Keterangan</button>
                                             </li>
                                         </ul>
+                                        {{-- <button class="btn btn-sm btn-success" @click="exportToExcel(dataAssets)" ><i class='bx bx-export'></i> Excel</button> --}}
                                     </div>
 
 
@@ -411,11 +414,12 @@
                                                 <td x-text="detail.keterangan" x-show="!isColumnHidden('Keterangan')">
                                                 </td>
 
-                                                {{-- 
-    <td>
-        <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id" class="btn btn-info btn-sm">Lihat Detail</a>
-    </td> 
-    --}}
+
+                                                {{-- <td>
+                                                    <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
+                                                        class="btn btn-info btn-sm">Lihat Detail</a>
+                                                </td> --}}
+
                                             </tr>
 
                                         </template>
@@ -1263,6 +1267,10 @@
                     // Generate table
                     generateTableHeader();
                     generateTableBody();
+
+                },
+                exportToExcel(data) {
+                   console.log(data);
 
                 },
 

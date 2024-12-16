@@ -58,28 +58,28 @@
                     @include('components.alert')
                 </div>
 
-                <div class="table-responsive"  x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
-                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
-                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
-                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false" >
-                    <table id="tableAssets" class="table table-striped table-bordered"
-                    style="color: #ffffff; table-layout: fixed">
+                <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                    x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
+                    <table id="tableAssets" class="table table-striped table-bordered table-hover"
+                        style="color: #ffffff; table-layout: fixed;font-size:12px">
                         <thead>
                             <tr>
-                                <th width="10px">#</th>
+
                                 <th width="100px">Action</th>
                                 <th width="75px">Status</th>
                                 <th width="250px">System</th>
                                 <th width="250px">Asset</th>
-                                <th width="50px">No SR</th>
-                                <th width="50px">No WO</th>
-                                <th width="80px">Tanggal Identifikasi</th>
+                                <th width="60px">No SR</th>
+                                <th width="65px">No WO</th>
+                                <th width="125px">Tanggal Identifikasi</th>
                                 <th width="100px">Status WO</th>
                                 <th width="300px">Kondisi Asset</th>
                                 <th width="300px">Action Plan</th>
-                                <th width="50px">Target Selesai</th>
+                                <th width="60px">Target Selesai</th>
                                 <th width="100px">Progres Saat Ini</th>
-                                <th width="65px">Realisasi Selesai</th>
+                                <th width="70px">Realisasi Selesai</th>
                                 <th width="200px">Main Issue</th>
                                 <th width="200px">Keterangan</th>
 
@@ -88,95 +88,59 @@
 
                         <tbody>
                             @foreach ($assets as $ra)
-                                @if ($ra->reportAssets->isEmpty())
-                                    <tr class="align-middle">
-                                        <td class="text-center">{{ $loop->iteration }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('assetHealthReport.detailReportAsset', $ra->id) }}"
-                                                class="btn btn-primary btn-sm"><i class="bx bx-plus-circle"></i> Report</a>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-{{ $ra->status_class }}">
-                                                {{ ucfirst($ra->status) }}
-                                            </span>
-                                        </td>
-                                        <td>{{ $ra->assetGroup->name }}</td>
-                                        <td>{{ $ra->name }}</td>
-                                        <td></td> <!-- No SR -->
-                                        <td></td> <!-- No WO -->
-                                        <td></td> <!-- Tanggal Identifikasi -->
-                                        <td></td> <!-- Status WO -->
-                                        <td></td> <!-- Kondisi Asset -->
-                                        <td></td> <!-- Action Plan -->
-                                        <td></td> <!-- Target Selesai -->
-                                        <td></td> <!-- Progres Saat Ini -->
-                                        <td></td> <!-- Realisasi Selesai -->
-                                        <td></td> <!-- Main Issue -->
-                                        <td></td> <!-- Keterangan -->
-                                    </tr>
-                                @else
-                                    @foreach ($ra->reportAssets as $reportAsset)
-                                        @foreach ($reportAsset->detailReports as $detail)
-                                            <tr class="align-middle">
-                                                <td class="text-center">
-                                                    {{ $loop->parent->parent->iteration }}
+                                @foreach ($ra->reportAssets as $item)
+                                    @foreach ($item->detailReports as $index => $detail)
+                                        <tr>
+                                            {{-- <td class="text-center align-middle">
+                                                @if ($loop->first)
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <a href="{{ route('assetHealthReport.detailReportAsset', $item->id) }}"
+                                                            class="btn btn-primary btn-sm"><i class="bx bx-plus-circle"></i>
+                                                            Report</a>
+                                                    </div>
+                                                @endif
+                                            </td> --}}
+                                            @if ($loop->first)
+                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle">
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <a href="{{ route('assetHealthReport.detailReportAsset', $item->id) }}"
+                                                            class="btn btn-primary btn-sm "><i class="bx bx-plus-circle"></i>
+                                                            Report</a>
+                                                    </div>
                                                 </td>
-                                                <td class="text-center">
-                                                    <a href="{{ route('assetHealthReport.detailReportAsset', $reportAsset->id) }}"
-                                                        class="btn btn-primary btn-sm"><i class="bx bx-plus-circle"></i> Report</a>
+                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle">
+                                                    @if ($item->status == 'normal')
+                                                        <span class="badge bg-success text-uppercase fw-bold">{{ $item->status }}</span>
+                                                    @elseif ($item->status == 'abnormal')
+                                                        <span class="badge bg-warning text-dark text-uppercase fw-bold">{{ $item->status }}</span>
+                                                    @elseif ($item->status == 'fault')
+                                                        <span class="badge bg-danger text-uppercase fw-bold">{{ $item->status }}</span>
+                                                    @else
+                                                        <span class="badge bg-secondary text-uppercase fw-bold">{{ $item->status }}</span>
+                                                    @endif
                                                 </td>
-                                                <td class="text-center">
-                                                    <span class="badge bg-{{ $reportAsset->status_class }}">
-                                                        {{ ucfirst($reportAsset->status) }}
-                                                    </span>
-                                                </td>
-                                                <td>{{ $ra->assetGroup->name }}</td>
-                                                <td>{{ $ra->name }}</td>
-                                                <td>{{ $detail->no_sr }}</td>
-                                                <td>{{ $detail->no_wo }}</td>
-                                                <td>{{ $detail->tanggal_identifikasi }}</td>
-                                                <td>{{ $detail->status_sr }}</td>
-                                                <td>{{ $detail->kondisi_asset }}</td>
-                                                <td>{{ $detail->action_plan }}</td>
-                                                <td>{{ $detail->target_selesai }}</td>
-                                                <td>{{ $detail->progress_saat_ini }}</td>
-                                                <td>{{ $detail->realisasi_selesai }}</td>
-                                                <td>{{ $detail->issue }}</td>
-                                                <td>{{ $detail->keterangan }}</td>
-                                            </tr>
-                                        @endforeach
-                                        <!-- If reportAssets has no detailReports, still show a row with empty values -->
-                                        @if ($reportAsset->detailReports->isEmpty())
-                                            <tr class="align-middle">
-                                                <td>{{ $loop->parent->iteration }}</td>
-                                                <td class="text-center">
-                                                    <a href="{{ route('assetHealthReport.detailReportAsset', $reportAsset->id) }}"
-                                                        class="btn btn-primary btn-sm"><i class="bx bx-plus-circle"></i> Report</a>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span class="badge bg-{{ $reportAsset->status_class }}">
-                                                        {{ ucfirst($reportAsset->status) }}
-                                                    </span>
-                                                </td>
-                                                <td>{{ $ra->assetGroup->name }}</td>
-                                                <td>{{ $ra->name }}</td>
-                                                <td></td> <!-- No SR -->
-                                                <td></td> <!-- No WO -->
-                                                <td></td> <!-- Tanggal Identifikasi -->
-                                                <td></td> <!-- Status WO -->
-                                                <td></td> <!-- Kondisi Asset -->
-                                                <td></td> <!-- Action Plan -->
-                                                <td></td> <!-- Target Selesai -->
-                                                <td></td> <!-- Progres Saat Ini -->
-                                                <td></td> <!-- Realisasi Selesai -->
-                                                <td></td> <!-- Main Issue -->
-                                                <td></td> <!-- Keterangan -->
-                                            </tr>
-                                        @endif
+                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle">
+                                                    {{ $ra->assetGroup->name }}</td>
+                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle">
+                                                    {{ $ra->name }}</td>
+                                            @endif
+                                            <td class="align-middle">{{ $detail->no_sr }}</td>
+                                            <td class="align-middle">{{ $detail->no_wo }}</td>
+                                            <td class="align-middle">{{ $detail->tanggal_identifikasi }}</td>
+                                            <td class="align-middle">{{ $detail->status_sr }}</td>
+                                            <td class="align-middle">{{ $detail->kondisi_asset }}</td>
+                                            <td class="align-middle">{{ $detail->action_plan }}</td>
+                                            <td class="align-middle">{{ $detail->target_selesai }}</td>
+                                            <td class="align-middle">{{ $detail->progress_saat_ini }}</td>
+                                            <td class="align-middle">{{ $detail->realisasi_selesai }}</td>
+                                            <td class="align-middle">{{ $detail->issue }}</td>
+                                            <td class="align-middle">{{ $detail->keterangan }}</td>
+                                        </tr>
                                     @endforeach
-                                @endif
+                                @endforeach
                             @endforeach
                         </tbody>
+
                     </table>
 
                 </div>
@@ -196,10 +160,10 @@
     <!-- Initialize DataTables -->
     <script>
         $(document).ready(function() {
-            $('#tableAssets').DataTable({
-                buttons: ['pageLength', 'colvis', 'excel'],
-                dom: 'Bfrtip' // untuk menampilkan tombol di atas tabel
-            });
+            //   $('#tableAssets').DataTable({
+            //       buttons: ['pageLength', 'colvis', 'excel'],
+            //       dom: 'Bfrtip' // untuk menampilkan tombol di atas tabel
+            //   }); 
         });
 
 
