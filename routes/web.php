@@ -28,6 +28,8 @@ Route::get('/getReportData', [DashboardController::class, 'getReportData'])->nam
 Route::prefix('/dashboard')->middleware('auth')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::post('/getDataChart', [DashboardController::class, 'getDataChart'])->name('getDataChart');
+    Route::get('/exportExcelAssets', [DashboardController::class, 'exportExcelAssets'])->name('exportExcelAssets');
+
 });
 
 Route::middleware(['auth'])->group(function () {
