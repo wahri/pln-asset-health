@@ -298,6 +298,11 @@
                                                     :class="!isColumnHidden('Keterangan') ? 'active' : ''"
                                                     @click="toggleColumn('Keterangan')">Keterangan</button>
                                             </li>
+                                             <li>
+                                                <button class="btn btn-sm dropdown-item"
+                                                    :class="!isColumnHidden('Action') ? 'active' : ''"
+                                                    @click="toggleColumn('Action')">Action</button>
+                                            </li>
                                         </ul>
                                         {{-- <button class="btn btn-sm btn-success" @click="exportToExcel(dataAssets)" ><i class='bx bx-export'></i> Excel</button> --}}
                                     </div>
@@ -340,8 +345,8 @@
                                         <th scope="col" x-show="!isColumnHidden('Tgl Identifikasi')">Tanggal
                                             Identifikasi</th>
                                         <th scope="col" x-show="!isColumnHidden('Status Wo')">Status WO</th>
-                                        <th scope="col" x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
-                                        <th scope="col" x-show="!isColumnHidden('Action Plan')">Action Plan</th>
+                                        <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
+                                        <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Action Plan')">Action Plan</th>
                                         <th scope="col" x-show="!isColumnHidden('Target Selesai')">Target Selesai</th>
                                         <th scope="col" x-show="!isColumnHidden('Progres Saat ini')">Progres Saat Ini
                                         </th>
@@ -349,6 +354,7 @@
                                         </th>
                                         <th scope="col" x-show="!isColumnHidden('Main Issue')">Main Issue</th>
                                         <th scope="col" x-show="!isColumnHidden('Keterangan')">Keterangan</th>
+                                         <th scope="col" x-show="!isColumnHidden('Action')">Action</th>
                                     </tr>
 
                                 </thead>
@@ -415,10 +421,10 @@
                                                 </td>
 
 
-                                                {{-- <td>
-                                                    <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
+                                                <td>
+                                                    <a :href="'{{ url('/asset-health-report/report/detail') }}/' + dataAsset.id"
                                                         class="btn btn-info btn-sm">Lihat Detail</a>
-                                                </td> --}}
+                                                </td>
 
                                             </tr>
 

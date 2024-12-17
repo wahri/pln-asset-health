@@ -19,6 +19,11 @@ class ManajemenUsersController extends Controller
     {
         try {
 
+            $request->validate([
+                'name' => 'required',
+                'username' => 'required',
+                'password' => 'required',
+            ]);
 
             User::create([
                 'name' => $request->name,
@@ -29,12 +34,19 @@ class ManajemenUsersController extends Controller
             ]);
             return back()->with('success', 'Data has been created successfully!');
         } catch (\Throwable $th) {
-            return back()->with('error', 'Something went wrong!');
+            return back()->with('error', $th->getMessage());
         }
     }
     public function update(Request $request, $id)
     {
         try {
+
+            $request->validate([
+                'email' => 'unique:users,email,' . $id,
+            ]);
+
+
+
 
             $user = User::find($id);
             $user->name = $request->name;
@@ -49,7 +61,7 @@ class ManajemenUsersController extends Controller
 
             return back()->with('success', 'Data has been updated successfully!');
         } catch (\Throwable $th) {
-            return back()->with('error', 'Something went wrong!');
+            return back()->with('error', $th->getMessage());
         }
     }
     public function destroy($id)
