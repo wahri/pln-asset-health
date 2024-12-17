@@ -454,7 +454,7 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive mt-4" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                                <div class="mt-4 table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                                     x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                                     x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
@@ -480,9 +480,9 @@
                                                     Identifikasi</th>
                                                 <th scope="col" x-show="!isColumnHidden('Status Wo')">Status WO
                                                 </th>
-                                                <th scope="col" x-show="!isColumnHidden('Kondisi Asset')">Kondisi
+                                                <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Kondisi Asset')">Kondisi
                                                     Asset</th>
-                                                <th scope="col" x-show="!isColumnHidden('Action Plan')">Action Plan
+                                                <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Action Plan')">Action Plan
                                                 </th>
                                                 <th scope="col" x-show="!isColumnHidden('Target Selesai')">Target
                                                     Selesai</th>

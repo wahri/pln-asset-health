@@ -176,7 +176,7 @@
 
 
 
-                <div class="table-responsive mt-4" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                <div class="mt-4 table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                     x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                     x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
@@ -193,8 +193,8 @@
                                 <th width="65px" x-show="!isColumnHidden('No WO')">No WO</th>
                                 <th width="125px" x-show="!isColumnHidden('Tgl Identifikasi')">Tanggal Identifikasi</th>
                                 <th width="100px" x-show="!isColumnHidden('Status Wo')">Status WO</th>
-                                <th width="300px" x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
-                                <th width="300px" x-show="!isColumnHidden('Action Plan')">Action Plan</th>
+                                <th width="500px" x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
+                                <th width="400px" x-show="!isColumnHidden('Action Plan')">Action Plan</th>
                                 <th width="60px" x-show="!isColumnHidden('Target Selesai')">Target Selesai</th>
                                 <th width="100px" x-show="!isColumnHidden('Progres Saat ini')">Progres Saat Ini</th>
                                 <th width="70px" x-show="!isColumnHidden('Realisasi selesai')">Realisasi Selesai</th>
