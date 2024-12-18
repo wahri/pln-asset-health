@@ -74,47 +74,9 @@ class AssetHealthReportController extends Controller
 
     public function showReportUnit(Location $location, Report $report, Unit $unit, Request $request)
     {
-        // Mulai dengan query dasar untuk Asset
-        $query = Asset::with([
-            'reportAssets' => function ($query) use ($report) {
-                $query->where('report_id', $report->id)
-                    ->with('detailReports');
-            },
-            'assetGroup',
-            'unit'
-        ])
-            // ->whereHas('reportAssets', function ($query) use ($report) {
-            //     $query->where('report_id', $report->id)
-            //         ->where('status', '!=', 'normal');
-            // })
-            ->where('is_active', 1)
-            ->where('unit_id', $unit->id);
+       
 
-
-        // Jika ada pencarian, tambahkan kondisi pencarian untuk nama asset, status, dan assetGroup
-        // if ($request->search) {
-        //     $query->where(function ($query) use ($request) {
-        //         // Pencarian untuk nama asset
-        //         $query->where('name', 'like', '%' . $request->search . '%')
-        //             ->orWhereHas('reportAssets', function ($query) use ($request) {
-        //                 // Pencarian untuk status dalam relasi reportAssets
-        //                 $query->where('status', 'like', '%' . $request->search . '%');
-        //             });
-        //     });
-
-        //     // Pencarian untuk assetGroup
-        //     $query->orWhereHas('assetGroup', function ($query) use ($request) {
-        //         $query->where('name', 'like', '%' . $request->search . '%');
-        //     });
-        // }
-
-        // Ambil hasil pencarian atau semua data jika tidak ada pencarian
-        $assets = $query->get();
-
-        // Ambil semua grup asset jika diperlukan
-        $assetsGrup = AssetGroup::all();
-
-        return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'assets', 'assetsGrup'));
+        return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit'));
     }
     public function getAssetReport(Request $request)
     {

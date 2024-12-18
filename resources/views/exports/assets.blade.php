@@ -1,9 +1,12 @@
 <table>
     <thead>
         <tr>
+            <th>Lokasi</th>
+            <th>Unit</th>
+            <th>No Asset</th>
+            <th>Nama Asset</th>
+            <th>Group Asset</th>
             <th>Status</th>
-            <th>System</th>
-            <th>Asset</th>
             <th>No SR</th>
             <th>No WO</th>
             <th>Tanggal Identifikasi</th>
@@ -23,9 +26,13 @@
                 @foreach ($ra->detailReports as $key => $detail)
                     <tr>
                         @if ($key === 0)
-                            <td style="font-weight: bolder" rowspan="{{ $ra->detailReports->count() }}">{{ $ra->status }}</td>
-                            <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->asset->assetGroup->name }}</td>
+                            <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->unit->location->name }}</td>
+                            <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->unit->name }}</td>
+                            <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->asset->no_asset }}</td>
                             <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->asset->name }}</td>
+                            <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->asset->assetGroup->name }}</td>
+                            <td style="font-weight: bolder" rowspan="{{ $ra->detailReports->count() }}">
+                                {{ $ra->status }}</td>
                         @endif
                         <td>{{ $detail->no_sr }}</td>
                         <td>{{ $detail->no_wo }}</td>
@@ -42,9 +49,12 @@
                 @endforeach
             @else
                 <tr>
-                    <td style="font-weight: bolder">{{ $ra->status }}</td>
-                    <td>{{ $ra->asset->assetGroup->name }}</td>
+                    <td>{{ $ra->unit->location->name }}</td>
+                    <td>{{ $ra->unit->name }}</td>
+                    <td>{{ $ra->asset->no_asset }}</td>
                     <td>{{ $ra->asset->name }}</td>
+                    <td>{{ $ra->asset->assetGroup->name }}</td>
+                    <td style="font-weight: bolder">{{ $ra->status }}</td>
                     <td colspan="11"></td>
                 </tr>
             @endif

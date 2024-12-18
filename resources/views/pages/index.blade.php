@@ -576,7 +576,8 @@
                                                         </td>
 
                                                         <template x-if="detailIndex === 0">
-                                                            <td x-show="!isColumnHidden('Aksi')" class="align-middle text-center">
+                                                            <td x-show="!isColumnHidden('Aksi')"
+                                                                class="align-middle text-center">
                                                                 <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
                                                                     class="btn btn-info btn-sm">Detail</a>
                                                             </td>
@@ -707,9 +708,22 @@
                             enabled: false
                         },
                         exporting: {
+                            enabled: true, // Mengaktifkan fitur eksport
                             buttons: {
                                 contextButton: {
-                                    enabled: false,
+                                    menuItems: [
+                                        'viewFullscreen',
+                                        'printChart',
+                                        'separator',
+                                        'downloadPNG',
+                                        'downloadJPEG',
+                                        'downloadPDF',
+                                        'downloadSVG',
+                                        'separator',
+                                        'downloadCSV',
+                                        'downloadXLS',
+                                        'viewData'
+                                    ]
                                 }
                             }
                         },
@@ -752,6 +766,7 @@
                         }
                     });
                 },
+
                 renderPieChart() {
 
                     const abnormalAssets = [];

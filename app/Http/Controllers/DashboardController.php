@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AssetsReportExport;
 use App\Models\Asset;
 use App\Models\Location;
 use App\Models\ReportAssets;
@@ -11,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class DashboardController extends Controller
@@ -956,5 +958,16 @@ class DashboardController extends Controller
 
 
         return $chartData;
+    }
+
+    public function exportExcelAssets()
+    {
+        $fileName = 'Asset_Wellness_Monitoring_System.xlsx'; // Menambahkan ekstensi .xlsx
+
+        // Download file Excel dengan nama yang sesuai
+        return Excel::download(
+            new AssetsReportExport(),
+            $fileName
+        );
     }
 }

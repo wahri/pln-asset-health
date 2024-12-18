@@ -304,6 +304,8 @@
                                                     @click="toggleColumn('Action')">Action</button>
                                             </li>
                                         </ul>
+                                           <a href="{{ route('dashboard.exportExcelAssets') }}"
+                                    class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a>
                                         {{-- <button class="btn btn-sm btn-success" @click="exportToExcel(dataAssets)" ><i class='bx bx-export'></i> Excel</button> --}}
                                     </div>
 
@@ -547,10 +549,23 @@
                         credits: {
                             enabled: false
                         },
-                        exporting: {
+                         exporting: {
+                            enabled: true, // Mengaktifkan fitur eksport
                             buttons: {
                                 contextButton: {
-                                    enabled: false,
+                                    menuItems: [
+                                        'viewFullscreen',
+                                        'printChart',
+                                        'separator',
+                                        'downloadPNG',
+                                        'downloadJPEG',
+                                        'downloadPDF',
+                                        'downloadSVG',
+                                        'separator',
+                                        'downloadCSV',
+                                        'downloadXLS',
+                                        'viewData'
+                                    ]
                                 }
                             }
                         },
@@ -703,12 +718,12 @@
                                         '<li>Tidak ada data</li>';
 
                                     return `
-        <b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br>
-        <b>Assets:</b><br>
-        <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-            ${assets}
-        </ul>
-        `;
+                                    <b>${this.name}</b>: ${this.percentage.toFixed(1)}%<br>
+                                    <b>Assets:</b><br>
+                                    <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+                                        ${assets}
+                                    </ul>
+                                    `;
                                 },
                             },
 
