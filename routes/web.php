@@ -47,6 +47,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Menampilkan unit dalam laporan berdasarkan lokasi, report ID, dan unit ID
         Route::get('/location/{location}/report/{report}/unit/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
+        Route::get('/getAssetReport', [AssetHealthReportController::class, 'getAssetReport'])->name('getAssetReport');
+
         Route::get('/export-assets/{location}/{report}/{unit}', [AssetHealthReportController::class, 'exportExcel'])->name('exportExcel');
 
 

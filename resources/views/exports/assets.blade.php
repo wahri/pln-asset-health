@@ -18,24 +18,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($assets as $ra)
-            @foreach ($ra->reportAssets as $item)
-                @foreach ($item->detailReports as $index => $detail)
+        @foreach ($reportAsset as $ra)
+            @if ($ra->detailReports->count() > 0)
+                @foreach ($ra->detailReports as $key => $detail)
                     <tr>
-                        @if ($loop->first)
-                            @if ($item->status == 'normal')
-                                <td style="font-weight: bolder" rowspan="{{ $item->detailReports->count() }}">{{ $item->status }}
-                                </td>
-                            @elseif($item->status == 'abnormal')
-                                <td style="font-weight: bolder" rowspan="{{ $item->detailReports->count() }}">
-                                    {{ $item->status }}</td>
-                            @else
-                                <td style="font-weight: bolder" rowspan="{{ $item->detailReports->count() }}">{{ $item->status }}
-                                </td>
-                            @endif
-
-                            <td rowspan="{{ $item->detailReports->count() }}">{{ $ra->assetGroup->name }}</td>
-                            <td rowspan="{{ $item->detailReports->count() }}">{{ $ra->name }}</td>
+                        @if ($key === 0)
+                            <td style="font-weight: bolder" rowspan="{{ $ra->detailReports->count() }}">{{ $ra->status }}</td>
+                            <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->asset->assetGroup->name }}</td>
+                            <td rowspan="{{ $ra->detailReports->count() }}">{{ $ra->asset->name }}</td>
                         @endif
                         <td>{{ $detail->no_sr }}</td>
                         <td>{{ $detail->no_wo }}</td>
@@ -50,7 +40,14 @@
                         <td>{{ $detail->keterangan }}</td>
                     </tr>
                 @endforeach
-            @endforeach
+            @else
+                <tr>
+                    <td style="font-weight: bolder">{{ $ra->status }}</td>
+                    <td>{{ $ra->asset->assetGroup->name }}</td>
+                    <td>{{ $ra->asset->name }}</td>
+                    <td colspan="11"></td>
+                </tr>
+            @endif
         @endforeach
     </tbody>
 </table>

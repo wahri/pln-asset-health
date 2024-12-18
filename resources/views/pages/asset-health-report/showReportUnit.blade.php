@@ -7,8 +7,8 @@
 
     <style>
         /* Untuk membungkus teks di semua kolom tabel */
-        #tableAssets th,
-        #tableAssets td {
+        #tableAssetsNew th,
+        #tableAssetsNew td {
             white-space: pre-line;
             /* Membuat teks membungkus di dalam kolom */
             word-wrap: break-word;
@@ -148,27 +148,23 @@
                                             @click="toggleColumn('Keterangan')">Keterangan</button>
                                     </li>
                                 </ul>
-                                <a href="{{ route('assetHealthReport.exportExcel', [$location->id,$report->id, $unit->id]) }}" class="btn btn-sm btn-success" ><i class='bx bx-export'></i> Excel</a>
+                                <a href="{{ route('assetHealthReport.exportExcel', [$location->id, $report->id, $unit->id]) }}"
+                                    class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a>
                             </div>
-                            
+
+
+
+                        </div>
+                        <div class="col">
 
 
                         </div>
                         <div class="col">
-                          
-
-                        </div>
-                        <div class="col">
-                            <form
-                                action="{{ route('assetHealthReport.showReportUnit', [$location->id, $report->id, $unit->id]) }}"
-                                method="get">
-                                @csrf
-                                <div class="input-group flex-nowrap">
-                                    <input x-model="search" type="search" name="search" class="form-control"
-                                        placeholder="Search Asset" aria-label="search" aria-describedby="addon-wrapping">
-                                    <button type="submit" class="btn btn-sm btn-primary">Search</button>
-                                </div>
-                            </form>
+                            <div class="input-group flex-nowrap">
+                                <span class="input-group-text" id="addon-wrapping">Search</span>
+                                <input x-model="search" type="search" @input.debounce="getData()" class="form-control"
+                                    placeholder="Search" aria-label="search" aria-describedby="addon-wrapping">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -176,112 +172,152 @@
 
 
 
-                <div class="mt-4 table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                <div class="table-responsive mt-4" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                     x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                     x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
-                    <table id="tableAssets" class="table table-striped table-bordered table-hover"
-                        style="color: #ffffff; table-layout: fixed;font-size:12px">
+                    <table id="tableAssetsNew" class="table table-striped table-bordered table-hover table-sm"
+                        style="color: #ffffff;font-size: 11px">
                         <thead>
                             <tr>
+                                <th scope="col" x-show="!isColumnHidden('Action')">Action</th>
+                                <th scope="col" x-show="!isColumnHidden('Status')">Status</th>
 
-                                <th width="100px" x-show="!isColumnHidden('Action')">Action</th>
-                                <th width="75px" x-show="!isColumnHidden('Status')">Status</th>
-                                <th width="250px" x-show="!isColumnHidden('System')">System</th>
-                                <th width="250px" x-show="!isColumnHidden('Asset')">Asset</th>
-                                <th width="60px" x-show="!isColumnHidden('No SR')">No SR</th>
-                                <th width="65px" x-show="!isColumnHidden('No WO')">No WO</th>
-                                <th width="125px" x-show="!isColumnHidden('Tgl Identifikasi')">Tanggal Identifikasi</th>
-                                <th width="100px" x-show="!isColumnHidden('Status Wo')">Status WO</th>
-                                <th width="500px" x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
-                                <th width="400px" x-show="!isColumnHidden('Action Plan')">Action Plan</th>
-                                <th width="60px" x-show="!isColumnHidden('Target Selesai')">Target Selesai</th>
-                                <th width="100px" x-show="!isColumnHidden('Progres Saat ini')">Progres Saat Ini</th>
-                                <th width="70px" x-show="!isColumnHidden('Realisasi selesai')">Realisasi Selesai</th>
-                                <th width="200px" x-show="!isColumnHidden('Main Issue')">Main Issue</th>
-                                <th width="200px" x-show="!isColumnHidden('Keterangan')">Keterangan</th>
 
+                                <th scope="col" x-show="!isColumnHidden('System')">System</th>
+                                <th scope="col" x-show="!isColumnHidden('Asset')">Asset</th>
+                                <th scope="col" x-show="!isColumnHidden('No SR')">No SR</th>
+                                <th scope="col" x-show="!isColumnHidden('No WO')">No WO</th>
+                                <th scope="col" x-show="!isColumnHidden('Tgl Identifikasi')">Tanggal
+                                    Identifikasi</th>
+                                <th scope="col" x-show="!isColumnHidden('Status Wo')">Status WO</th>
+                                <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Kondisi Asset')">
+                                    Kondisi Asset</th>
+                                <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Action Plan')">
+                                    Action Plan</th>
+                                <th scope="col" x-show="!isColumnHidden('Target Selesai')">Target Selesai</th>
+                                <th scope="col" x-show="!isColumnHidden('Progres Saat ini')">Progres Saat Ini
+                                </th>
+                                <th scope="col" x-show="!isColumnHidden('Realisasi selesai')">Realisasi Selesai
+                                </th>
+                                <th scope="col" x-show="!isColumnHidden('Main Issue')">Main Issue</th>
+                                <th scope="col" x-show="!isColumnHidden('Keterangan')">Keterangan</th>
                             </tr>
+
                         </thead>
-
-
-
-
-
-
-
-
-
                         <tbody>
-                            @foreach ($assets as $ra)
-                                @foreach ($ra->reportAssets as $item)
-                                    @foreach ($item->detailReports as $index => $detail)
+
+                           
+                            <template x-for="(dataAsset, index) in dataAssets.data" :key="index">
+                                <template x-for="(detail, detailIndex) in dataAsset.detail_reports"
+                                    :key="detailIndex">
+                                    <template x-if="dataAsset.detail_reports && dataAsset.detail_reports.length > 0">
                                         <tr>
+                                            <template x-if="detailIndex === 0">
+                                                <td :rowspan="dataAsset.detail_reports.length"
+                                                    class="align-middle text-center">
+                                                    <a :href="'{{ url('/asset-health-report/report/detail') }}/' + dataAsset.id"
+                                                        class="btn btn-info btn-sm">Detail</a>
+                                                </td>
+                                            </template>
 
-                                            @if ($loop->first)
-                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle"
-                                                    x-show="!isColumnHidden('Action')">
-                                                    <div class="d-flex justify-content-center align-items-center">
-                                                        <a href="{{ route('assetHealthReport.detailReportAsset', $item->id) }}"
-                                                            class="btn btn-primary btn-sm "><i
-                                                                class="bx bx-plus-circle"></i>
-                                                            Report</a>
-                                                    </div>
+                                            <!-- Main Asset Data (rowspan applied only once for the first row) -->
+                                            <template x-if="['normal', 'abnormal', 'fault'].includes(dataAsset.status)">
+                                                <td :class="{
+                                                    'text-success': dataAsset.status === 'normal',
+                                                    'text-warning': dataAsset.status === 'abnormal',
+                                                    'text-danger': dataAsset.status === 'fault'
+                                                }"
+                                                    class="text-uppercase fw-bold" x-text="dataAsset.status"
+                                                    :rowspan="dataAsset.detail_reports.length"
+                                                    x-show="detailIndex === 0 && !isColumnHidden('Status')">
                                                 </td>
-                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle"
-                                                    x-show="!isColumnHidden('Status')">
-                                                    @if ($item->status == 'normal')
-                                                        <span
-                                                            class="badge bg-success text-uppercase fw-bold">{{ $item->status }}</span>
-                                                    @elseif ($item->status == 'abnormal')
-                                                        <span
-                                                            class="badge bg-warning text-dark text-uppercase fw-bold">{{ $item->status }}</span>
-                                                    @elseif ($item->status == 'fault')
-                                                        <span
-                                                            class="badge bg-danger text-uppercase fw-bold">{{ $item->status }}</span>
-                                                    @else
-                                                        <span
-                                                            class="badge bg-secondary text-uppercase fw-bold">{{ $item->status }}</span>
-                                                    @endif
-                                                </td>
-                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle"
-                                                    x-show="!isColumnHidden('System')">
-                                                    {{ $ra->assetGroup->name }}</td>
-                                                <td rowspan="{{ $item->detailReports->count() }}" class="align-middle"
-                                                    x-show="!isColumnHidden('Asset')">
-                                                    {{ $ra->name }}</td>
-                                            @endif
-                                            <td class="align-middle" x-show="!isColumnHidden('No SR')">
-                                                {{ $detail->no_sr }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('No WO')">
-                                                {{ $detail->no_wo }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Tgl Identifikasi')">
-                                                {{ $detail->tanggal_identifikasi }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Status Wo')">
-                                                {{ $detail->status_sr }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Kondisi Asset')">
-                                                {{ $detail->kondisi_asset }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Action Plan')">
-                                                {{ $detail->action_plan }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Target Selesai')">
-                                                {{ $detail->target_selesai }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Progres Saat ini')">
-                                                {{ $detail->progress_saat_ini }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Realisasi selesai')">
-                                                {{ $detail->realisasi_selesai }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Main Issue')">
-                                                {{ $detail->issue }}</td>
-                                            <td class="align-middle" x-show="!isColumnHidden('Keterangan')">
-                                                {{ $detail->keterangan }}</td>
+                                            </template>
+
+
+                                            <td x-text="dataAsset.asset.asset_group.name"
+                                                :rowspan="dataAsset.detail_reports.length"
+                                                x-show="detailIndex === 0 && !isColumnHidden('System')">
+                                            </td>
+
+                                            <td x-text="dataAsset.asset.name" :rowspan="dataAsset.detail_reports.length"
+                                                x-show="detailIndex === 0 && !isColumnHidden('Asset')">
+                                            </td>
+
+
+
+                                            <!-- Detail Data (displayed for each detail report) -->
+                                            <td x-text="detail.no_sr" x-show="!isColumnHidden('No SR')"></td>
+                                            <td x-text="detail.no_wo" x-show="!isColumnHidden('No WO')"></td>
+                                            <td x-text="detail.tanggal_identifikasi"
+                                                x-show="!isColumnHidden('Tgl Identifikasi')"></td>
+                                            <td x-text="detail.status_wo" x-show="!isColumnHidden('Status Wo')"></td>
+                                            <td x-text="detail.kondisi_asset" x-show="!isColumnHidden('Kondisi Asset')">
+                                            </td>
+                                            <td x-text="detail.action_plan" x-show="!isColumnHidden('Action Plan')">
+                                            </td>
+                                            <td x-text="detail.target_selesai" x-show="!isColumnHidden('Target Selesai')">
+                                            </td>
+                                            <td x-text="detail.progress" x-show="!isColumnHidden('Progres Saat ini')">
+                                            </td>
+                                            <td x-text="detail.realisasi_selesai"
+                                                x-show="!isColumnHidden('Realisasi selesai')"></td>
+                                            <td x-text="detail.main_issue" x-show="!isColumnHidden('Main Issue')">
+                                            </td>
+                                            <td x-text="detail.keterangan" x-show="!isColumnHidden('Keterangan')">
+                                            </td>
+
+
                                         </tr>
-                                    @endforeach
-                                @endforeach
-                            @endforeach
+                                    </template>
+                                </template>
+                            </template>
+
+                             <template x-for="(dataAsset, index) in dataAssets.data" :key="index">
+                                <template x-if=" dataAsset.detail_reports.length == 0">
+
+                                    <tr>
+                                        <td class="align-middle text-center">
+                                            <a :href="'{{ url('/asset-health-report/report/detail') }}/' + dataAsset.id"
+                                                class="btn btn-info btn-sm">Detail</a>
+                                        </td>
+                                        <td :class="{
+                                            'text-success': dataAsset.status === 'normal',
+                                            'text-warning': dataAsset.status === 'abnormal',
+                                            'text-danger': dataAsset.status === 'fault'
+                                        }"
+                                            class="text-uppercase fw-bold" x-text="dataAsset.status"
+                                            x-show="!isColumnHidden('Status')">
+                                        </td>
+
+                                        <td x-text="dataAsset.asset.asset_group.name" x-show="!isColumnHidden('System')">
+                                        </td>
+
+                                        <td x-text="dataAsset.asset.name" x-show="!isColumnHidden('Asset')">
+                                        </td>
+                                        <td colspan="11"></td>
+                                    </tr>
+                                </template>
+
+                            </template>
+
                         </tbody>
-
                     </table>
-
                 </div>
+                <nav class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        <template x-for="(row, index) in dataAssets?.links" :key="index">
+                            <li class="page-item" :class="row.active ? 'active' : ''">
+                                <a class="page-link" href="#" @click.prevent="getData(row.url)">
+                                    <span x-html="row.label"></span>
+                                </a>
+                            </li>
+
+                        </template>
+                    </ul>
+                </nav>
+
+
             </div>
         </div>
     </div>
@@ -315,13 +351,41 @@
                 isColumnHidden(column) {
                     return this.hiddenColumns[column];
                 },
+                async applyFilter() {
+                    const url =
+                        '{{ route('assetHealthReport.getAssetReport') }}'; // Pastikan ini mengarah ke endpoint yang benar
+                    await this.getData(url);
+                },
+                init() {
+                    this.getData();
+
+
+                },
+                async getData(url = '{{ route('assetHealthReport.getAssetReport') }}') {
+
+                    try {
+                        this.isLoading = true;
+                        const response = await axios.get(url, {
+                            params: {
+                                limit: this.limit,
+                                unit_id: this.unit_id,
+                                report_id: this.report_id,
+                                search: this.search,
+
+                            }
+                        });
+
+                        this.dataAssets = response.data;
+                        console.log(this.dataAssets);
 
 
 
-                // Initialization
+                    } catch (error) {
+                        console.error("Error fetching data:", error);
+                        this.isLoading = false;
+                    }
+                },
 
-
-                // Fetch data from server
 
             }));
         });

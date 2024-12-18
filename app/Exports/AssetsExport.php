@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Asset;
+use App\Models\ReportAssets;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -22,18 +23,24 @@ class AssetsExport implements FromView, WithStyles
 
     public function view(): View
     {
-        $assets = Asset::with([
-            'reportAssets' => function ($query) {
-                $query->where('report_id', $this->report)
-                    ->with('detailReports');
-            },
-            'assetGroup',
-            'unit'
-        ])
-            ->where('unit_id', $this->unit)
-            ->get();
+       
 
-        return view('exports.assets', compact('assets'));
+
+        // Ambil data report assets dengan relasi yang diperlukan
+        $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
+        ->where('report_id', $this->report)
+            ->where('unit_id', $this->unit);
+
+        // Tambahkan pencarian jika parameter search ada
+     
+        // Paginasi dengan batas default 10
+        $reportAsset = $reportAsset->get();
+        // Return response JSON
+       
+
+
+
+        return view('exports.assets', compact('reportAsset'));
     }
 
     /**
@@ -49,8 +56,8 @@ class AssetsExport implements FromView, WithStyles
         // Terapkan gaya untuk seluruh rentang sel
         $sheet->getStyle($range)->applyFromArray([
             'alignment' => [
-                'horizontal' => 'center',
-                'vertical' => 'center',
+                'horizontal' => 'left',
+                'vertical' => 'top',
             ],
         ]);
 
@@ -74,5 +81,11 @@ class AssetsExport implements FromView, WithStyles
                 ],
             ],
         ]);
+
+        // Auto size untuk semua kolom
+        foreach (range('A', $highestColumn) as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
     }
+
 }

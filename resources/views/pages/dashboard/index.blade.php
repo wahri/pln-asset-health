@@ -298,7 +298,7 @@
                                                     :class="!isColumnHidden('Keterangan') ? 'active' : ''"
                                                     @click="toggleColumn('Keterangan')">Keterangan</button>
                                             </li>
-                                             <li>
+                                            <li>
                                                 <button class="btn btn-sm dropdown-item"
                                                     :class="!isColumnHidden('Action') ? 'active' : ''"
                                                     @click="toggleColumn('Action')">Action</button>
@@ -345,8 +345,10 @@
                                         <th scope="col" x-show="!isColumnHidden('Tgl Identifikasi')">Tanggal
                                             Identifikasi</th>
                                         <th scope="col" x-show="!isColumnHidden('Status Wo')">Status WO</th>
-                                        <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
-                                        <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Action Plan')">Action Plan</th>
+                                        <th style="min-width: 400px" scope="col"
+                                            x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
+                                        <th style="min-width: 400px" scope="col"
+                                            x-show="!isColumnHidden('Action Plan')">Action Plan</th>
                                         <th scope="col" x-show="!isColumnHidden('Target Selesai')">Target Selesai</th>
                                         <th scope="col" x-show="!isColumnHidden('Progres Saat ini')">Progres Saat Ini
                                         </th>
@@ -354,7 +356,7 @@
                                         </th>
                                         <th scope="col" x-show="!isColumnHidden('Main Issue')">Main Issue</th>
                                         <th scope="col" x-show="!isColumnHidden('Keterangan')">Keterangan</th>
-                                         <th scope="col" x-show="!isColumnHidden('Action')">Action</th>
+                                        <th scope="col" x-show="!isColumnHidden('Action')">Action</th>
                                     </tr>
 
                                 </thead>
@@ -363,7 +365,10 @@
                                     <template x-for="(dataAsset, index) in dataAssets.data" :key="index">
                                         <template x-for="(detail, detailIndex) in dataAsset.detail_reports"
                                             :key="detailIndex">
+
                                             <tr>
+
+
                                                 <!-- Main Asset Data (rowspan applied only once for the first row) -->
                                                 <th x-text="dataAsset.unit.location.name" scope="row"
                                                     :rowspan="dataAsset.detail_reports.length"
@@ -420,11 +425,15 @@
                                                 <td x-text="detail.keterangan" x-show="!isColumnHidden('Keterangan')">
                                                 </td>
 
+                                                <template x-if="detailIndex === 0">
+                                                    <td :rowspan="dataAsset.detail_reports.length"
+                                                        class="align-middle text-center">
+                                                        <a :href="'{{ url('/asset-health-report/report/detail') }}/' + dataAsset
+                                                            .id"
+                                                            class="btn btn-info btn-sm">Detail</a>
+                                                    </td>
+                                                </template>
 
-                                                <td>
-                                                    <a :href="'{{ url('/asset-health-report/report/detail') }}/' + dataAsset.id"
-                                                        class="btn btn-info btn-sm">Lihat Detail</a>
-                                                </td>
 
                                             </tr>
 
@@ -1276,7 +1285,7 @@
 
                 },
                 exportToExcel(data) {
-                   console.log(data);
+                    console.log(data);
 
                 },
 

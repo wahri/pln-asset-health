@@ -336,7 +336,8 @@
                                         <div class="col">
                                             <div class="btn-group">
                                                 <button class="btn btn-secondary btn-sm dropdown-toggle"
-                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                                    data-bs-auto-close="outside">
                                                     Column Visibility
                                                 </button>
                                                 <ul class="dropdown-menu">
@@ -430,7 +431,7 @@
                                                             :class="!isColumnHidden('Keterangan') ? 'active' : ''"
                                                             @click="toggleColumn('Keterangan')">Keterangan</button>
                                                     </li>
-                                                     <li>
+                                                    <li>
                                                         <button class="btn btn-sm dropdown-item"
                                                             :class="!isColumnHidden('Aksi') ? 'active' : ''"
                                                             @click="toggleColumn('Aksi')">Aksi</button>
@@ -454,7 +455,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-4 table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                                <div class="table-responsive mt-4" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                                     x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                                     x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
@@ -480,10 +481,10 @@
                                                     Identifikasi</th>
                                                 <th scope="col" x-show="!isColumnHidden('Status Wo')">Status WO
                                                 </th>
-                                                <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Kondisi Asset')">Kondisi
-                                                    Asset</th>
-                                                <th style="min-width: 400px" scope="col" x-show="!isColumnHidden('Action Plan')">Action Plan
-                                                </th>
+                                                <th style="min-width: 400px" scope="col"
+                                                    x-show="!isColumnHidden('Kondisi Asset')">Kondisi Asset</th>
+                                                <th style="min-width: 400px" scope="col"
+                                                    x-show="!isColumnHidden('Action Plan')">Action Plan</th>
                                                 <th scope="col" x-show="!isColumnHidden('Target Selesai')">Target
                                                     Selesai</th>
                                                 <th scope="col" x-show="!isColumnHidden('Progres Saat ini')">
@@ -496,17 +497,20 @@
                                                 </th>
                                                 <th scope="col" x-show="!isColumnHidden('Keterangan')">Keterangan
                                                 </th>
-                                                <th scope="col" x-show="!isColumnHidden('Aksi')">Aksi
-                                                </th>
-
+                                                <th scope="col" x-show="!isColumnHidden('Action')">Action</th>
                                             </tr>
+
                                         </thead>
                                         <tbody>
+
                                             <template x-for="(dataAsset, index) in dataAssets.data"
                                                 :key="index">
                                                 <template x-for="(detail, detailIndex) in dataAsset.detail_reports"
                                                     :key="detailIndex">
+
                                                     <tr>
+
+
                                                         <!-- Main Asset Data (rowspan applied only once for the first row) -->
                                                         <th x-text="dataAsset.unit.location.name" scope="row"
                                                             :rowspan="dataAsset.detail_reports.length"
@@ -528,6 +532,7 @@
                                                             :rowspan="dataAsset.detail_reports.length"
                                                             x-show="detailIndex === 0 && !isColumnHidden('Group Asset')">
                                                         </td>
+
                                                         <template
                                                             x-if="['normal', 'abnormal', 'fault'].includes(dataAsset.status)">
                                                             <td :class="{
@@ -541,7 +546,6 @@
                                                                 x-show="detailIndex === 0 && !isColumnHidden('Status')">
                                                             </td>
                                                         </template>
-
 
                                                         <!-- Detail Data (displayed for each detail report) -->
                                                         <td x-text="detail.no_sr" x-show="!isColumnHidden('No SR')">
@@ -570,17 +574,23 @@
                                                         <td x-text="detail.keterangan"
                                                             x-show="!isColumnHidden('Keterangan')">
                                                         </td>
-                                                        <td x-show="!isColumnHidden('Aksi')">
-                                                            <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
-                                                                class="btn btn-info btn-sm">Lihat Detail</a>
-                                                        </td>
+
+                                                        <template x-if="detailIndex === 0">
+                                                            <td x-show="!isColumnHidden('Aksi')" class="align-middle text-center">
+                                                                <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
+                                                                    class="btn btn-info btn-sm">Detail</a>
+                                                            </td>
+                                                        </template>
+
 
                                                     </tr>
+
                                                 </template>
                                             </template>
                                         </tbody>
                                     </table>
                                 </div>
+
 
                                 <nav class="mt-3">
                                     <ul class="pagination justify-content-center">

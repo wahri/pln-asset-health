@@ -15,6 +15,8 @@ use Pest\Plugins\Retry;
 use Carbon\Carbon;
 use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
+
 
 
 class AssetHealthReportController extends Controller
@@ -81,24 +83,30 @@ class AssetHealthReportController extends Controller
             'assetGroup',
             'unit'
         ])
+            // ->whereHas('reportAssets', function ($query) use ($report) {
+            //     $query->where('report_id', $report->id)
+            //         ->where('status', '!=', 'normal');
+            // })
+            ->where('is_active', 1)
             ->where('unit_id', $unit->id);
 
-        // Jika ada pencarian, tambahkan kondisi pencarian untuk nama asset, status, dan assetGroup
-        if ($request->search) {
-            $query->where(function ($query) use ($request) {
-                // Pencarian untuk nama asset
-                $query->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('reportAssets', function ($query) use ($request) {
-                        // Pencarian untuk status dalam relasi reportAssets
-                        $query->where('status', 'like', '%' . $request->search . '%');
-                    });
-            });
 
-            // Pencarian untuk assetGroup
-            $query->orWhereHas('assetGroup', function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->search . '%');
-            });
-        }
+        // Jika ada pencarian, tambahkan kondisi pencarian untuk nama asset, status, dan assetGroup
+        // if ($request->search) {
+        //     $query->where(function ($query) use ($request) {
+        //         // Pencarian untuk nama asset
+        //         $query->where('name', 'like', '%' . $request->search . '%')
+        //             ->orWhereHas('reportAssets', function ($query) use ($request) {
+        //                 // Pencarian untuk status dalam relasi reportAssets
+        //                 $query->where('status', 'like', '%' . $request->search . '%');
+        //             });
+        //     });
+
+        //     // Pencarian untuk assetGroup
+        //     $query->orWhereHas('assetGroup', function ($query) use ($request) {
+        //         $query->where('name', 'like', '%' . $request->search . '%');
+        //     });
+        // }
 
         // Ambil hasil pencarian atau semua data jika tidak ada pencarian
         $assets = $query->get();
@@ -108,6 +116,41 @@ class AssetHealthReportController extends Controller
 
         return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit', 'assets', 'assetsGrup'));
     }
+    public function getAssetReport(Request $request)
+    {
+        // Ambil data report assets dengan relasi yang diperlukan
+        $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
+            ->where('report_id', $request->report_id)
+            ->where('unit_id', $request->unit_id);
+
+        // Tambahkan pencarian jika parameter search ada
+        if ($request->search) {
+            $searchTerm = '%' . $request->search . '%';
+
+            $reportAsset->where(function ($query) use ($searchTerm) {
+                $query->where('status', 'like', $searchTerm) // Pencarian pada kolom 'status'
+                    ->orWhereHas('asset', function ($subQuery) use ($searchTerm) {
+                        $subQuery->where('name', 'like', $searchTerm); // Pencarian pada nama asset
+                    })
+                    ->orWhereHas('asset.assetGroup', function ($subQuery) use ($searchTerm) {
+                        $subQuery->where('name', 'like', $searchTerm); // Pencarian pada grup asset
+                    })
+                    ->orWhereHas('unit', function ($subQuery) use ($searchTerm) {
+                        $subQuery->where('name', 'like', $searchTerm); // Pencarian pada nama unit
+                    })
+                    ->orWhereHas('unit.location', function ($subQuery) use ($searchTerm) {
+                        $subQuery->where('name', 'like', $searchTerm); // Pencarian pada lokasi unit
+                    });
+            });
+        }
+
+        // Paginasi dengan batas default 10
+        $reportAsset = $reportAsset->paginate($request->limit ?? 10);
+
+        // Return response JSON
+        return response()->json($reportAsset);
+    }
+
     public function exportExcel($locationId, $reportId, $unitId)
     {
         // Validasi dan ambil data terkait
