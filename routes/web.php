@@ -18,6 +18,8 @@ use App\Http\Middleware\RoleMiddleware;
 
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/detail-assets/{report_assets_id}', [HomeController::class, 'detailAssets'])->name('home.detailAssets');
+Route::get('/exportExcelAssets', [HomeController::class, 'exportExcelAssets'])->name('exportExcelAssets');
+
 
 
 

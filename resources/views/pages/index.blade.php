@@ -437,6 +437,9 @@
                                                             @click="toggleColumn('Aksi')">Aksi</button>
                                                     </li>
                                                 </ul>
+                                                <a href="{{ route('exportExcelAssets') }}"
+                                                    class="btn btn-sm btn-success"><i class='bx bx-export'></i>
+                                                    Excel</a>
                                             </div>
 
 
