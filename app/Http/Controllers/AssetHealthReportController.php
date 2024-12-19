@@ -74,6 +74,8 @@ class AssetHealthReportController extends Controller
 
     public function showReportUnit(Location $location, Report $report, Unit $unit, Request $request)
     {
+     
+     
        
 
         return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit'));

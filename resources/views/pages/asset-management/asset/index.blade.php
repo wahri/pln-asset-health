@@ -30,7 +30,9 @@
         <!--end breadcrumb-->
 
         <hr />
-        @include('components.buttonBack')
+        <a href="{{ route('assetManagement.unitPembangkit.index', $unit->location->name) }}" type="button"
+            class="btn btn-secondary mb-3 ms-2"><i class='bx bx-arrow-back'></i> Kembali</a>
+
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
@@ -112,7 +114,7 @@
                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                     x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                     x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
-                    <table id="example2" class="table table-striped table-bordered">
+                    <table id="example2" class="table table-sm table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>

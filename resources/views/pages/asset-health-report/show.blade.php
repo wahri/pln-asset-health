@@ -24,7 +24,9 @@
         <!--end breadcrumb-->
 
         <hr />
-                @include('components.buttonBack')
+        <a href="{{ route('assetHealthReport.index') }}" type="button" class="btn btn-secondary mb-3 ms-2"><i
+                class='bx bx-arrow-back'></i> Kembali</a>
+
 
         <div class="card">
             <div class="card-body">
@@ -92,7 +94,7 @@
                                                 Unit <i class='bx bx-log-in-circle'></i>
                                             </a>
                                         </div>
-                                         <div class="btn-group " role="group" aria-label="Basic mixed styles example">
+                                        <div class="btn-group " role="group" aria-label="Basic mixed styles example">
                                             <form action="{{ route('assetHealthReport.deleteReport', $report->id) }}"
                                                 method="post" id="delete-form_{{ $report->id }}">
                                                 @csrf
@@ -146,7 +148,7 @@
         });
     </script>
 
-     <script>
+    <script>
         function deleteConfirm(event, id) {
             event.preventDefault(); // Mencegah submit form secara default
 
