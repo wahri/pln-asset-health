@@ -16,11 +16,13 @@ class AssetController extends Controller
 
         $unit = Unit::firstOrCreate(['id' => $id_unit]);
 
+
         $dataAssetGroup = AssetGroup::with('assets')->where('unit_id', $unit->id)->get();
 
         $assetGroup = AssetGroup::all();
+        $unitByLokasi = Unit::where('location_id', $unit->location_id)->get();
 
-        return view('pages.asset-management.asset.index', compact('dataAssetGroup', 'assetGroup', 'unit', 'assets'));
+        return view('pages.asset-management.asset.index', compact('dataAssetGroup', 'assetGroup', 'unit', 'assets', 'unitByLokasi'));
     }
 
     public function store(Request $request)
@@ -32,6 +34,7 @@ class AssetController extends Controller
                 'unit_id' => 'required',
                 'assetGroup' => 'required',
                 'noAsset' => 'required',
+                'mpi' => 'required',
                 'nameAsset' => 'required',
                 'status' => 'required',
             ]);
@@ -47,6 +50,7 @@ class AssetController extends Controller
                 'unit_id' => $request->unit_id,
                 'asset_group_id' => $assetGroup->id,
                 'no_asset' => $request->noAsset,
+                'mpi' => $request->mpi,
                 'name' => $request->nameAsset,
                 'status' => $request->status,
 
@@ -71,9 +75,11 @@ class AssetController extends Controller
             );
 
             Asset::where('id', $id)->update([
+                'unit_id' => $request->unit_id,
                 'no_asset' => $request->noAsset,
                 'asset_group_id' => $assetGroup->id,
                 'name' => $request->nameAsset,
+                'mpi' => $request->mpi,
                 'status' => $request->status,
             ]);
 

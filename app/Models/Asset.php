@@ -13,6 +13,7 @@ class Asset extends Model
         'unit_id',
         'asset_group_id',
         'no_asset',
+        'mpi',
         'name',
         'status',
     ];

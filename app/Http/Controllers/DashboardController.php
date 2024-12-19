@@ -69,7 +69,12 @@ class DashboardController extends Controller
                 $faultData[] = $statuses->where('status', 'fault')->sum('asset_count') ?: 0;
             }
 
-            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->where('report_id', $latestReport->id)->where('status', '!=', 'normal');
+            $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->where('report_id', $latestReport->id)->where('status', '!=', 'normal')
+                ->whereHas('asset', function ($query) use ($request) {
+                    $query->where('is_active', 1);
+                });
+
+
 
             if ($request->status) {
                 $reportAsset->where('status', $request->status);
@@ -221,7 +226,7 @@ class DashboardController extends Controller
                 ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name', DB::raw('MONTH(r1.date) as report_month'))
                 ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
                 ->get();
-                // dd($latestReports);
+            // dd($latestReports);
 
             // Siapkan data untuk tiap bulan dan lokasi
             // Urutan bulan dimulai dari Desember ke Januari
@@ -321,12 +326,15 @@ class DashboardController extends Controller
             }
 
 
-            
+
 
             // Ambil data report assets berdasarkan status pada report terakhir setiap lokasi
             $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
                 ->whereIn('report_id', $latestReports->pluck('report_id'))
-                ->where('status', '!=', 'normal');
+                ->where('status', '!=', 'normal')
+                ->whereHas('asset', function ($query) use ($request) {
+                    $query->where('is_active', 1);
+                });
 
 
             if ($request->status) {
@@ -340,7 +348,7 @@ class DashboardController extends Controller
             }
 
             $reportAsset = $reportAsset->paginate($request->limit ?? 10);
-            
+
 
             // Format response untuk Highcharts dan tambahan data bulanan
 
@@ -635,7 +643,7 @@ class DashboardController extends Controller
 
 
 
-       
+
 
         $locations = $latestReports->pluck('location_name')->unique()->toArray();
         $monthlyData = [];
@@ -688,7 +696,7 @@ class DashboardController extends Controller
         // Mengisi data ke dalam $monthlyData sesuai bulan dan status
         foreach ($reportAssetCounts as $report) {
             $monthName = $months[str_pad($report->report_month, 2, '0', STR_PAD_LEFT)];
-            
+
 
 
             $location = $report->location_name;
@@ -854,10 +862,10 @@ class DashboardController extends Controller
 
         // Fetch monthly report data
         $monthlyReportData = DB::table('report_assets')
-        ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
-        ->join('units', 'assets.unit_id', '=', 'units.id')
-        ->join('reports', 'report_assets.report_id', '=', 'reports.id')
-        ->where('reports.location_id', $request->location_id)
+            ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
+            ->join('units', 'assets.unit_id', '=', 'units.id')
+            ->join('reports', 'report_assets.report_id', '=', 'reports.id')
+            ->where('reports.location_id', $request->location_id)
             // Menambahkan filter agar hanya mengambil laporan terbaru berdasarkan tanggal
             ->whereRaw('reports.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = reports.location_id)')
             ->select(
@@ -907,7 +915,7 @@ class DashboardController extends Controller
         // Debugging untuk melihat hasil
 
 
-      
+
 
         $months = array_reverse([
             $monthsNow[0]['nomor'] => $monthsNow[0]['bulan']

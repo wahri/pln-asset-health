@@ -23,12 +23,60 @@ class ExportDataController extends Controller
     {
         $locations = Location::all();
         $bulan = $request->bulan . '-01';
-        $lokasi = $request->location;
+        $lokasi_id = $request->location;
         $overview = [];
         $unit = [];
         $detailWarnings = [];
         $detailFaults = [];
         $namaUnit = [];
+
+
+
+
+        $reportAssets = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
+            ->whereHas('report', function ($query) use ($bulan) {
+                $query->where('date', $bulan);
+            })
+            ->whereHas('asset', function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->whereHas('unit', function ($query) use ($lokasi_id) {
+                $query->where('location_id', $lokasi_id);
+            })->get();
+
+        $overview = [];
+        $unit =  [];
+        $detailWarnings = [];
+        $detailFaults = [];
+
+        $assetsGroupedByUnit = $reportAssets->groupBy(function ($reportAsset) {
+            return $reportAsset->asset->unit->id; // Group by unit ID
+        });
+
+
+        foreach ($assetsGroupedByUnit as $assetsUnit) {
+            $overview[] = [
+                'unit' => $assetsUnit->first()->unit->name,
+                'total' => $assetsUnit->count(),
+                'normal' => $assetsUnit->where('status', 'normal')->count() ?: '0',
+                'warning' => $assetsUnit->where('status', 'abnormal')->count() ?: '0',
+                'fault' => $assetsUnit->where('status', 'fault')->count() ?: '0',
+                'normalPersen' => $assetsUnit->count() ? number_format(($assetsUnit->where('status', 'normal')->count() * 100 / $assetsUnit->count()), 2, ',', '') : '0,00',
+                'warningPersen' => $assetsUnit->count() ? number_format(($assetsUnit->where('status', 'abnormal')->count() * 100 / $assetsUnit->count()), 2, ',', '') : '0,00',
+                'faultPersen' => $assetsUnit->count() ? number_format(($assetsUnit->where('status', 'fault')->count() * 100 / $assetsUnit->count()), 2, ',', '') : '0,00',
+                'assetWarning' => $assetsUnit->filter(function ($asset) {
+                    return $asset->status == 'abnormal';
+                })->pluck('asset.name')->unique()->implode("\n"),
+                'assetFault' => $assetsUnit->filter(function ($asset) {
+                    return $asset->status == 'fault';
+                })->pluck('asset.name')->unique()->implode("\n"),
+
+            ];
+        }
+
+
+
+
 
         // Query DetailReport berdasarkan parameter bulan dan lokasi
         $detailReports = DetailReport::with([
@@ -41,12 +89,14 @@ class ExportDataController extends Controller
             ->whereHas('reportAsset.report', function ($query) use ($bulan) {
                 $query->where('date', $bulan);
             })
-            ->when($lokasi != 0, function ($query) use ($lokasi) {
-                $query->whereHas('reportAsset.asset.unit.location', function ($query) use ($lokasi) {
-                    $query->where('id', $lokasi);
+            ->when($lokasi_id != 0, function ($query) use ($lokasi_id) {
+                $query->whereHas('reportAsset.asset.unit.location', function ($query) use ($lokasi_id) {
+                    $query->where('id', $lokasi_id);
                 });
             })
             ->get();
+
+
 
         // Group assets by unit
         $assetsGroupedByUnit = $detailReports->groupBy(function ($item) {
@@ -72,19 +122,7 @@ class ExportDataController extends Controller
                 return $report->reportAsset->status == 'fault';
             })->pluck('reportAsset.asset.name')->unique()->implode("\n");
 
-            // Store data in overview
-            $overview[] = [
-                'unit' => $currentUnit->name,
-                'total' => $totalCount,
-                'normal' => $normalCount,
-                'warning' => $warningCount,
-                'fault' => $faultCount,
-                'normalPersen' => $totalCount ? number_format(($normalCount * 100 / $totalCount), 2, ',', '') : '0,00',
-                'warningPersen' => $totalCount ? number_format(($warningCount * 100 / $totalCount), 2, ',', '') : '0,00',
-                'faultPersen' => $totalCount ? number_format(($faultCount * 100 / $totalCount), 2, ',', '') : '0,00',
-                'assetWarning' => $assetWarning,
-                'assetFault' => $assetFault,
-            ];
+           
 
             // Additional details for each asset in the unit
             foreach ($assets as $value) {
@@ -124,20 +162,10 @@ class ExportDataController extends Controller
             }
         }
 
+
+
+        return Excel::download(new MultipleSheetsExport($bulan, $lokasi_id, $overview, $unit, $detailWarnings, $detailFaults, $namaUnit), 'Asset Health PLTA ' . Carbon::parse($bulan)->translatedFormat('F Y') . '-' . Location::find($lokasi_id)->name . '.xlsx');
+
        
-
-        return Excel::download(new MultipleSheetsExport($bulan, $lokasi, $overview, $unit, $detailWarnings, $detailFaults, $namaUnit), 'Asset Health PLTA ' . Carbon::parse($bulan)->translatedFormat('F Y') . '-' . Location::find($lokasi)->name . '.xlsx');
-
-        return view('pages.export-data.index', [
-            'location' => $location ?? '', // Set default to prevent error if location is not defined
-            'unit' => $unit,
-            'detailWarnings' => $detailWarnings,
-            'detailFaults' => $detailFaults,
-            'locations' => $locations,
-            'namaUnit' => $namaUnit
-        ]);
     }
-
-
-
 }

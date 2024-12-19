@@ -9,7 +9,7 @@ class MultipleSheetsExport implements WithMultipleSheets
 {
 
     protected $bulan;
-    protected $lokasi;
+    protected $lokasi_id;
     protected $overview;
     protected $unit;
     protected $detailWarnings;
@@ -19,10 +19,10 @@ class MultipleSheetsExport implements WithMultipleSheets
      * @return \Illuminate\Support\Collection
      */
 
-    public function __construct($bulan, $lokasi, $overview, $unit, $detailWarnings, $detailFaults, $namaUnit)
+    public function __construct($bulan, $lokasi_id, $overview, $unit, $detailWarnings, $detailFaults, $namaUnit)
     {
         $this->bulan = $bulan;
-        $this->lokasi = $lokasi;
+        $this->lokasi_id = $lokasi_id;
         $this->overview = $overview;
         $this->unit = $unit;
         $this->detailWarnings = $detailWarnings;
@@ -39,8 +39,8 @@ class MultipleSheetsExport implements WithMultipleSheets
             new WarningSheetExport($this->detailWarnings),
             'detailFault' =>
             new FaultSheetExport($this->detailFaults),
-            'unit' =>
-            new UnitSheetExport($this->unit),
+            // 'unit' =>
+            // new UnitSheetExport($this->unit),
 
         ];
     }

@@ -83,7 +83,10 @@ class AssetHealthReportController extends Controller
         // Ambil data report assets dengan relasi yang diperlukan
         $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
             ->where('report_id', $request->report_id)
-            ->where('unit_id', $request->unit_id);
+            ->where('unit_id', $request->unit_id)
+            ->whereHas('asset', function ($query) use ($request) {
+                $query->where('is_active', 1);
+            });
 
         // Tambahkan pencarian jika parameter search ada
         if ($request->search) {

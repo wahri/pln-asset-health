@@ -30,7 +30,7 @@
         <!--end breadcrumb-->
 
         <hr />
-          @include('components.buttonBack')
+        @include('components.buttonBack')
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
@@ -52,7 +52,7 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="mb-3">
+                                        <div class="mb-3" style="display: none">
                                             <label for="nameAsset" class="form-label">Unit</label>
                                             <select name="unit_id" id="unit_id" class="form-select">
                                                 <option value="{{ $unit->id }}">{{ $unit->name }}</option>
@@ -76,6 +76,10 @@
                                         <div class="mb-3">
                                             <label for="noAsset" class="form-label">No Asset </label>
                                             <input type="text" class="form-control" id="noAsset" name="noAsset">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="mpi" class="form-label">Mpi </label>
+                                            <input type="number" class="form-control" id="mpi" name="mpi">
                                         </div>
 
                                         <div class="mb-3">
@@ -104,10 +108,10 @@
 
                 </div>
 
-                <div class="table-responsive"  x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
-                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
-                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
-                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false" >
+                <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                    x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>
@@ -115,20 +119,22 @@
                                 <th>Asset Group</th>
                                 <th>No Asset</th>
                                 <th>Name Asset</th>
+                                <th>MPI</th>
                                 <th>Status</th>
                                 <th>Action</th>
 
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach ($assets as $asset)
+                            @foreach ($assets as $asset)
                                 <tr class="align-middle">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $asset->assetGroup->name }}</td>
                                     <td>{{ $asset->no_asset ?? '' }}</td>
                                     <td>{{ $asset->name ?? '' }}</td>
+                                    <td>{{ $asset->mpi ?? '' }}</td>
 
-                                    <td>                                        
+                                    <td>
                                         <span class="badge bg-{{ $asset->status_class }}">
                                             {{ ucfirst($asset->status) }}
                                         </span>
@@ -139,8 +145,8 @@
                                                 class='text-white bx bxs-edit'></i></button>
 
                                         <!-- Modal -->
-                                        <div class="modal fade" id="editAsset_{{ $asset->id }}"
-                                            tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade" id="editAsset_{{ $asset->id }}" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <form
@@ -158,14 +164,26 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="mb-3">
-                                                                <label for="unit" class="form-label">Unit
-                                                                </label>
+                                                                <label for="unit_id" class="form-label">Unit</label>
                                                                 <select name="unit_id" id="unit_id"
                                                                     class="form-select">
-                                                                    <option value="{{ $asset->unit_id }}">
-                                                                        {{ $asset->unit->name }}</option>
+                                                                    <option value="" disabled
+                                                                        {{ $asset->unit_id ? '' : 'selected' }}>Pilih Unit
+                                                                    </option>
+                                                                    <option value="{{ $asset->unit_id }}" selected>
+                                                                        {{ $asset->unit->name ?? 'Unit Tidak Tersedia' }}
+                                                                    </option>
+                                                                    @foreach ($unitByLokasi as $unitLocation)
+                                                                        @if ($unitLocation->id != $asset->unit_id)
+                                                                            <option value="{{ $unitLocation->id }}">
+                                                                                {{ $unitLocation->name }}
+                                                                            </option>
+                                                                        @endif
+                                                                    @endforeach
                                                                 </select>
                                                             </div>
+
+
                                                             <div class="mb-3">
                                                                 <label for="assetGroup" class="form-label">Asset
                                                                     Group</label>
@@ -188,15 +206,18 @@
                                                                 <label for="nameAsset" class="form-label">Name
                                                                     Asset</label>
                                                                 <input type="text" class="form-control" id="nameAsset"
-                                                                    name="nameAsset"
-                                                                    value="{{ $asset->name }}">
+                                                                    name="nameAsset" value="{{ $asset->name }}">
                                                             </div>
                                                             <div class="mb-3">
                                                                 <label for="noAsset" class="form-label">No Asset
                                                                 </label>
                                                                 <input type="text" class="form-control" id="noAsset"
-                                                                    name="noAsset"
-                                                                    value="{{ $asset->no_asset }}">
+                                                                    name="noAsset" value="{{ $asset->no_asset }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="mpi" class="form-label">Mpi </label>
+                                                                <input type="number" class="form-control" id="mpi"
+                                                                    name="mpi" value="{{ $asset->mpi }}">
                                                             </div>
 
                                                             <div class="mb-3">
@@ -228,8 +249,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <form
-                                            action="{{ route('assetManagement.assets.destroy', $asset->id) }}"
+                                        <form action="{{ route('assetManagement.assets.destroy', $asset->id) }}"
                                             method="post" id="delete-form_{{ $asset->id }}">
                                             @csrf
                                             @method('delete')
@@ -261,11 +281,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+
     <script>
         $(document).ready(function() {
-            $('#example').DataTable();
+            var table = $('#example2').DataTable();
+
+            table.buttons().container()
+                .appendTo('#example2_wrapper .col-md-6:eq(0)');
         });
     </script>
+
 
     <script>
         $(document).ready(function() {
