@@ -93,6 +93,7 @@ class AssetImport implements ToModel, WithStartRow, WithHeadingRow
                         'unit_id' => $unit->id,
                         'no_asset' => trim($row['no_asset']),
                         'name' => trim($row['asset_name']),
+                        'mpi' => $row['mpi'] ?? null,
                         'asset_group_id' => $assetGroup->id ?? null
                     ]);
                     $this->assets[] = $asset->id;

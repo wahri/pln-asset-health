@@ -84,8 +84,8 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-success"
+                                                    onclick="downloadTemplate()">Download Excel</button>
                                         <button type="submit" class="btn btn-primary">Import</button>
                                     </div>
                                 </div>
@@ -226,6 +226,12 @@
                     );
                 }
             });
+        }
+    </script>
+     <script>
+        // Fungsi untuk mengunduh template Excel
+        function downloadTemplate() {
+            window.location.href = '{{ asset('assets/excel/Template_Import_Asset.xlsx') }}';
         }
     </script>
 @endpush
