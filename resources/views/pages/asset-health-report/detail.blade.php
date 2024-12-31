@@ -35,12 +35,12 @@
                             </a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
-                            <a href="javascript:history.back()">
+                            <a href="{{ route('assetHealthReport.showReport', [$location_id, $report_id]) }}">
                                 {{ $month }}
                             </a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
-                            <a href="javascript:history.back()">
+                            <a href="{{ route('assetHealthReport.showReportUnit', [$location_id, $report_id, $unit_id]) }}">
                                 {{ $unit }}
                             </a>
                         </li>
@@ -54,7 +54,10 @@
 
         <hr />
 
-        @include('components.buttonBack')
+
+        <a href="{{ route('assetHealthReport.showReportUnit', [$location_id, $report_id, $unit_id]) }}" type="button" class="btn btn-secondary mb-3 ms-2">
+    <i class='bx bx-arrow-back'></i> Kembali
+</a>
 
 
 

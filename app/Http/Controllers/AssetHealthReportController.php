@@ -75,6 +75,7 @@ class AssetHealthReportController extends Controller
     public function showReportUnit(Location $location, Report $report, Unit $unit, Request $request)
     {
      
+        
      
        
 
@@ -229,7 +230,9 @@ class AssetHealthReportController extends Controller
 
     public function detail($id_report_asset)
     {
+      
 
+    
 
         $reportAsset = ReportAssets::findOrFail($id_report_asset);
 
@@ -237,6 +240,9 @@ class AssetHealthReportController extends Controller
         $locationName = $reportAsset->asset->unit->location->name;
         $month = date('F Y', strtotime($reportAsset->report->date));
         $unit = $reportAsset->asset->unit->name;
+        $location_id  = $reportAsset->asset->unit->location->id;
+        $report_id = $reportAsset->report->id;
+        $unit_id  = $reportAsset->asset->unit->id;
 
         $statusSR = [
             'APPR',
@@ -263,7 +269,8 @@ class AssetHealthReportController extends Controller
 
         $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();
 
-        return view('pages.asset-health-report.detail', compact('locationName', 'month', 'unit', 'statusSR', 'detailReportsAll', 'reportAsset'));
+
+        return view('pages.asset-health-report.detail', compact('locationName', 'month', 'unit', 'statusSR', 'detailReportsAll', 'reportAsset', 'location_id', 'report_id', 'unit_id'));
     }
 
     public function UpdatedetailReports(Request $request, $id)
