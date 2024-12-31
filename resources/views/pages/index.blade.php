@@ -1361,10 +1361,15 @@
                                         .toLowerCase().replace(' ',
                                             ''
                                         ); // Mengambil nama lokasi dan memodifikasinya untuk key
-                                    const value = row[locationKey][
-                                        index
-                                    ]; // Mengakses data sesuai dengan lokasi dan kolom
-                                    tableRow += `<td>${value}</td>`;
+                                    if (row[locationKey] && Array.isArray(row[
+                                            locationKey])) {
+                                        const value = row[locationKey][index] ||
+                                            '0'; // Ambil nilai jika ada, atau gunakan nilai default
+                                        tableRow += `<td>${value}</td>`;
+                                    } else {
+                                        tableRow +=
+                                        `<td></td>`; // Tambahkan sel kosong jika data tidak ada
+                                    }
                                 });
                             });
 

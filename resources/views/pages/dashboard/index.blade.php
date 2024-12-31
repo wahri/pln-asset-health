@@ -304,8 +304,8 @@
                                                     @click="toggleColumn('Action')">Action</button>
                                             </li>
                                         </ul>
-                                           <a href="{{ route('dashboard.exportExcelAssets') }}"
-                                    class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a>
+                                        <a href="{{ route('dashboard.exportExcelAssets') }}"
+                                            class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a>
                                         {{-- <button class="btn btn-sm btn-success" @click="exportToExcel(dataAssets)" ><i class='bx bx-export'></i> Excel</button> --}}
                                     </div>
 
@@ -549,7 +549,7 @@
                         credits: {
                             enabled: false
                         },
-                         exporting: {
+                        exporting: {
                             enabled: true, // Mengaktifkan fitur eksport
                             buttons: {
                                 contextButton: {
@@ -1198,10 +1198,15 @@
                                         .toLowerCase().replace(' ',
                                             ''
                                         ); // Mengambil nama lokasi dan memodifikasinya untuk key
-                                    const value = row[locationKey][
-                                        index
-                                    ]; // Mengakses data sesuai dengan lokasi dan kolom
-                                    tableRow += `<td>${value}</td>`;
+                                    if (row[locationKey] && Array.isArray(row[
+                                            locationKey])) {
+                                        const value = row[locationKey][index] ||
+                                            '0'; // Ambil nilai jika ada, atau gunakan nilai default
+                                        tableRow += `<td>${value}</td>`;
+                                    } else {
+                                        tableRow +=
+                                        `<td></td>`; // Tambahkan sel kosong jika data tidak ada
+                                    }
                                 });
                             });
 
