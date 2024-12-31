@@ -14,7 +14,7 @@
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}"><i
                                     class="bx bx-home-alt"></i></a>
                         </li>
-                          <li class="breadcrumb-item active" aria-current="page"> <a
+                        <li class="breadcrumb-item active" aria-current="page"> <a
                                 href="{{ route('assetHealthReport.index') }}">Lokasi Unit Pembangkit</a></li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('assetHealthReport.showLocation', $location->name) }}">
@@ -31,15 +31,31 @@
         <!--end breadcrumb-->
 
         <hr />
-                <a href="{{ route('assetHealthReport.showLocation', $location->name) }}" type="button" class="btn btn-secondary mb-3 ms-2" ><i
-                        class='bx bx-arrow-back'></i> Kembali</a>
+        <a href="{{ route('assetHealthReport.showLocation', $location->name) }}" type="button"
+            class="btn btn-secondary mb-3 ms-2"><i class='bx bx-arrow-back'></i> Kembali</a>
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
                     @include('components.alert')
                 </div>
 
-                <div class="table-responsive">
+                {{-- <a href="{{ route('assetHealthReport.exportExcel', [$location->id, $report->id, $unit->id]) }}"
+                                    class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a> --}}
+
+
+                <div class="text-start">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="btn-group">
+                                <a href="{{ route('assetHealthReport.exportExcel', [$location->id, $report->id]) }}" class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive mt-4">
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>

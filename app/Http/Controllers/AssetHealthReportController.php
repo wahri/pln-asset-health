@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use App\Exports\AssetsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 
 
@@ -74,7 +75,7 @@ class AssetHealthReportController extends Controller
 
     public function showReportUnit(Location $location, Report $report, Unit $unit, Request $request)
     {
-     
+
         
      
        
@@ -119,30 +120,27 @@ class AssetHealthReportController extends Controller
         return response()->json($reportAsset);
     }
 
-    public function exportExcel($locationId, $reportId, $unitId)
+    public function exportExcel($locationId, $reportId)
     {
         // Validasi dan ambil data terkait
         $location = Location::findOrFail($locationId);
-        $unit = Unit::findOrFail($unitId);
         $report = Report::findOrFail($reportId);
 
         // Format nama file berdasarkan data yang ada
-        $date = date('F Y', strtotime($report->date));
+        $date = Carbon::parse($report->date)->format('F Y'); // Format tanggal menjadi "Month Year"
+        $locationName = Str::slug($location->name); // Mengubah nama lokasi menjadi slug yang aman untuk file
         $fileName = sprintf(
-            'Assets Report-%s-%s-%s.xlsx',
+            'Assets_Report-%s-%s.xlsx',
             $date,
-            $location->name,
-            $unit->name
+            $locationName
         );
 
         // Download file Excel dengan nama yang sesuai
         return Excel::download(
-            new AssetsExport($report->id, $unit->id),
+            new AssetsExport($report->id),
             $fileName
         );
     }
-
-
 
 
 

@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/location/{location}/report/{report}/unit/{unit}', [AssetHealthReportController::class, 'showReportUnit'])->name('showReportUnit');
         Route::get('/getAssetReport', [AssetHealthReportController::class, 'getAssetReport'])->name('getAssetReport');
 
-        Route::get('/export-assets/{location}/{report}/{unit}', [AssetHealthReportController::class, 'exportExcel'])->name('exportExcel');
+        Route::get('/export-assets/{location}/{report}', [AssetHealthReportController::class, 'exportExcel'])->name('exportExcel');
 
 
         // Mengupdate asset dalam laporan berdasarkan ID

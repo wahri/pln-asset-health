@@ -150,8 +150,8 @@
                                             @click="toggleColumn('Keterangan')">Keterangan</button>
                                     </li>
                                 </ul>
-                                <a href="{{ route('assetHealthReport.exportExcel', [$location->id, $report->id, $unit->id]) }}"
-                                    class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a>
+                                {{-- <a href="{{ route('assetHealthReport.exportExcel', [$location->id, $report->id, $unit->id]) }}"
+                                    class="btn btn-sm btn-success"><i class='bx bx-export'></i> Excel</a> --}}
                             </div>
 
 

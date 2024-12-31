@@ -12,31 +12,27 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class AssetsExport implements FromView, WithStyles
 {
     protected $report;
-    protected $unit;
 
     // Constructor untuk menerima parameter
-    public function __construct($report, $unit)
+    public function __construct($report)
     {
         $this->report = $report;
-        $this->unit = $unit;
     }
 
     public function view(): View
     {
-       
+
 
 
         // Ambil data report assets dengan relasi yang diperlukan
         $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
-        ->where('report_id', $this->report)
-            ->where('unit_id', $this->unit);
-
+            ->where('report_id', $this->report);
         // Tambahkan pencarian jika parameter search ada
-     
+
         // Paginasi dengan batas default 10
         $reportAsset = $reportAsset->get();
         // Return response JSON
-       
+
 
 
 
@@ -87,5 +83,4 @@ class AssetsExport implements FromView, WithStyles
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
     }
-
 }
