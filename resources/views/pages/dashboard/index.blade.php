@@ -1191,21 +1191,30 @@
                             let tableRow = `<tr><td>${row.month}</td>`;
 
                             // Menambahkan data untuk setiap lokasi yang ada dalam headers
-                            headers.forEach(header => {
+                             headers.forEach(header => {
+                                const locationKey = header.location.toLowerCase()
+                                    .replace(/\s/g, ''); // Menghapus spasi
+                                console.log(
+                                    `Checking data for location: ${locationKey}`); // Debug lokasi
+
                                 header.columns.forEach((col, index) => {
-                                    // Ambil data berdasarkan nama lokasi dan kolom
-                                    const locationKey = header.location
-                                        .toLowerCase().replace(' ',
-                                            ''
-                                        ); // Mengambil nama lokasi dan memodifikasinya untuk key
-                                    if (row[locationKey] && Array.isArray(row[
-                                            locationKey])) {
-                                        const value = row[locationKey][index] ||
-                                            '0'; // Ambil nilai jika ada, atau gunakan nilai default
-                                        tableRow += `<td>${value}</td>`;
+                                    if (row[locationKey]) {
+                                        if (Array.isArray(row[locationKey])) {
+                                            const value = row[locationKey][
+                                                index] ||
+                                            '0'; // Ambil nilai atau default
+                                            tableRow += `<td>${value}</td>`;
+                                        } else {
+                                            console.warn(
+                                                `Expected array but found: ${typeof row[locationKey]}`
+                                            );
+                                            tableRow += `<td>0</td>`;
+                                        }
                                     } else {
-                                        tableRow +=
-                                        `<td></td>`; // Tambahkan sel kosong jika data tidak ada
+                                        console.warn(
+                                            `Data missing for key: ${locationKey}`
+                                            );
+                                        tableRow += `<td>0</td>`;
                                     }
                                 });
                             });
