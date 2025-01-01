@@ -91,7 +91,7 @@ class ReportImport implements ToModel, WithStartRow, WithHeadingRow
                 $reportAsset->save();
 
                 $checkDetailReport = DetailReport::where('report_asset_id', $reportAsset->id)->first();
-                if (!$checkDetailReport) {
+                if (!$checkDetailReport && $row['status'] != 'normal') {
                     $detailReport = DetailReport::create([
                         'report_asset_id' => $reportAsset->id,
                         'no_sr' => isset($row['no_sr']) ? $row['no_sr'] : null,
