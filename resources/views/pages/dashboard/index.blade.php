@@ -411,7 +411,7 @@
                                                 <td x-text="detail.no_wo" x-show="!isColumnHidden('No WO')"></td>
                                                 <td x-text="detail.tanggal_identifikasi"
                                                     x-show="!isColumnHidden('Tgl Identifikasi')"></td>
-                                                <td x-text="detail.status_wo" x-show="!isColumnHidden('Status Wo')"></td>
+                                                <td x-text="detail.status_sr" x-show="!isColumnHidden('Status Wo')"></td>
                                                 <td x-text="detail.kondisi_asset"
                                                     x-show="!isColumnHidden('Kondisi Asset')"></td>
                                                 <td x-text="detail.action_plan" x-show="!isColumnHidden('Action Plan')">
@@ -1194,8 +1194,7 @@
                              headers.forEach(header => {
                                 const locationKey = header.location.toLowerCase()
                                     .replace(/\s/g, ''); // Menghapus spasi
-                                console.log(
-                                    `Checking data for location: ${locationKey}`); // Debug lokasi
+                             
 
                                 header.columns.forEach((col, index) => {
                                     if (row[locationKey]) {
