@@ -55,9 +55,10 @@
         <hr />
 
 
-        <a href="{{ route('assetHealthReport.showReportUnit', [$location_id, $report_id, $unit_id]) }}" type="button" class="btn btn-secondary mb-3 ms-2">
-    <i class='bx bx-arrow-back'></i> Kembali
-</a>
+        <a href="{{ route('assetHealthReport.showReportUnit', [$location_id, $report_id, $unit_id]) }}" type="button"
+            class="btn btn-secondary mb-3 ms-2">
+            <i class='bx bx-arrow-back'></i> Kembali
+        </a>
 
 
 
@@ -184,8 +185,8 @@
 
                                                 <div class="col-md-3">
                                                     <label for="inputNoSR" class="form-label">No SR</label>
-                                                    <input type="text" class="form-control" id="inputNoSR"
-                                                        name="no_sr" placeholder="Enter No SR">
+                                                    <input type="text" class="form-control" id="inputNoSR" name="no_sr"
+                                                        placeholder="Enter No SR">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="inputNoWO" class="form-label">No WO</label>
@@ -272,9 +273,9 @@
                     </div>
                 </div>
                 <div class="table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
-                            x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
-                            x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
-                            x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
+                    x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
+                    x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
+                    x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
                     <table id="tableAssets" class="table mb-0">
                         <thead class="table-light">
                             <tr>
@@ -644,8 +645,10 @@
     <script>
         $(document).ready(function() {
             $('#tableAssets').DataTable({
+                stateSave: true, // Menyimpan status tabel
                 buttons: ['pageLength', 'colvis', 'excel'],
-                dom: 'Bfrtip' // untuk menampilkan tombol di atas tabel
+                dom: 'Bfrtip', // Untuk menampilkan tombol di atas tabel
+               
             });
         });
     </script>
