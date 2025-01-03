@@ -1313,7 +1313,6 @@
 
                 },
                 exportToExcel(data) {
-                    console.log(data);
 
                 },
 
