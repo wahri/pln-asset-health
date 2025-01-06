@@ -76,9 +76,9 @@ class AssetHealthReportController extends Controller
     public function showReportUnit(Location $location, Report $report, Unit $unit, Request $request)
     {
 
-        
-     
-       
+
+
+
 
         return view('pages.asset-health-report.showReportUnit', compact('location', 'report', 'unit'));
     }
@@ -228,9 +228,9 @@ class AssetHealthReportController extends Controller
 
     public function detail($id_report_asset)
     {
-      
 
-    
+
+
 
         $reportAsset = ReportAssets::findOrFail($id_report_asset);
 
@@ -242,17 +242,13 @@ class AssetHealthReportController extends Controller
         $report_id = $reportAsset->report->id;
         $unit_id  = $reportAsset->asset->unit->id;
 
+
         $statusSR = [
-            'APPR',
-            'CAN',
-            'CLOSE',
-            'COMP',
-            'HISTEDIT',
             'INPLAN',
             'INPLN',
             'INPRG',
+            'PTWCL',
             'PTWR',
-            'WAPPR',
             'WAPPR',
             'WENG',
             'WEQSHUT',
@@ -261,8 +257,16 @@ class AssetHealthReportController extends Controller
             'WMATSHUT',
             'WOUTAGE',
             'WPCOND',
-            'WPREP',
-            'WPTWR',
+            'WPROC',
+            'WPTW',
+            'APPR',
+            'CAN',
+            'CLOSE',
+            'COMP',
+            'HISTEDIT',
+            'WSCH',
+            'WTOOL',
+            'WUNSHUT',
         ];
 
         $detailReportsAll = DetailReport::where('report_asset_id', $id_report_asset)->get();

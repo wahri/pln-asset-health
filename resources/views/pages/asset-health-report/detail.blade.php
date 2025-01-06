@@ -369,7 +369,7 @@
                                                                         <div class="col-md-3">
                                                                             <label for="status_sr"
                                                                                 class="form-label">Status
-                                                                                SR</label>
+                                                                                WO</label>
                                                                             <select name="status_sr" id="status_sr"
                                                                                 class="form-select select2-edit">
                                                                                 <option
