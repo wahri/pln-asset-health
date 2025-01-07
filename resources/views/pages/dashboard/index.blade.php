@@ -327,7 +327,7 @@
 
 
 
-                        <div class="table-responsive mt-4" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                        <div class="mt-4 table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                             x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                             x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                             x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
@@ -429,7 +429,7 @@
 
                                                 <template x-if="detailIndex === 0">
                                                     <td :rowspan="dataAsset.detail_reports.length"
-                                                        class="align-middle text-center">
+                                                        class="text-center align-middle">
                                                         <a :href="'{{ url('/asset-health-report/report/detail') }}/' + dataAsset
                                                             .id"
                                                             class="btn btn-info btn-sm">Detail</a>

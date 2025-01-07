@@ -87,6 +87,20 @@
             word-wrap: break-word;
             /* Menambah pembungkus kata */
         }
+
+        *::-webkit-scrollbar {
+            display: block;
+            width: 5px;
+            height: 5px;
+            position: absolute;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #777777;
+            border-radius: 2px;
+            -webkit-transition: .3s;
+            transition: .3s;
+        }
     </style>
 
 
@@ -458,7 +472,7 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive mt-4" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
+                                <div class="mt-4 table-responsive" x-data="{ isDragging: false, startX: 0, scrollLeft: 0 }"
                                     x-on:mousedown="isDragging = true; startX = $event.pageX - $el.offsetLeft; scrollLeft = $el.scrollLeft"
                                     x-on:mousemove="if(isDragging) { $el.scrollLeft = scrollLeft - ($event.pageX - $el.offsetLeft - startX) }"
                                     x-on:mouseup="isDragging = false" x-on:mouseleave="isDragging = false">
@@ -580,7 +594,7 @@
 
                                                         <template x-if="detailIndex === 0">
                                                             <td x-show="!isColumnHidden('Aksi')"
-                                                                class="align-middle text-center">
+                                                                class="text-center align-middle">
                                                                 <a :href="'{{ url('/detail-assets/') }}/' + dataAsset.id"
                                                                     class="btn btn-info btn-sm">Detail</a>
                                                             </td>
@@ -1357,14 +1371,16 @@
                                 const locationKey = header.location.toLowerCase()
                                     .replace(/\s/g, ''); // Menghapus spasi
                                 console.log(
-                                    `Checking data for location: ${locationKey}`); // Debug lokasi
+                                    `Checking data for location: ${locationKey}`
+                                ); // Debug lokasi
 
                                 header.columns.forEach((col, index) => {
                                     if (row[locationKey]) {
                                         if (Array.isArray(row[locationKey])) {
                                             const value = row[locationKey][
-                                                index] ||
-                                            '0'; // Ambil nilai atau default
+                                                    index
+                                                ] ||
+                                                '0'; // Ambil nilai atau default
                                             tableRow += `<td>${value}</td>`;
                                         } else {
                                             console.warn(
@@ -1375,7 +1391,7 @@
                                     } else {
                                         console.warn(
                                             `Data missing for key: ${locationKey}`
-                                            );
+                                        );
                                         tableRow += `<td>0</td>`;
                                     }
                                 });
@@ -1484,6 +1500,22 @@
             // Arahkan ke halaman detail atau tampilkan modal berdasarkan assetId
             window.location.href = `/detail-assets/${assetId}`; // Contoh mengarahkan ke halaman detail
         }
+
+        $(document).ready(function() {
+            const $scrollable = $('html');
+
+            // Tambahkan event listener untuk gerakan mouse
+            $scrollable.on('mousemove', function() {
+                $scrollable.addClass('show-scrollbar');
+
+                // Hilangkan scrollbar setelah 1 detik tanpa gerakan mouse
+                clearTimeout($scrollable.data('hideTimeout'));
+                const timeout = setTimeout(() => {
+                    $scrollable.removeClass('show-scrollbar');
+                }, 1000);
+                $scrollable.data('hideTimeout', timeout);
+            });
+        });
     </script>
 
     {{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
