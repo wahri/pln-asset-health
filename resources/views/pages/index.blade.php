@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="dark-theme">
+<html lang="en" class="dark-theme scrollable">
 
 <head>
     <!-- Required meta tags -->
@@ -88,14 +88,51 @@
             /* Menambah pembungkus kata */
         }
 
-        *::-webkit-scrollbar {
+        /* html::-webkit-scrollbar {
+            display: none;
+        }
+
+        html.show-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+            position: absolute;
+        }
+
+        html.show-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #777777;
+            border-radius: 2px;
+            -webkit-transition: .3s;
+            transition: .3s;
+        } */
+
+        /* Menyembunyikan scrollbar secara default */
+        .scrollable {
+            overflow: auto;
+            scrollbar-width: none;
+            /* Untuk Firefox */
+            -ms-overflow-style: none;
+            /* Untuk Internet Explorer dan Edge lama */
+        }
+
+        .scrollable::-webkit-scrollbar {
+            display: none;
+            /* Untuk Chrome, Safari, dan browser berbasis WebKit */
+        }
+
+        /* Menampilkan scrollbar dengan gaya tertentu */
+        .scrollable.show-scrollbar {
+            scrollbar-width: thin;
+            /* Untuk Firefox */
+        }
+
+        .scrollable.show-scrollbar::-webkit-scrollbar {
             display: block;
             width: 5px;
             height: 5px;
             position: absolute;
         }
 
-        *::-webkit-scrollbar-thumb {
+        .scrollable.show-scrollbar::-webkit-scrollbar-thumb {
             background-color: #777777;
             border-radius: 2px;
             -webkit-transition: .3s;
