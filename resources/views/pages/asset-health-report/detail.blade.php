@@ -331,7 +331,7 @@
                                                             <div class="container modal-content">
                                                                 <div class="modal-header">
                                                                     <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                                                        Add SR
+                                                                        Edit SR
                                                                     </h1>
                                                                     <button type="button" class="btn-close"
                                                                         data-bs-dismiss="modal"
