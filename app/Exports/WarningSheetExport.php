@@ -36,9 +36,8 @@ class WarningSheetExport implements FromCollection,WithTitle,WithHeadings, WithE
             'No WO',
             'Tanggal Identifikasi',
             'Status Saat Ini',
-            'Kondisi Saat Ini',
-            'Kondisi Asset',
-            'Action Plan',
+            'kondisi Asset',
+            'Action Plan',
             'Target Selesai',
             'Progres Saat Ini',
             'Realisasi Selesai',
@@ -67,7 +66,7 @@ class WarningSheetExport implements FromCollection,WithTitle,WithHeadings, WithE
                 ];
 
                 // Apply styles to header row
-                $event->sheet->getStyle('A1:N1')->applyFromArray($headerStyleGray);
+                $event->sheet->getStyle('A1:M1')->applyFromArray($headerStyleGray);
 
                 // Set row heights for better visibility
                 $lastRow = count($this->warning) + 1; // Update this line to match your data source
@@ -76,7 +75,7 @@ class WarningSheetExport implements FromCollection,WithTitle,WithHeadings, WithE
                 }
 
                 // Set column widths to auto size for better fit
-                foreach (range('A', 'N') as $columnID) {
+                foreach (range('A', 'M') as $columnID) {
                     $event->sheet->getColumnDimension($columnID)->setAutoSize(true);
                 }
 
@@ -96,7 +95,7 @@ class WarningSheetExport implements FromCollection,WithTitle,WithHeadings, WithE
                         ],
                     ],
                 ];
-                $event->sheet->getStyle("A1:N{$lastRow}")->applyFromArray($borderStyle);
+                $event->sheet->getStyle("A1:M{$lastRow}")->applyFromArray($borderStyle);
             },
         ];
     }

@@ -401,7 +401,6 @@ class DashboardController extends Controller
 
 
 
-
             return response()->json([
                 'charts' => [
                     'categories' => $locations,

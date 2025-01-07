@@ -290,7 +290,6 @@
 
                 showAlert(response.data.message, 'success', statusAlert);
             } catch (error) {
-                console.log(error);
                 let errorMessage = error.response && error.response.data.message ?
                     error.response.data.message :
                     'Something went wrong';

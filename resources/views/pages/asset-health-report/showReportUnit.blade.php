@@ -51,9 +51,10 @@
 
         <hr />
 
-      <a href="{{ route('assetHealthReport.showReport', [$location->id, $report->id]) }}" type="button" class="btn btn-secondary mb-3 ms-2">
-    <i class='bx bx-arrow-back'></i> Kembali
-</a>
+        <a href="{{ route('assetHealthReport.showReport', [$location->id, $report->id]) }}" type="button"
+            class="btn btn-secondary mb-3 ms-2">
+            <i class='bx bx-arrow-back'></i> Kembali
+        </a>
 
         <div class="card">
             <div class="card-body">
@@ -209,7 +210,7 @@
                         </thead>
                         <tbody>
 
-                           
+
                             <template x-for="(dataAsset, index) in dataAssets.data" :key="index">
                                 <template x-for="(detail, detailIndex) in dataAsset.detail_reports"
                                     :key="detailIndex">
@@ -253,7 +254,7 @@
                                             <td x-text="detail.no_wo" x-show="!isColumnHidden('No WO')"></td>
                                             <td x-text="detail.tanggal_identifikasi"
                                                 x-show="!isColumnHidden('Tgl Identifikasi')"></td>
-                                            <td x-text="detail.status_wo" x-show="!isColumnHidden('Status Wo')"></td>
+                                            <td x-text="detail.status_sr" x-show="!isColumnHidden('Status Wo')"></td>
                                             <td x-text="detail.kondisi_asset" x-show="!isColumnHidden('Kondisi Asset')">
                                             </td>
                                             <td x-text="detail.action_plan" x-show="!isColumnHidden('Action Plan')">
@@ -275,7 +276,7 @@
                                 </template>
                             </template>
 
-                             <template x-for="(dataAsset, index) in dataAssets.data" :key="index">
+                            <template x-for="(dataAsset, index) in dataAssets.data" :key="index">
                                 <template x-if=" dataAsset.detail_reports.length == 0">
 
                                     <tr>
@@ -314,10 +315,10 @@
                                     <span x-html="row.label"></span>
                                 </a>
                             </li>
-
                         </template>
                     </ul>
                 </nav>
+
 
 
             </div>
@@ -346,52 +347,64 @@
                 hiddenColumns: {},
                 unit_id: @json($unit->id),
                 report_id: @json($report->id),
-                hiddenColumns: {},
+                currentPage: null,
+
+                // Toggle visibility of columns
                 toggleColumn(column) {
                     this.hiddenColumns[column] = !this.hiddenColumns[column];
                 },
                 isColumnHidden(column) {
                     return this.hiddenColumns[column];
                 },
+
+                // Apply filter
                 async applyFilter() {
-                    const url =
-                        '{{ route('assetHealthReport.getAssetReport') }}'; // Pastikan ini mengarah ke endpoint yang benar
+                    const url = '{{ route('assetHealthReport.getAssetReport') }}';
                     await this.getData(url);
                 },
+
+                // Initialize
                 init() {
-                    this.getData();
-
-
+                    // Check for stored page
+                    const storedPage = localStorage.getItem('lastVisitedPage');
+                    if (storedPage) {
+                        this.getData(storedPage);
+                    } else {
+                        this.getData();
+                    }
                 },
-                async getData(url = '{{ route('assetHealthReport.getAssetReport') }}') {
 
+                // Fetch data
+                async getData(url = '{{ route('assetHealthReport.getAssetReport') }}') {
                     try {
                         this.isLoading = true;
+
                         const response = await axios.get(url, {
                             params: {
                                 limit: this.limit,
                                 unit_id: this.unit_id,
                                 report_id: this.report_id,
                                 search: this.search,
-
-                            }
+                            },
                         });
 
                         this.dataAssets = response.data;
-                        console.log(this.dataAssets);
+                        this.currentPage = this.dataAssets.current_page;
 
+                        // Store the last visited page URL
+                        localStorage.setItem('lastVisitedPage', url);
 
-
+                      
                     } catch (error) {
-                        console.error("Error fetching data:", error);
+                        console.error('Error fetching data:', error);
+                    } finally {
                         this.isLoading = false;
                     }
                 },
-
-
             }));
         });
     </script>
+
 
 
 
