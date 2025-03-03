@@ -209,7 +209,7 @@
         <div class="page-wrapper" style="margin-top: 70px" x-data="alpineData">
             <div class="page-content">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-6">
                         <div class="card">
                             <div class="card-body">
                                 <form action="">
@@ -219,6 +219,23 @@
                                             <option value="">Semua Lokasi</option>
                                             @foreach ($locations as $location)
                                                 <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="">
+                                    <div class="form-group">
+                                        <label for="" class="form-label">Pilih Tahun</label>
+                                        <select class="form-select" x-model="year" @change="applyFilter">
+                                            <option value="">Pilih Tahun</option>
+                                            @foreach ($years as $year)
+                                                <option value="{{ $year->year }}">{{ $year->year }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -723,6 +740,8 @@
                 pieChartData: [],
                 limit: 10,
                 search: '',
+                year: '',
+
                 hiddenColumns: {},
                 toggleColumn(column) {
                     this.hiddenColumns[column] = !this.hiddenColumns[column];
@@ -1001,6 +1020,8 @@
                                 status: this.status,
                                 unit: this.unit_id,
                                 search: this.search,
+                                year: this.year
+
 
                             }
                         });

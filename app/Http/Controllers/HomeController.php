@@ -8,13 +8,17 @@ use Illuminate\Http\Request;
 use App\Models\Location;
 use App\Models\ReportAssets;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
+use App\Models\Report;
 
 class HomeController extends Controller
 {
     public function index()
     {
         $locations = Location::all();
-        return view('pages.index', compact('locations'));
+        $years  = Report::select(DB::raw('YEAR(date) as year'))->distinct()->get();
+
+        return view('pages.index', compact('locations', 'years'));
     }
 
     public function detailAssets($report_assets_id)

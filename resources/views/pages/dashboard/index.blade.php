@@ -53,7 +53,7 @@
 @section('content')
     <div class="page-content" x-data="alpineData">
         <div class="row">
-            <div class="col-12">
+            <div class="col-6">
                 <div class="card">
                     <div class="card-body">
                         <form action="">
@@ -63,6 +63,23 @@
                                     <option value="">Semua Lokasi</option>
                                     @foreach ($locations as $location)
                                         <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="">
+                            <div class="form-group">
+                                <label for="" class="form-label">Pilih Tahun</label>
+                                <select class="form-select" x-model="year" @change="applyFilter">
+                                    <option value="">Pilih Tahun</option>
+                                    @foreach ($years as $year)
+                                        <option value="{{ $year->year }}">{{ $year->year }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -513,6 +530,7 @@
                 pieChartData: [],
                 limit: 10,
                 search: '',
+                year: '',
                 hiddenColumns: {},
                 toggleColumn(column) {
                     this.hiddenColumns[column] = !this.hiddenColumns[column];
@@ -790,6 +808,7 @@
                                 status: this.status,
                                 unit: this.unit_id,
                                 search: this.search,
+                                year: this.year
 
                             }
                         });
@@ -1191,17 +1210,18 @@
                             let tableRow = `<tr><td>${row.month}</td>`;
 
                             // Menambahkan data untuk setiap lokasi yang ada dalam headers
-                             headers.forEach(header => {
+                            headers.forEach(header => {
                                 const locationKey = header.location.toLowerCase()
                                     .replace(/\s/g, ''); // Menghapus spasi
-                             
+
 
                                 header.columns.forEach((col, index) => {
                                     if (row[locationKey]) {
                                         if (Array.isArray(row[locationKey])) {
                                             const value = row[locationKey][
-                                                index] ||
-                                            '0'; // Ambil nilai atau default
+                                                    index
+                                                ] ||
+                                                '0'; // Ambil nilai atau default
                                             tableRow += `<td>${value}</td>`;
                                         } else {
                                             console.warn(
@@ -1212,7 +1232,7 @@
                                     } else {
                                         console.warn(
                                             `Data missing for key: ${locationKey}`
-                                            );
+                                        );
                                         tableRow += `<td>0</td>`;
                                     }
                                 });

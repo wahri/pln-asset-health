@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\AssetsReportExport;
 use App\Models\Asset;
 use App\Models\Location;
+use App\Models\Report;
 use App\Models\ReportAssets;
 use App\Models\Unit;
 use App\Models\User;
@@ -23,20 +24,24 @@ class DashboardController extends Controller
 
 
         $locations = Location::all();
+        $years  = Report::select(DB::raw('YEAR(date) as year'))->distinct()->get();
 
-        return view('pages.dashboard.index', compact('locations'));
+        return view('pages.dashboard.index', compact('locations', 'years'));
     }
 
     public function getReportData(Request $request)
     {
+        $year  = $request->year ?? date('Y');
 
 
 
         if ($request->location_id) {
             $latestReport = DB::table('reports')
                 ->where('location_id', $request->location_id)
-                ->orderBy('date', 'desc')
+                ->whereYear('date', $year)
                 ->first();
+
+
 
             if (!$latestReport) {
                 return response()->json([
@@ -72,6 +77,9 @@ class DashboardController extends Controller
             $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')->where('report_id', $latestReport->id)->where('status', '!=', 'normal')
                 ->whereHas('asset', function ($query) use ($request) {
                     $query->where('is_active', 1);
+                })
+                ->whereHas('report', function ($query) use ($year) {
+                    $query->whereYear('date', $year);
                 });
 
 
@@ -101,6 +109,7 @@ class DashboardController extends Controller
                 ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
                 ->join('units', 'assets.unit_id', '=', 'units.id')
                 ->join('reports', 'report_assets.report_id', '=', 'reports.id')
+                ->whereYear('reports.date', $year)
                 ->where('reports.location_id', $request->location_id)
                 ->select('units.name as unit_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'), DB::raw('MONTH(reports.date) as report_month'))
                 ->groupBy('units.id', 'units.name', 'report_assets.status', 'report_month')
@@ -224,7 +233,7 @@ class DashboardController extends Controller
             $latestReports = DB::table('reports as r1')
                 ->join('locations as l', 'r1.location_id', '=', 'l.id')
                 ->select('r1.location_id', 'r1.id as report_id', 'l.name as location_name', DB::raw('MONTH(r1.date) as report_month'))
-                ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
+                ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id AND YEAR(r2.date) = ?)', [$year])
                 ->get();
             // dd($latestReports);
 
@@ -264,6 +273,7 @@ class DashboardController extends Controller
                 ->join('locations', 'reports.location_id', '=', 'locations.id')
                 ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
                 ->where('assets.is_active', 1)
+                ->whereYear('reports.date', $year)
                 ->select('locations.name as location_name', 'report_assets.status', DB::raw('COUNT(*) as asset_count'), DB::raw('MONTH(reports.date) as report_month'))
                 ->groupBy('locations.name', 'report_assets.status', 'report_month')
                 ->get();
@@ -334,6 +344,9 @@ class DashboardController extends Controller
                 ->where('status', '!=', 'normal')
                 ->whereHas('asset', function ($query) use ($request) {
                     $query->where('is_active', 1);
+                })
+                ->wherehas('report', function ($query) use ($year) {
+                    $query->whereYear('date', $year);
                 });
 
 
@@ -398,6 +411,7 @@ class DashboardController extends Controller
 
             // pieChartData
             $pieChartData = $this->getPieData($request);
+
 
 
 
@@ -558,7 +572,7 @@ class DashboardController extends Controller
 
     public function getPieData($request)
     {
-
+        $year  = $request->year ?? date('Y');
         $assetsByLocation = DB::table('assets')
             ->where('assets.is_active', 1)
             ->join('units', 'assets.unit_id', '=', 'units.id')
@@ -576,8 +590,11 @@ class DashboardController extends Controller
                 'l.name as location_name',
                 DB::raw('MONTH(r1.date) as report_month')
             )
-            ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id)')
+            ->whereRaw('r1.date = (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = r1.location_id AND YEAR(r2.date) = ?)', [$year])
+
             ->get();
+
+
 
         $monthsNow = [];
 
@@ -601,6 +618,7 @@ class DashboardController extends Controller
 
             return $report;
         });
+
 
 
 
@@ -659,21 +677,26 @@ class DashboardController extends Controller
             }
         }
 
+     
+
         $reportAssetCounts = DB::table('report_assets')
             ->join('reports', 'report_assets.report_id', '=', 'reports.id')
             ->join('locations', 'reports.location_id', '=', 'locations.id')
             ->join('assets', 'report_assets.asset_id', '=', 'assets.id')
             ->where('assets.is_active', 1)
-            ->whereRaw('reports.date IN (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = reports.location_id)')
+            ->whereYear('reports.date', $year)
+            ->whereRaw('reports.date IN (SELECT MAX(r2.date) FROM reports as r2 WHERE r2.location_id = reports.location_id AND YEAR(r2.date) = ?)', [$year])
             ->select(
                 'locations.name as location_name',
                 'report_assets.status',
-                DB::raw('COUNT(DISTINCT assets.id) as asset_count'), // Hitung aset unik
+                DB::raw('COUNT(DISTINCT assets.id) as asset_count'),
                 DB::raw('MONTH(reports.date) as report_month'),
-                DB::raw('GROUP_CONCAT(DISTINCT CONCAT(assets.name, "|") ORDER BY assets.name ASC) as asset_names') // Gabungkan nama aset unik dengan pipe
+                DB::raw('GROUP_CONCAT(DISTINCT CONCAT(assets.name, "|") ORDER BY assets.name ASC) as asset_names')
             )
             ->groupBy('locations.name', 'report_assets.status', 'report_month')
             ->get();
+
+
 
         // Mengubah hasil asset_names dari string menjadi array dan hilangkan pipe di akhir
         $reportAssetCounts->transform(function ($item) {
@@ -754,7 +777,10 @@ class DashboardController extends Controller
         // Ambil data report assets berdasarkan status pada report terakhir setiap lokasi
         $reportAsset = ReportAssets::with('asset', 'asset.assetGroup', 'report', 'unit', 'unit.location', 'detailReports')
             ->whereIn('report_id', $latestReports->pluck('report_id'))
-            ->where('status', '!=', 'normal');
+            ->where('status', '!=', 'normal')
+            ->wherehas('report', function ($query) use ($year) {
+                $query->whereYear('date', $year);
+            });
 
 
         if ($request->status) {
@@ -851,6 +877,7 @@ class DashboardController extends Controller
             $chartData['series'][2]['data'][] = $faultSum;   // Data untuk status "Fault"
             $chartData['series'][2]['assets'][] = array_unique($faultAssets); // Nama aset "Fault"
         }
+
 
 
         return $chartData;

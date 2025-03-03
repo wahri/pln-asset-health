@@ -116,6 +116,7 @@ class AssetHealthReportController extends Controller
         // Paginasi dengan batas default 10
         $reportAsset = $reportAsset->paginate($request->limit ?? 10);
 
+
         // Return response JSON
         return response()->json($reportAsset);
     }
@@ -154,55 +155,38 @@ class AssetHealthReportController extends Controller
 
     public function addReportDate(Request $request)
     {
-
         $validatedData = $request->validate([
             'date' => 'required|date',
             'location' => 'required|string|exists:locations,name',
         ]);
         try {
-
-            // cek reportAsset jika sudah ada lokasi maka buatkan lokasi baru dan ambil data report asset dengan lokasi tertentu
-
             $location = Location::where('name', $validatedData['location'])->firstOrFail();
+            $reportFirstLast = Report::with('reportAssets.detailReports')
+                ->where('location_id', $location->id)
+                ->orderBy('date', 'desc')
+                ->first();
 
-            // Ambil laporan terakhir berdasarkan lokasi
-            $reportFirstLast = Report::with('reportAssets.detailReports')->where('location_id', $location->id)->orderBy('date', 'desc')->first();
-
-            // Buat laporan baru (atau ambil jika sudah ada)
             $report = Report::firstOrCreate([
-                'date' => $validatedData['date'] . '-01', // Tanggal untuk laporan baru
+                'date' => $validatedData['date'] . '-01',
                 'location_id' => $location->id,
             ]);
 
-            if ($reportFirstLast == null) {
-                $units = Unit::where('location_id', $location->id)->get();
+            // Get all active assets for this location
+            $currentAssets = Asset::whereHas('unit', function($query) use ($location) {
+                $query->where('location_id', $location->id);
+            })->where('is_active', '1')->get();
 
-                foreach ($units as $unit) {
-                    $assets = Asset::where('unit_id', $unit->id)->where('is_active', '1')->get();
-
-                    foreach ($assets as $asset) {
-                        ReportAssets::updateOrCreate(
-                            [
-                                'report_id' => $report->id,
-                                'unit_id' => $asset->unit_id,
-                                'asset_id' => $asset->id,
-                                'status' => $asset->status,
-                            ],
-                        );
-                    }
-                }
-            } else {
-
+            if ($reportFirstLast) {
+                // Create entries for existing assets from last report
                 foreach ($reportFirstLast->reportAssets as $reportAsset) {
                     $newReportAsset = $report->reportAssets()->create([
                         'asset_id' => $reportAsset->asset_id,
                         'unit_id' => $reportAsset->unit_id,
-                        'report_id' => $reportAsset->report_id,
                         'status' => $reportAsset->status,
                     ]);
 
+                    // Copy detail reports
                     foreach ($reportAsset->detailReports as $detailReport) {
-
                         $newReportAsset->detailReports()->create([
                             'no_sr' => $detailReport->no_sr,
                             'no_wo' => $detailReport->no_wo,
@@ -217,6 +201,29 @@ class AssetHealthReportController extends Controller
                             'keterangan' => $detailReport->keterangan,
                         ]);
                     }
+                }
+
+                // Add new assets that weren't in the last report
+                $existingAssetIds = $report->reportAssets->pluck('asset_id')->toArray();
+                $newAssets = $currentAssets->whereNotIn('id', $existingAssetIds);
+
+                foreach ($newAssets as $asset) {
+                    ReportAssets::create([
+                        'report_id' => $report->id,
+                        'unit_id' => $asset->unit_id,
+                        'asset_id' => $asset->id,
+                        'status' => $asset->status,
+                    ]);
+                }
+            } else {
+                // First time report - create entries for all assets
+                foreach ($currentAssets as $asset) {
+                    ReportAssets::create([
+                        'report_id' => $report->id,
+                        'unit_id' => $asset->unit_id,
+                        'asset_id' => $asset->id,
+                        'status' => $asset->status,
+                    ]);
                 }
             }
 
